@@ -1,0 +1,219 @@
+@type: 'extra';
+@element: 'custom';
+
+@import (multiple, reference, optional) '../../theme.config';
+
+.item-metadata-table {
+  .ui.definition.table tr td:first-child:not(.ignored),
+  .ui.definition.table tr td.definition {
+    width: 220px;
+    background: transparent !important;
+    color: @textColor !important;
+    font-family: @headerFont;
+    vertical-align: top;
+  }
+
+  .ui.definition.table tr td a {
+    word-break: break-word;
+  }
+
+  .ui.definition.table tr:last-child {
+    border-bottom: none;
+  }
+
+  .ui.definition.table td {
+    border: none !important;
+  }
+
+  .tag-types {
+    div {
+      display: inline-block;
+      padding: 0 10px;
+      margin: 2px;
+      background-color: #ddd;
+      font-size: 12px;
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .item-metadata-table .ui.definition.table tr {
+    box-shadow: none !important;
+  }
+}
+
+.item-metadata-modal {
+  margin: 3.5rem auto !important;
+
+  .header {
+    border-bottom: 1px solid @lightGrey !important;
+
+    h3 {
+      margin-top: 0;
+    }
+  }
+
+  .copy-box {
+    right: 15px;
+    bottom: 15px;
+  }
+
+  .content {
+    overflow: auto;
+    max-height: 600px;
+    padding-top: 0 !important;
+  }
+
+  @media only screen and (max-width: @largeMobileBreakpoint) {
+    top: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+.item-modal-metadata {
+  margin-bottom: 0.5em;
+  font-family: @pageFont;
+  font-weight: normal;
+  line-height: 18px;
+}
+
+.item-metadata-modal {
+  .header a {
+    color: @secondaryColor;
+
+    &:hover {
+      color: @primaryColorHover;
+    }
+  }
+}
+
+.listing-body {
+  position: relative;
+  margin-top: 1.7em;
+
+  .ui.basic.button.add-fav-btn {
+    position: absolute;
+    top: 4px;
+    left: -23px;
+    margin: 0;
+    box-shadow: none !important;
+
+    &:hover {
+      background-color: transparent !important;
+    }
+
+    svg {
+      margin: 0 !important;
+    }
+
+    @media only screen and (max-width: @largeMobileBreakpoint) {
+      left: -19px;
+
+      svg {
+        height: 17px !important;
+      }
+    }
+  }
+}
+
+svg.selected {
+  fill: @primaryColor !important;
+}
+
+.listing-title h3 {
+  display: inline-block;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.tableau-download-dialog,
+.tableau-share-dialog {
+  z-index: 9999 !important;
+}
+
+.item-metadata {
+  display: flex;
+  margin-bottom: 0.5rem;
+  font-size: 13px;
+
+  p {
+    display: -webkit-box;
+    overflow: hidden;
+    width: 100%;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.metadata-tab-title {
+  margin-right: 1px;
+  color: @primaryColor;
+  font-weight: 500;
+}
+
+.metadata-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  .ui.button.toolbar-button {
+    margin: 0 7px !important;
+  }
+}
+
+.metadata-tab-section {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 13px;
+}
+
+.metadata-tableau {
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+
+  .tableau-block {
+    position: relative;
+  }
+
+  .toolbar-button-wrapper .ui.button.toolbar-button {
+    margin: 0 7px !important;
+  }
+
+  .tableau-icons {
+    position: absolute;
+    top: -10px;
+    right: -18px !important;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.toolbar-button {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 2px !important;
+  background-color: @orange !important;
+  border-radius: 3px !important;
+  color: @white !important;
+
+  &:hover {
+    opacity: 0.6;
+  }
+}
+
+.toolbar-button svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0 !important;
+  fill: #fff !important;
+  transform: translate(-50%, -50%);
+}

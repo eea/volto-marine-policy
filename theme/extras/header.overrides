@@ -1,0 +1,20 @@
+/*----------------------------------------------------------------------------
+      HEADER MAIN BAR DESKTOP
+  ----------------------------------------------------------------------------*/
+
+#main {
+  .main.bar {
+    .ui.container {
+      .main-menu {
+        .item:first-child {
+          display: flex !important;
+        }
+      }
+    
+      .ui.text.menu {
+        flex-wrap: wrap;
+        justify-content: end;
+      }
+    }
+  }
+}
