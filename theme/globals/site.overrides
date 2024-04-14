@@ -1,0 +1,349 @@
+/*******************************
+        Global Overrides
+*******************************/
+
+#page-document > blockquote {
+  margin-right: revert !important;
+  margin-left: revert !important;
+}
+
+body {
+  .default.tabs {
+    .ui.text.container {
+      max-width: 100% !important;
+    }
+
+    .ui.segment {
+      background: initial;
+    }
+  }
+
+  // Content box primary table
+  .content-box:before {
+    width: 110vw;
+  }
+
+  .content-box.primary-table {
+    background-color: @primaryColor;
+
+    tr {
+      border-bottom: none !important;
+
+      th,
+      td {
+        border-left: 1px solid white !important;
+        color: white !important;
+      }
+
+      td:first-of-type,
+      th:first-of-type {
+        border-left: none !important;
+      }
+
+      th {
+        border-bottom: 1px solid white !important;
+      }
+
+      td {
+        border-top: 1px solid white !important;
+      }
+    }
+  }
+
+  // Header
+  @media only screen and (min-width: 992px) {
+    .eea.header .eea-logo {
+      max-width: 252px;
+    }
+  }
+
+  @media only screen and (min-width: 992px) {
+    .eea.header {
+      .ui.grid > .row > [class*='four wide computer'].column,
+      .ui.grid > .column.row > [class*='four wide computer'].column,
+      .ui.grid > [class*='four wide computer'].column,
+      .ui.column.grid > [class*='four wide computer'].column {
+        width: 25% !important;
+      }
+
+      .ui.grid > .row > [class*='eight wide computer'].column,
+      .ui.grid > .column.row > [class*='eight wide computer'].column,
+      .ui.grid > [class*='eight wide computer'].column,
+      .ui.column.grid > [class*='eight wide computer'].column {
+        width: 75% !important;
+      }
+    }
+  }
+
+  .hero-block-text p {
+    line-height: 2em;
+  }
+
+  .tableau-image-placeholder {
+    display: none;
+  }
+
+  .minipastanaga,
+  .pastanagalogo {
+    display: none;
+  }
+
+  .eea.header .top.bar {
+    line-height: 1em;
+  }
+
+  .subfooter .footer-description {
+    margin-top: 3em;
+    margin-bottom: 1em;
+
+    p {
+      font-size: 1.125rem;
+    }
+  }
+
+  .eea.banner .gradient .content .metadata {
+    display: flex;
+    gap: 1em;
+  }
+
+  .search-action {
+    background-color: @primaryColor;
+  }
+
+  .eea.banner {
+    background: @primaryColor;
+  }
+
+  #mega-menu {
+    background: @primaryColor;
+  }
+
+  #search-box {
+    background: linear-gradient(
+      13.69deg,
+      @darkPrimaryColor 1.17%,
+      @primaryColor 80%
+    );
+  }
+
+  footer {
+    background: linear-gradient(
+      212.33deg,
+      @primaryColor 6.78%,
+      @darkPrimaryColor 69.54%,
+      @darkPrimaryColor 98.23%
+    );
+  }
+}
+
+body.view-viewview.has-toolbar:not(.homepage) #mega-menu {
+  @media only screen and (min-width: @tabletBreakpoint) {
+    width: calc(100% - @toolbarWidth);
+  }
+
+  @media only screen and (min-width: @computerBreakpoint) {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+
+body.view-viewview .imagecards-block.full {
+  right: 0px;
+  left: 0px;
+}
+
+body.view-viewview .full {
+  position: relative !important;
+  right: 50%;
+  left: 50%;
+  width: 100vw !important;
+  max-width: initial !important;
+  margin-right: -50vw !important;
+  margin-left: -50vw !important;
+
+  > div {
+    display: block;
+    width: 100% !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+}
+
+.searchlib-block .sui-search-box {
+  max-width: 100% !important;
+}
+
+@media only screen and (min-width: @largeMonitorBreakpoint) {
+  .ui.container {
+    width: @largeMonitorWidth !important;
+  }
+}
+@media screen and (min-width: @largestMobileScreen) {
+  body.view-viewview.has-toolbar.has-sidebar {
+    .full > div {
+      width: calc(100% - (@toolbarWidth + @sidebarWidth)) !important;
+    }
+  }
+
+  body.view-viewview.has-toolbar.has-sidebar-collapsed {
+    .full > div {
+      width: calc(100% - (@toolbarWidth + @collapsedToolbarWidth)) !important;
+    }
+  }
+
+  body.view-viewview.has-toolbar-collapsed:not(.has-sidebar):not(.has-sidebar-collapsed) {
+    .full > div {
+      width: calc(100% - @collapsedToolbarWidth) !important;
+    }
+  }
+
+  body.view-viewview.has-toolbar-collapsed.has-sidebar {
+    .full > div {
+      .full-width-block {
+        width: calc(100% - (@collapsedToolbarWidth + @sidebarWidth)) !important;
+      }
+    }
+  }
+
+  body.view-viewview.has-toolbar-collapsed.has-sidebar-collapsed {
+    .full > div {
+      width: calc(
+        100% - (@collapsedToolbarWidth + @collapsedToolbarWidth)
+      ) !important;
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  body.view-viewview.has-toolbar-collapsed.has-sidebar-collapsed
+    .full.full-width-block,
+  body.view-viewview.has-toolbar.has-sidebar-collapsed .full.full-width-block {
+    width: 100% !important;
+  }
+}
+
+@media screen and (max-width: @largestMobileScreen) {
+  body.view-viewview.has-toolbar:not(.has-sidebar):not(.has-sidebar-collapsed),
+  body.view-viewview.has-toolbar-collapsed:not(.has-sidebar):not(.has-sidebar-collapsed) {
+    .full > div {
+      width: 100% !important;
+    }
+  }
+}
+
+.searchapp input:focus,
+.searchapp .sui-select__control--is-focused {
+  border: none !important;
+}
+
+body.searchlib-page .searchlib-block .back-link {
+  display: none;
+}
+
+.sui-search-box .search-input .terms-box .terms-box-left,
+.sui-search-box .search-input .terms-box input {
+  border-bottom: 2px solid @secondaryColor !important;
+}
+
+.sui-search-box .search-input .terms-box .terms-box-left .search-icon svg {
+  fill: @secondaryColor !important;
+}
+
+.sui-search-box .search-input .input-controls i.close.icon,
+.search-body-footer .ui.button.pagination-item.active,
+.searchlib-block .dropdown-facets-list .dropdown-facet .facet-title i.icon,
+.searchlib-block .dropdown-facets-list .ui.button.sui-button,
+.searchlib-block
+  .dropdown-facets-list
+  .dropdown-facet
+  .ui.button.basic.facet-btn.active
+  > .facet-title,
+body.searchlib-page
+  .searchlib-block
+  .above-results
+  .sorting
+  .inline.dropdown
+  > span {
+  color: @secondaryColor !important;
+}
+
+.sui-search-box .search-input .input-controls i.close.icon:before,
+.sui-search-box .search-input .input-controls i.close.icon:after,
+body.searchlib-page
+  .searchlib-block
+  .ui.segment.active-filter-list
+  .ui.label.filter-value
+  i.close.icon:before,
+body.searchlib-page
+  .searchlib-block
+  .ui.segment.active-filter-list
+  .ui.label.filter-value
+  i.close.icon:after {
+  background-color: @secondaryColor !important;
+}
+
+.search-body-footer .ui.button.pagination-item.active:after {
+  border-bottom: 5px solid @secondaryColor !important;
+}
+
+section .searchlib-block .ui.button.sui-button.basic {
+  display: none;
+}
+
+.sui-search-box .search-input .input-controls .clear-button {
+  border: 2px solid @secondaryColor !important;
+}
+
+// Custom page header
+#page-header .content-box {
+  margin-bottom: 0px;
+}
+
+body.custom-page-header #page-header {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+body.custom-page-header .breadcrumbs {
+  background-color: #e6e7e8 !important;
+
+  .ui.breadcrumb ol li {
+    vertical-align: middle;
+  }
+
+  .ui.breadcrumb a.section {
+    vertical-align: text-bottom;
+  }
+
+  .ui.breadcrumb .section.active {
+    vertical-align: text-bottom;
+  }
+}
+
+// Style fixes on /countries-and-regional-seas/regional-conventions
+.section-ospar-convention,
+.section-helcom-convention,
+.section-barcelona-convention,
+.section-bucharest-convention {
+  .ui.basic.segment.content-area {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .breadcrumbs {
+    background-color: #f9f9f9 !important;
+  }
+
+  .block.image {
+    margin-bottom: 0;
+  }
+
+  .styled-group:first-of-type {
+    margin: 0;
+  }
+
+  .ui.grid > .row > .column-blocks-wrapper,
+  .column-blocks-wrapper {
+    margin-bottom: 0;
+  }
+}

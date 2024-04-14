@@ -1,0 +1,101 @@
+.contenttype-spmeasure .breadcrumbs {
+  /* background-color: #004b7f !important; */
+  margin-bottom: 1rem !important;
+}
+
+/* .contenttype-spmeasure .breadcrumbs .section,
+.contenttype-spmeasure .breadcrumbs .section.active,
+.contenttype-spmeasure .breadcrumbs i {
+  color: white !important;
+} */
+
+.contenttype-spmeasure .content-area {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.view-view-spmeasure,
+.measure-form .ui.accordion .content {
+  background-color: white;
+}
+
+.measure-header {
+  z-index: 1;
+  background-color: #004b7f !important;
+  color: #fff !important;
+}
+
+.measure-header:before {
+  width: 100vw !important;
+}
+
+.measure-header-content {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  gap: 7px;
+}
+
+.measure-title {
+  margin-bottom: 0;
+}
+
+.unconditional-fields .measure-field,
+.measure-name {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  gap: 5px;
+}
+
+.measure-header .measure-field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.measure-field-label {
+  font-weight: bold;
+}
+
+.measure-form .ui.accordion .title {
+  width: calc(100% - 15px);
+  border-bottom: 1px solid #e6e7e8 !important;
+  font-weight: bold;
+}
+
+.measure-form .ui.accordion .title svg {
+  margin-right: 10%;
+}
+
+.measure-form .ui.accordion > * {
+  padding-left: 0 !important;
+}
+
+.measure__items table {
+  width: 100%;
+  border: 1px solid #c1c1c1;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.measure__items tr {
+  border: 1px solid #c1c1c1;
+  margin-bottom: -12px;
+}
+
+.measure__items td {
+  padding: 10px 20px;
+  border: 1px solid #c1c1c1;
+  vertical-align: top;
+}
+
+.measure__items .measure-field-label {
+  width: 35%;
+  background-color: #f9f9f9;
+  font-weight: normal;
+}
+
+.measure__items .measure-field-value {
+  width: 65%;
+}

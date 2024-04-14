@@ -1,0 +1,29 @@
+@type: 'extra';
+@element: 'custom';
+
+@import (multiple, reference, optional) '../../theme.config';
+
+.has-print-button {
+  .ui.basic.segment.content-area {
+    display: flex;
+    flex: none;
+    flex-direction: column-reverse;
+  }
+}
+
+.print-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+
+  .ui.basic.button {
+    color: #888 !important;
+  }
+}
+
+body.view-editview,
+body.homepage-view {
+  .print-button {
+    display: none;
+  }
+}
