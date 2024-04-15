@@ -29,8 +29,8 @@ import LinkEditSchema from '@plone/volto-slate/editor/plugins/AdvancedLink/schem
 
 import { defineMessages } from 'react-intl'; // , defineMessages
 
-import marineLogo from '@eeacms/volto-eea-design-system/../theme/themes/eea/assets/logo/sites/wise-marine-logo.svg';
-import marineLogoWhite from '@eeacms/volto-eea-design-system/../theme/themes/eea/assets/logo/sites/wise-marine-logo-white.svg';
+import marineLogo from '@eeacms/volto-marine-policy/../theme/assets/images/Header/wise-marine-logo.svg';
+import marineLogoWhite from '@eeacms/volto-marine-policy/../theme/assets/images/Header/wise-marine-logo-white.svg';
 import eeaWhiteLogo from '@eeacms/volto-eea-design-system/../theme/themes/eea/assets/logo/eea-logo-white.svg';
 import europeanComissionLogo from '@eeacms/volto-marine-policy/static/ec_logo_white.svg';
 import MeasureView from '@eeacms/volto-marine-policy/components/Widgets/MeasureViewWidget';
@@ -423,6 +423,7 @@ const applyConfig = (config) => {
         // },
       ],
     },
+    organisationName: 'Marine Water Information System for Europe',
   };
 
   // SPMeasure View widget

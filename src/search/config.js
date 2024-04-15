@@ -35,18 +35,13 @@ export const clusters = {
       defaultResultView: 'horizontalCard',
     },
     {
-      name: ' Measure',
-      values: ['Measure'],
-      defaultResultView: 'horizontalCard',
-    },
-    {
-      name: 'Case study',
-      values: ['Case study'],
-      defaultResultView: 'horizontalCard',
-    },
-    {
-      name: 'Glossary term',
-      values: ['Glossary term'],
+      name: 'Others',
+      values: [
+        'Glossary term',
+        'Case study',
+        'Measure',
+        'Shipping and Ports Measure',
+      ],
       defaultResultView: 'horizontalCard',
     },
   ],
