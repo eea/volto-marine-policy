@@ -1,9 +1,13 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-intl-redux';
+import configureStore from 'redux-mock-store';
 import ContextNavigationEdit from './Edit';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom/extend-expect';
+
+const mockStore = configureStore();
 
 jest.mock('@plone/volto/components', () => ({
   SidebarPortal: ({ children }) => (
@@ -23,13 +27,29 @@ jest.mock('@plone/volto/components/manage/Form/BlockDataForm', () => {
   };
 });
 
+const store = mockStore({
+  userSession: { token: '1234' },
+  intl: {
+    locale: 'en',
+    messages: {},
+  },
+  content: {
+    subrequests: {},
+  },
+  types: {
+    types: {},
+  },
+});
+
 describe('ContextNavigationEdit', () => {
   it('renders corectly', () => {
     const history = createMemoryHistory();
     const { getByText, queryByText } = render(
-      <Router history={history}>
-        <ContextNavigationEdit />
-      </Router>,
+      <Provider store={store}>
+        <Router history={history}>
+          <ContextNavigationEdit />
+        </Router>
+      </Provider>,
     );
 
     expect(queryByText('InlineForm')).toBeNull();
@@ -39,9 +59,11 @@ describe('ContextNavigationEdit', () => {
   it('renders corectly', () => {
     const history = createMemoryHistory();
     const { container, getByText } = render(
-      <Router history={history}>
-        <ContextNavigationEdit selected={true} onChangeBlock={() => {}} />
-      </Router>,
+      <Provider store={store}>
+        <Router history={history}>
+          <ContextNavigationEdit selected={true} onChangeBlock={() => {}} />
+        </Router>
+      </Provider>,
     );
 
     expect(getByText('InlineForm')).toBeInTheDocument();
