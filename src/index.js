@@ -265,7 +265,6 @@ const applyConfig = (config) => {
   ];
 
   config.settings.openExternalLinkInNewTab = true;
-  // config.settings.blackListUrls = ['/freshwater'];
 
   if (config.blocks.blocksConfig.contextNavigation)
     config.blocks.blocksConfig.contextNavigation.restricted = false;
