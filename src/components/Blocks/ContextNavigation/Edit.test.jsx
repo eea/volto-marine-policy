@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { Provider } from 'react-intl-redux';
 import configureStore from 'redux-mock-store';
 import ContextNavigationEdit from './Edit';
@@ -57,7 +57,7 @@ describe('ContextNavigationEdit', () => {
 
   it('renders corectly', () => {
     const history = createMemoryHistory();
-    const { container, getByText } = render(
+    const { getByText } = render(
       <Provider store={store}>
         <Router history={history}>
           <ContextNavigationEdit selected={true} onChangeBlock={() => {}} />
