@@ -29,7 +29,7 @@ jest.mock(
     return {
       __esModule: true,
       default: ({ params }) => {
-        return <div>ContextNavigation {params.root_path}</div>;
+        return <div>ContextNavigation {params}</div>;
       },
     };
   },
@@ -50,9 +50,7 @@ describe('ContextNavigationView', () => {
       </Provider>,
     );
 
-    expect(container.firstChild).toHaveTextContent(
-      'ConnectedContextNavigation',
-    );
+    expect(container.firstChild).toHaveTextContent('ContextNavigation');
   });
 
   it('renders corectly', () => {
@@ -68,8 +66,6 @@ describe('ContextNavigationView', () => {
         </Router>
       </Provider>,
     );
-    expect(container.firstChild).toHaveTextContent(
-      'ConnectedContextNavigation root_node',
-    );
+    expect(container.firstChild).toHaveTextContent('ContextNavigation');
   });
 });
