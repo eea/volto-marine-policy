@@ -14,6 +14,7 @@ import installMsfdDataExplorerBlock from './components/Blocks/MsfdDataExplorerBl
 import { breadcrumb, localnavigation } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
+import installContextNavigation from './components/Blocks/ContextNavigation';
 import './slate-styles.less';
 
 import installSearchEngine from './search';
@@ -26,7 +27,7 @@ import { LinkElement } from '@plone/volto-slate/editor/plugins/AdvancedLink/rend
 import { withLink } from '@plone/volto-slate/editor/plugins/AdvancedLink/extensions';
 import { linkDeserializer } from '@plone/volto-slate/editor/plugins/AdvancedLink/deserialize';
 import LinkEditSchema from '@plone/volto-slate/editor/plugins/AdvancedLink/schema';
-
+import { getBlocks } from '@plone/volto/helpers';
 import { defineMessages } from 'react-intl'; // , defineMessages
 
 import marineLogo from '@eeacms/volto-marine-policy/../theme/assets/images/Header/wise-marine-logo.svg';
@@ -263,6 +264,11 @@ const applyConfig = (config) => {
     },
   ];
 
+  config.settings.openExternalLinkInNewTab = true;
+
+  if (config.blocks.blocksConfig.contextNavigation)
+    config.blocks.blocksConfig.contextNavigation.restricted = false;
+
   config.settings.pluggableStyles = [
     ...(config.settings.pluggableStyles || []),
     {
@@ -426,6 +432,29 @@ const applyConfig = (config) => {
     organisationName: 'Marine Water Information System for Europe',
   };
 
+  if (config.blocks.blocksConfig.columnsBlock) {
+    config.blocks.blocksConfig.columnsBlock.tocEntries = (
+      block = {},
+      tocData,
+    ) => {
+      // integration with volto-block-toc
+      const headlines = tocData.levels || ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+      let entries = [];
+      const sorted_column_blocks = getBlocks(block?.data || {});
+      sorted_column_blocks.forEach((column_block) => {
+        const sorted_blocks = getBlocks(column_block[1]);
+        sorted_blocks.forEach((block) => {
+          const { value, plaintext } = block[1];
+          const type = value?.[0]?.type;
+          if (headlines.includes(type)) {
+            entries.push([parseInt(type.slice(1)), plaintext, block[0]]);
+          }
+        });
+      });
+      return entries;
+    };
+  }
+
   // SPMeasure View widget
   config.views.contentTypesViews.spmeasure = MeasureView;
 
@@ -456,10 +485,11 @@ const applyConfig = (config) => {
   const [installLinkEditor] = makeInlineElementPlugin(opts);
   config = installLinkEditor(config);
 
-  const final = [installMsfdDataExplorerBlock, installSearchEngine].reduce(
-    (acc, apply) => apply(acc),
-    config,
-  );
+  const final = [
+    installMsfdDataExplorerBlock,
+    installSearchEngine,
+    installContextNavigation,
+  ].reduce((acc, apply) => apply(acc), config);
 
   return final;
 };
