@@ -5,3 +5,4 @@
 /* Search box */
 // @searchBoxBackgroundGradient  : linear-gradient(45deg, @primaryColor 12%, @secondaryColor 80%);
 // @megaMenuBackgroundColor      : linear-gradient(45deg, @primaryColor 12%, @secondaryColor 80%);
+@mainMenuItemFontSize            : ~"min(max(0.875rem, 1.5vw), 1.05rem)";
