@@ -1,6 +1,5 @@
 import React from 'react';
 import { Accordion as SemanticAccordion, Icon } from 'semantic-ui-react';
-import { useSelector } from 'react-redux';
 import AccordionContent from './AccordionContent';
 import { useHistory } from 'react-router-dom';
 
