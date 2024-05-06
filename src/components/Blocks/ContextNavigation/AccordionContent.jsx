@@ -10,6 +10,7 @@ const AccordionContent = (props) => {
     main,
     curent_location,
     data: { types = [] },
+    setShowChildren,
   } = props;
   const location = main.url;
 
@@ -22,6 +23,14 @@ const AccordionContent = (props) => {
   //   (state) => state.content?.subrequests?.[location]?.data?.items || [],
   // );
   const items = useChildren(location);
+
+  React.useEffect(() => {
+    const filteredItems = items.filter((item) =>
+      types.length ? types.includes(item['@type']) : item,
+    );
+    if (filteredItems.length) setShowChildren(true);
+  }, [items, setShowChildren, types]);
+
   return (
     <div className="dataset-content">
       <div>

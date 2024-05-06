@@ -1,12 +1,13 @@
 import React from 'react';
 import { Accordion as SemanticAccordion, Icon } from 'semantic-ui-react';
-
+import { useSelector } from 'react-redux';
 import AccordionContent from './AccordionContent';
 import { useHistory } from 'react-router-dom';
 
 const Accordion = (props) => {
   const { items = {}, curent_location, activeMenu, data = {} } = props;
   const [currentIndex, setIndex] = React.useState(activeMenu ?? 0);
+  const [showChildren, setShowChildren] = React.useState(false);
   const history = useHistory();
 
   const handleClick = (e, item) => {
@@ -19,6 +20,7 @@ const Accordion = (props) => {
     const newIndex = currentIndex === index ? -1 : index;
     setIndex(newIndex);
   };
+
   return (
     <>
       <div className="context-navigation-header">{data?.title}</div>
@@ -45,7 +47,7 @@ const Accordion = (props) => {
               }}
             >
               <span className="item-title">{item.title}</span>
-              {active ? (
+              {active && showChildren ? (
                 <Icon
                   className="ri-arrow-up-s-line"
                   onClick={(e) => {
@@ -61,7 +63,7 @@ const Accordion = (props) => {
                 />
               )}
             </SemanticAccordion.Title>
-            <SemanticAccordion.Content active={active}>
+            <SemanticAccordion.Content active={active && showChildren}>
               <AccordionContent
                 curent_location={curent_location}
                 key={index}
@@ -71,6 +73,7 @@ const Accordion = (props) => {
                   url: item.url,
                 }}
                 data={data}
+                setShowChildren={setShowChildren}
               />
             </SemanticAccordion.Content>
           </SemanticAccordion>
