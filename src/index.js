@@ -218,17 +218,17 @@ const applyConfig = (config) => {
         return payload.location.pathname;
       },
     },
-    {
-      match: {
-        path:
-          '/(.*)marine(-new)?/policy-and-reporting/msfd-reports-and-assessments(.*)',
-        exact: false,
-        strict: false,
-      },
-      url(payload) {
-        return payload.location.pathname;
-      },
-    },
+    // {
+    //   match: {
+    //     path:
+    //       '/(.*)marine(-new)?/policy-and-reporting/msfd-reports-and-assessments(.*)',
+    //     exact: false,
+    //     strict: false,
+    //   },
+    //   url(payload) {
+    //     return payload.location.pathname;
+    //   },
+    // },
     {
       match: {
         path:
@@ -240,28 +240,28 @@ const applyConfig = (config) => {
         return payload.location.pathname;
       },
     },
-    {
-      match: {
-        path:
-          '/(.*)marine(-new)?/policy-and-reporting/assessment-by-country(.*)',
-        exact: false,
-        strict: false,
-      },
-      url(payload) {
-        return payload.location.pathname;
-      },
-    },
-    {
-      match: {
-        path:
-          '/(.*)marine(-new)?/policy-and-reporting/assessment-by-region(.*)',
-        exact: false,
-        strict: false,
-      },
-      url(payload) {
-        return payload.location.pathname;
-      },
-    },
+    // {
+    //   match: {
+    //     path:
+    //       '/(.*)marine(-new)?/policy-and-reporting/assessment-by-country(.*)',
+    //     exact: false,
+    //     strict: false,
+    //   },
+    //   url(payload) {
+    //     return payload.location.pathname;
+    //   },
+    // },
+    // {
+    //   match: {
+    //     path:
+    //       '/(.*)marine(-new)?/policy-and-reporting/assessment-by-region(.*)',
+    //     exact: false,
+    //     strict: false,
+    //   },
+    //   url(payload) {
+    //     return payload.location.pathname;
+    //   },
+    // },
   ];
 
   config.settings.openExternalLinkInNewTab = true;
