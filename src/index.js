@@ -163,6 +163,10 @@ const applyConfig = (config) => {
       match: '/marine-new',
       GET_CONTENT: ['object_provides'],
     },
+    {
+      match: '/',
+      GET_CONTENT: ['siblings'],
+    },
   ];
 
   // do not expand breadcrumbs. This fixed the breadcrumbs in contents view. The hasApiExpander needs to be made
@@ -240,28 +244,28 @@ const applyConfig = (config) => {
         return payload.location.pathname;
       },
     },
-    // {
-    //   match: {
-    //     path:
-    //       '/(.*)marine(-new)?/policy-and-reporting/assessment-by-country(.*)',
-    //     exact: false,
-    //     strict: false,
-    //   },
-    //   url(payload) {
-    //     return payload.location.pathname;
-    //   },
-    // },
-    // {
-    //   match: {
-    //     path:
-    //       '/(.*)marine(-new)?/policy-and-reporting/assessment-by-region(.*)',
-    //     exact: false,
-    //     strict: false,
-    //   },
-    //   url(payload) {
-    //     return payload.location.pathname;
-    //   },
-    // },
+    {
+      match: {
+        path:
+          '/(.*)marine(-new)?/policy-and-reporting/assessment-by-country(.*)',
+        exact: false,
+        strict: false,
+      },
+      url(payload) {
+        return payload.location.pathname;
+      },
+    },
+    {
+      match: {
+        path:
+          '/(.*)marine(-new)?/policy-and-reporting/assessment-by-region(.*)',
+        exact: false,
+        strict: false,
+      },
+      url(payload) {
+        return payload.location.pathname;
+      },
+    },
   ];
 
   config.settings.openExternalLinkInNewTab = true;
