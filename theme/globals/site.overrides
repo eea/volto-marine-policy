@@ -362,3 +362,10 @@ body.custom-page-header .breadcrumbs {
   margin-right: auto;
   width: 100%;
 }
+
+@media only screen and (max-height: @tabletBreakpoint) {
+#toolbar .toolbar-content.show {
+    height: 100%;
+    z-index: 5;
+}
+}

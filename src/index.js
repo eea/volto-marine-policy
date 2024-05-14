@@ -343,15 +343,6 @@ const applyConfig = (config) => {
   config.settings.slate.styleMenu = config.settings.slate.styleMenu || {};
   config.settings.slate.styleMenu.inlineStyles = [
     ...(config.settings.slate.styleMenu?.inlineStyles || []),
-    { cssClass: 'h1', label: 'H1 36px' },
-    { cssClass: 'h2', label: 'H2 30px' },
-    { cssClass: 'h3', label: 'H3 24px' },
-    { cssClass: 'h4', label: 'H4 18px' },
-    { cssClass: 'h5', label: 'H5 14px' },
-    { cssClass: 'p-text', label: 'Paragraph 18px' },
-    { cssClass: 'poppins-regular', label: 'Poppins Regular' },
-    { cssClass: 'poppins-light', label: 'Poppins Light' },
-    { cssClass: 'poppins-bold', label: 'Poppins Bold' },
     { cssClass: 'large-text', label: 'Large text' },
     { cssClass: 'primary-big-text', label: 'Big text' },
     { cssClass: 'medium-text', label: 'Medium text' },
