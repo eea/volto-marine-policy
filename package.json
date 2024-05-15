@@ -19,7 +19,7 @@
   "resolutions": {
     "react-countup/countup.js": "2.5.0",
     "d3-array": "^2.12.1",
-    "@elastic/search-ui": "^1.21.4",
+    "@elastic/search-ui": "1.21.2",
     "@eeacms/volto-searchlib": "^0.9.3"
   },
   "addons": [
