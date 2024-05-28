@@ -99,7 +99,7 @@ const applyConfig = (config) => {
     dataset: DatabaseItemView,
     database: DatabaseItemView,
     publication_report: DatabaseItemView,
-    indicator: DatabaseItemView,
+    // indicator: DatabaseItemView,
     briefing: DatabaseItemView,
     // map_interactive: DatabaseItemView,
   };
