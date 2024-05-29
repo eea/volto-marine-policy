@@ -19,7 +19,7 @@ import './slate-styles.less';
 
 import installSearchEngine from './search';
 
-// import TokenWidget from '@plone/volto/components/manage/Widgets/TokenWidget';
+import TokenWidget from '@plone/volto/components/manage/Widgets/TokenWidget';
 import linkSVG from '@plone/volto/icons/link.svg';
 import { makeInlineElementPlugin } from '@plone/volto-slate/elementEditor';
 import { LINK } from '@plone/volto-slate/constants';
@@ -111,9 +111,9 @@ const applyConfig = (config) => {
   };
 
   config.widgets.widget.text_align = TextAlignWidget;
-  // Disabled TokenWidget for 'theme', it breaks the 'theme' field in volto-tabs-block in the 'horizontal carousel' layout
+  // check if it breaks the 'theme' field in volto-tabs-block in the 'horizontal carousel' layout
   // We have a 'theme' field in the wise catalogue metadata (CatalogueMetadata)
-  // config.widgets.id.theme = TokenWidget;
+  config.widgets.id.theme = TokenWidget;
 
   config.blocks.groupBlocksOrder = [
     ...config.blocks.groupBlocksOrder,
