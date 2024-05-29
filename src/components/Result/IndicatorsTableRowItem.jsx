@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppConfig } from '@eeacms/search/lib/hocs';
-import { Table, Label } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 // import { ResultHeader } from '@eeacms/search/components/Result/ResultModal';
 
 const normalizeStr = (str) => {
