@@ -1,5 +1,7 @@
 import installMainSearch from './config';
 import MarineMeasureItem from '../components/Result/MarineMeasureItem';
+import IndicatorsTableView from '../components/Result/IndicatorsTableView';
+import IndicatorsTableRowItem from '../components/Result/IndicatorsTableRowItem';
 
 const applyConfig = (config) => {
   config.settings.searchlib = installMainSearch(config.settings.searchlib);
@@ -7,6 +9,13 @@ const applyConfig = (config) => {
   const { resolve } = config.settings.searchlib;
 
   resolve.MarineMeasureItem = { component: MarineMeasureItem };
+
+  resolve.IndicatorsTableView = {
+    component: IndicatorsTableView,
+  };
+  resolve.IndicatorsTableRowItem = {
+    component: IndicatorsTableRowItem,
+  };
 
   // fix the query
   const marineMeasureConfig = config.settings.searchlib.searchui.marinemeasure;
