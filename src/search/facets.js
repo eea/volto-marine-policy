@@ -54,6 +54,14 @@ const facets = [
     alwaysVisible: false,
   }),
   multiTermFacet({
+    field: 'indicator_theme.keyword',
+    isFilterable: false,
+    isMulti: true,
+    label: 'Theme',
+    iconsFamily: 'WISE topics',
+    alwaysVisible: false,
+  }),
+  multiTermFacet({
     field: 'legislative_reference.keyword',
     isFilterable: false,
     isMulti: true,
