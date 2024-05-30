@@ -38,7 +38,7 @@ export default {
       },
       {
         title: 'Type',
-        field: 'dpsir_type',
+        field: 'wm_dpsir_type',
       },
       {
         title: 'Theme',
