@@ -70,6 +70,20 @@ export default function install(config) {
     runtime_mappings: build_runtime_mappings(clusters),
   };
 
+  config.searchui.marinemeasure.sortOptions = [
+    ...config.searchui.marinemeasure.sortOptions,
+    {
+      name: 'Source (A-Z)',
+      value: 'data_provenances_organisations.keyword',
+      direction: 'asc',
+    },
+    {
+      name: 'Source (Z-A)',
+      value: 'data_provenances_organisations.keyword',
+      direction: 'desc',
+    },
+  ];
+
   config.searchui.marinemeasure.facets = envConfig.facets;
 
   config.searchui.marinemeasure.contentSectionsParams = {

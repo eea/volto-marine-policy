@@ -48,6 +48,10 @@ export default {
         title: 'Sub-theme',
         field: 'wm_theme',
       },
+      {
+        title: 'Last updated',
+        field: 'indicator_last_update',
+      },
     ],
   },
 };
