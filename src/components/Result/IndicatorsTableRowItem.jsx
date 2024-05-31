@@ -25,6 +25,8 @@ const WrappedRowItem = (props) => {
         <Table.Cell key={index}>
           {col.title === 'Name of indicator' ? (
             <a href={result['data_provenances'].raw.link}>{result['title']}</a>
+          ) : col.title === 'Last updated' ? (
+            result[col.field]?.raw.substring(0, 4)
           ) : (
             normalizeStr(
               Array.isArray(result[col.field]?.raw)

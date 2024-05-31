@@ -1,9 +1,14 @@
 import { histogramFacet, makeRange, multiTermFacet } from '@eeacms/search';
 import globalSearchBaseConfig from '@eeacms/volto-globalsearch/config/global-search-base-config.js';
 
+const sources = ['EEA', 'HELCOM', 'OSPAR', 'UNEP/MAP'];
+
 const facets = [
   ...globalSearchBaseConfig.facets.filter(
-    (facet) => facet.field !== 'time_coverage',
+    (facet) =>
+      !['time_coverage', 'data_provenances_organisations.keyword'].includes(
+        facet.field,
+      ),
   ),
   multiTermFacet({
     field: 'wm_spm_sector.keyword',
@@ -60,6 +65,17 @@ const facets = [
     label: 'Theme',
     iconsFamily: 'WISE topics',
     alwaysVisible: false,
+  }),
+  multiTermFacet({
+    field: 'data_provenances_organisations.keyword',
+    isFilterable: false,
+    isMulti: true,
+    label: 'Source',
+    iconsFamily: 'Sources topics',
+    alwaysVisible: false,
+    sortOn: 'custom',
+    sortOrder: 'ascending',
+    facetValues: sources,
   }),
   multiTermFacet({
     field: 'legislative_reference.keyword',
