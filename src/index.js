@@ -212,17 +212,17 @@ const applyConfig = (config) => {
         return payload.location.pathname;
       },
     },
-    {
-      match: {
-        path:
-          '/(.*)marine(-new)?/countries-and-regional-seas/country-profiles(.*)',
-        exact: false,
-        strict: false,
-      },
-      url(payload) {
-        return payload.location.pathname;
-      },
-    },
+    // {
+    //   match: {
+    //     path:
+    //       '/(.*)marine(-new)?/countries-and-regional-seas/country-profiles(.*)',
+    //     exact: false,
+    //     strict: false,
+    //   },
+    //   url(payload) {
+    //     return payload.location.pathname;
+    //   },
+    // },
     // {
     //   match: {
     //     path:
