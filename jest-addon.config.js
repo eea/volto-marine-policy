@@ -8,6 +8,8 @@ module.exports = {
   ],
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '@plone-collective/volto-authomatic/(.*)$':
+      '<rootDir>/node_modules/@plone-collective/volto-authomatic/src/$1',
     '@plone/volto/cypress': '<rootDir>/node_modules/@plone/volto/cypress',
     '@plone/volto/babel': '<rootDir>/node_modules/@plone/volto/babel',
     '@plone/volto/(.*)$': '<rootDir>/node_modules/@plone/volto/src/$1',
@@ -26,25 +28,26 @@ module.exports = {
       '<rootDir>/node_modules/@plone/volto/jest-addons-loader.js',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!(@plone|@root|@package|@eeacms)/).*/',
+    '/node_modules/(?!(@plone|@root|@package|@eeacms|@plone-collective)/).*/',
   ],
   transform: {
     '^.+\\.js(x)?$': 'babel-jest',
+    '^.+\\.ts(x)?$': 'babel-jest',
     '^.+\\.(png)$': 'jest-file',
     '^.+\\.(jpg)$': 'jest-file',
     '^.+\\.(svg)$': './node_modules/@plone/volto/jest-svgsystem-transform.js',
   },
   coverageThreshold: {
     global: {
-      branches: 1,
-      functions: 1,
-      lines: 1,
-      statements: 1,
+      branches: 5,
+      functions: 5,
+      lines: 5,
+      statements: 5,
     },
   },
   ...(process.env.JEST_USE_SETUP === 'ON' && {
     setupFilesAfterEnv: [
-      '<rootDir>/node_modules/@eeacms/volto-marine-policy/jest.setup.js',
+      '<rootDir>/node_modules/@eeacms/volto-eea-website-policy/jest.setup.js',
     ],
   }),
 };
