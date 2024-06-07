@@ -191,7 +191,7 @@ const MeasureView = (props) => {
         <React.Fragment>
           <BodyClass className="custom-page-header" />
           <IsomorphicPortal>
-            <div className="measure-header content-box">
+            <div className="measure-header content-box ui container">
               <div className="measure-header-content">
                 <h1 className="measure-title">
                   <String val={truncateTitle()} />
