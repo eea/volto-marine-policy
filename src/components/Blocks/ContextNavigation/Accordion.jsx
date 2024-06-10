@@ -53,14 +53,14 @@ const Accordion = (props) => {
                     handleIconClick(e, index);
                   }}
                 />
-              ) : (
+              ) : showChildren ? (
                 <Icon
                   className="ri-arrow-down-s-line"
                   onClick={(e) => {
                     handleIconClick(e, index);
                   }}
                 />
-              )}
+              ) : null}
             </SemanticAccordion.Title>
             <SemanticAccordion.Content active={active && showChildren}>
               <AccordionContent
