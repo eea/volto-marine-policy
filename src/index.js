@@ -114,7 +114,7 @@ const applyConfig = (config) => {
   // check if it breaks the 'theme' field in volto-tabs-block in the 'horizontal carousel' layout
   // We have a 'theme' field in the wise catalogue metadata (CatalogueMetadata)
   config.widgets.id.indicator_theme = TokenWidget;
-  // config.widgets.id.theme = TokenWidget;
+  config.widgets.widget.wise_theme = TokenWidget;
 
   config.blocks.groupBlocksOrder = [
     ...config.blocks.groupBlocksOrder,
