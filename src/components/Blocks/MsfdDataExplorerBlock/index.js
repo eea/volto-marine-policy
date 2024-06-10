@@ -2,7 +2,7 @@ import worldSVG from '@plone/volto/icons/world.svg';
 import MsfdDataExplorerBlockView from './View';
 import MsfdDataExplorerBlockEdit from './Edit';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.msfdDataExplorerBlock = {
     id: 'msfdDataExplorerBlock',
     title: 'MSFD Data explorer block',
@@ -21,3 +21,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;
