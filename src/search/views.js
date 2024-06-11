@@ -1,4 +1,4 @@
-export default {
+const views = {
   resultViews: [
     {
       id: 'marineMeasureCard',
@@ -55,3 +55,5 @@ export default {
     ],
   },
 };
+
+export default views;

@@ -3,12 +3,8 @@ import React from 'react';
 import './less/herosection.less';
 
 function HeroSection(props) {
-  const {
-    image_caption,
-    image_url,
-    content_description,
-    content_title,
-  } = props;
+  const { image_caption, image_url, content_description, content_title } =
+    props;
 
   return (
     <>

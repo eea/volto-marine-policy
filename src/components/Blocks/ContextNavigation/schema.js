@@ -1,6 +1,6 @@
 const fields = ['root_path', 'title', 'types'];
 
-export default ({ contentTypes }) => {
+const schema = ({ contentTypes }) => {
   const availableTypes = contentTypes.map((type) => [
     type.id,
     type.title || type.name,
@@ -39,3 +39,5 @@ export default ({ contentTypes }) => {
     required: [],
   };
 };
+
+export default schema;

@@ -104,6 +104,8 @@ const facets = [
   }),
 ];
 
-export default {
+const facetsObj = {
   facets,
 };
+
+export default facetsObj;
