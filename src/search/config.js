@@ -1,3 +1,4 @@
+import { runtimeConfig } from '@plone/volto/runtime_config';
 import { mergeConfig } from '@eeacms/search';
 import facets from './facets';
 import views from './views';
@@ -64,8 +65,8 @@ export default function install(config) {
 
   config.searchui.marinemeasure = {
     ...mergeConfig(envConfig, config.searchui.globalsearch),
-    elastic_index: '_es/marinemeasure',
-    index_name: 'wisetest_searchui',
+    elastic_index: runtimeConfig['RAZZLE_ES_INDEX'] || '_es/globalsearch',
+    index_name: runtimeConfig['RAZZLE_ES_INDEX_NAME'] || 'data_searchui',
     host: process.env.RAZZLE_ES_PROXY_ADDR || 'http://localhost:3000',
     runtime_mappings: build_runtime_mappings(clusters),
   };
