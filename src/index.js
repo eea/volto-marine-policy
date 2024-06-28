@@ -170,11 +170,10 @@ const applyConfig = (config) => {
     },
   ];
 
-  // do not expand breadcrumbs. This fixed the breadcrumbs in contents view. The hasApiExpander needs to be made
-  // generic to also look for nonContentRoutes.
+  //In volto 17, we expand everyting by-default. Do not expand navigation, required for fat-menu to work
   (config.settings.apiExpanders || []).forEach((item) => {
-    if (item.GET_CONTENT.includes('breadcrumbs')) {
-      item.GET_CONTENT.splice(item.GET_CONTENT.indexOf('breadcrumbs', 1));
+    if (item.GET_CONTENT.includes('navigation')) {
+      item.GET_CONTENT.splice(item.GET_CONTENT.indexOf('navigation', 1));
     }
   });
 
