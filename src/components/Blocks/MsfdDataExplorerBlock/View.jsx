@@ -44,13 +44,16 @@ const MsfdDataExplorerBlockView = (props) => {
       '/marine/++api++/++resource++msfd/js/jquery-ui.js',
       '/marine/++api++/++resource++msfd/js/tabs.js',
       '/marine/++api++/++resource++msfd/js/msfd_search.js',
+      '/marine/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
     ];
 
     if (!loading) {
       $.getScript(scripts[0], () => {
         $.getScript(scripts[1], () => {
           $.getScript(scripts[2], () => {
-            $.getScript(scripts[3]);
+            $.getScript(scripts[3], () => {
+              $.getScript(scripts[4]);
+            });
           });
         });
       });
