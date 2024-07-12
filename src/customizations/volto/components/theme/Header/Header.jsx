@@ -51,9 +51,7 @@ const EEAHeader = ({ pathname, token, items, history, subsite }) => {
     const has_home_layout =
       layout === 'homepage_inverse_view' ||
       (__CLIENT__ && document.body.classList.contains('homepage-inverse'));
-    const hasTrailingSlash = __CLIENT__ ? window.location.pathname : '';
     return (
-      hasTrailingSlash.endsWith('/marine/') ||
       router_pathname.endsWith('/marine') ||
       (has_home_layout &&
         (removeTrailingSlash(pathname) === router_pathname ||

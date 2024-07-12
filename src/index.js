@@ -393,7 +393,7 @@ const applyConfig = (config) => {
     headerSearchBox: [
       {
         isDefault: true,
-        path: '/advanced-search',
+        path: '/marine/advanced-search',
         placeholder: 'Search Marine...',
         description:
           'Looking for more information? Try searching the full EEA website content',
@@ -441,7 +441,7 @@ const applyConfig = (config) => {
           title: 'Privacy statement',
         },
         {
-          url: '/login',
+          url: '/marine/login',
           title: 'Login',
         },
       ],
