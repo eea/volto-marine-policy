@@ -41,6 +41,7 @@
     "razzle-plugin-scss": "^4.2.18",
     "react-lazy-load-image-component": "^1.4.0",
     "react-slick": "^0.24.0",
+    "d3-array": "^2.12.1",
     "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
