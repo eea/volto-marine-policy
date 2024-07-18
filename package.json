@@ -16,11 +16,6 @@
     "type": "git",
     "url": "git@github.com:eea/volto-marine-policy.git"
   },
-  "resolutions": {
-    "react-countup/countup.js": "2.5.0",
-    "@elastic/search-ui": "1.21.2",
-    "@eeacms/volto-searchlib": "^2.0.2"
-  },
   "addons": [
     "@eeacms/volto-tabs-block",
     "@eeacms/volto-embed",
@@ -33,7 +28,7 @@
     "@eeacms/volto-eea-website-theme": "^2.1.2",
     "@eeacms/volto-embed": "^10.0.2",
     "@eeacms/volto-globalsearch": "^2.0.0",
-    "@eeacms/volto-searchlib": "^2.0.2",
+    "@eeacms/volto-searchlib": "2.0.2",
     "@eeacms/volto-tabs-block": "^8.0.0",
     "axios": "0.25.0",
     "jquery": "3.6.0",
