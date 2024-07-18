@@ -1,6 +1,6 @@
 import React from 'react';
 
-const String = ({ val }) => {
+const StringWidget = ({ val }) => {
   return typeof val === 'string'
     ? val
     : Array.isArray(val)
@@ -12,4 +12,4 @@ const String = ({ val }) => {
     : `${val}`;
 };
 
-export default String;
+export default StringWidget;

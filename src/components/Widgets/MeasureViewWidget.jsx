@@ -21,7 +21,7 @@ function IsomorphicPortal({ children }) {
 }
 
 const MeasureView = (props) => {
-  const { origin } = props?.content;
+  const { origin } = props.content;
 
   //conditional fields shown in view based on origin of measure
   const conditions = {
