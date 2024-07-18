@@ -27,7 +27,7 @@
     "@eeacms/volto-eea-design-system": "*",
     "@eeacms/volto-eea-website-theme": "^2.1.2",
     "@eeacms/volto-embed": "^10.0.2",
-    "@eeacms/volto-searchlib": "2.0.2",
+    "@eeacms/volto-globalsearch": "^2.0.0",
     "@eeacms/volto-tabs-block": "^8.0.0",
     "axios": "0.25.0",
     "jquery": "3.6.0",
