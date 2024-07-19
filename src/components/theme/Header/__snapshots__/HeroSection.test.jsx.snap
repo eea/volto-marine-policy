@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Hero section component 1`] = `
+<div
+  className="herosection"
+>
+  <div
+    className="herosection-content-wrapper"
+  >
+    <div
+      className="herosection-content-image document-image"
+      style={
+        Object {
+          "backgroundImage": "url(https://www.google.com)",
+        }
+      }
+    />
+    <div
+      className="herosection-content-image-overlay"
+    />
+    <div
+      className="ui container herosection-content"
+    >
+      <h1
+        className="herosection-content-title"
+      >
+        title
+      </h1>
+      <p
+        className="herosection-content-description"
+      >
+        description
+      </p>
+      <p
+        className="herosection-content-image-caption"
+      >
+        caption
+      </p>
+    </div>
+  </div>
+</div>
+`;

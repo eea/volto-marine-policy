@@ -1,7 +1,7 @@
 import ScrollToTop from './ScrollToTop';
 // import PrintPage from './PrintPage';
 
-export default (config) => {
+const config = (config) => {
   config.settings.appExtras = [
     ...(config.settings.appExtras || []),
     {
@@ -16,3 +16,5 @@ export default (config) => {
 
   return config;
 };
+
+export default config;
