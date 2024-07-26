@@ -181,24 +181,24 @@ const applyConfig = (config) => {
 
   config.settings.available_colors = available_colors;
 
-  config.settings.externalRoutes = [
-    ...(config.settings.externalRoutes || []),
-    ...(config.settings.prefixPath
-      ? [
-          {
-            match: {
-              path: /\/$/,
-              exact: true,
-              strict: true,
-            },
+  // config.settings.externalRoutes = [
+  //   ...(config.settings.externalRoutes || []),
+  //   ...(config.settings.prefixPath
+  //     ? [
+  //         {
+  //           match: {
+  //             path: /\/$/,
+  //             exact: true,
+  //             strict: true,
+  //           },
 
-            url(payload) {
-              return payload.location.pathname;
-            },
-          },
-        ]
-      : []),
-  ];
+  //           url(payload) {
+  //             return payload.location.pathname;
+  //           },
+  //         },
+  //       ]
+  //     : []),
+  // ];
   config.settings.externalRoutes = [
     ...(config.settings.externalRoutes || []),
     {
