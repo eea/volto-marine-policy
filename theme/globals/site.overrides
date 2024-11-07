@@ -2,6 +2,15 @@
         Global Overrides
 *******************************/
 
+.documentFirstHeading {
+  border-bottom: none !important;
+  
+  &::before {
+    border-bottom: none !important;
+  }
+}
+
+
 #page-document > blockquote {
   margin-right: revert !important;
   margin-left: revert !important;
