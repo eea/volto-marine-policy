@@ -2,14 +2,15 @@
         Global Overrides
 *******************************/
 
+@import '../extras/print';
+
 .documentFirstHeading {
   border-bottom: none !important;
-  
+
   &::before {
     border-bottom: none !important;
   }
 }
-
 
 #page-document > blockquote {
   margin-right: revert !important;
@@ -200,7 +201,9 @@ body.view-viewview .full {
     }
   }
 
-  body.view-viewview.has-toolbar-collapsed:not(.has-sidebar):not(.has-sidebar-collapsed) {
+  body.view-viewview.has-toolbar-collapsed:not(.has-sidebar):not(
+      .has-sidebar-collapsed
+    ) {
     .full > div {
       width: calc(100% - @collapsedToolbarWidth) !important;
     }
@@ -233,7 +236,9 @@ body.view-viewview .full {
 
 @media screen and (max-width: @largestMobileScreen) {
   body.view-viewview.has-toolbar:not(.has-sidebar):not(.has-sidebar-collapsed),
-  body.view-viewview.has-toolbar-collapsed:not(.has-sidebar):not(.has-sidebar-collapsed) {
+  body.view-viewview.has-toolbar-collapsed:not(.has-sidebar):not(
+      .has-sidebar-collapsed
+    ) {
     .full > div {
       width: 100% !important;
     }
@@ -373,8 +378,8 @@ body.custom-page-header .breadcrumbs {
 }
 
 @media only screen and (max-height: @tabletBreakpoint) {
-#toolbar .toolbar-content.show {
+  #toolbar .toolbar-content.show {
     max-height: 700px !important;
     z-index: 5;
-}
+  }
 }
