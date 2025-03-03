@@ -29,7 +29,7 @@ export default function View(props) {
   }
 
   return (
-    <div className="block rast-block">
+    <div className="block context-navigation">
       <ContextNavigation
         items={items}
         location={{
