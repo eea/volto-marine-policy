@@ -8,7 +8,9 @@ jest.mock('@plone/volto/helpers', () => ({
 }));
 
 jest.mock('@eeacms/volto-marine-policy/components', () => ({
-  ItemMetadataSnippet: (props) => <div data-testid="item-metadata-snippet" {...props} />,
+  ItemMetadataSnippet: (props) => (
+    <div data-testid="item-metadata-snippet" {...props} />
+  ),
   ItemMetadata: (props) => <div data-testid="item-metadata" {...props} />,
 }));
 
@@ -36,6 +38,9 @@ describe('DatabaseItemView', () => {
     expect(screen.getByTestId('item-metadata')).toBeInTheDocument();
 
     // Check if map_preview is passed as a string
-    expect(screen.getByTestId('item-metadata')).toHaveAttribute('map_preview', 'true');
+    expect(screen.getByTestId('item-metadata')).toHaveAttribute(
+      'map_preview',
+      'true',
+    );
   });
 });
