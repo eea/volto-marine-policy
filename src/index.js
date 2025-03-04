@@ -14,7 +14,6 @@ import installMsfdDataExplorerBlock from './components/Blocks/MsfdDataExplorerBl
 import { breadcrumb, localnavigation } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
-import installContextNavigation from './components/Blocks/ContextNavigation';
 import './slate-styles.less';
 
 import installSearchEngine from './search';
@@ -127,12 +126,12 @@ const applyConfig = (config) => {
   };
 
   // on home contextNavigation should return false
-  config.blocks.blocksConfig.contextNavigation = {
-    ...config.blocks.blocksConfig.contextNavigation,
-    blockHasValue: (data) => {
-      return data.pathname !== '/';
-    },
-  };
+  // config.blocks.blocksConfig.contextNavigation = {
+  //   ...config.blocks.blocksConfig.contextNavigation,
+  //   blockHasValue: (data) => {
+  //     return data.pathname !== '/';
+  //   },
+  // };
   config.blocks.blocksConfig.listing = {
     ...config.blocks.blocksConfig.listing,
     variations: [
@@ -268,9 +267,6 @@ const applyConfig = (config) => {
   ];
 
   config.settings.openExternalLinkInNewTab = true;
-
-  if (config.blocks.blocksConfig.contextNavigation)
-    config.blocks.blocksConfig.contextNavigation.restricted = false;
 
   config.settings.pluggableStyles = [
     ...(config.settings.pluggableStyles || []),
@@ -516,11 +512,10 @@ const applyConfig = (config) => {
   const [installLinkEditor] = makeInlineElementPlugin(opts);
   config = installLinkEditor(config);
 
-  const final = [
-    installMsfdDataExplorerBlock,
-    installSearchEngine,
-    installContextNavigation,
-  ].reduce((acc, apply) => apply(acc), config);
+  const final = [installMsfdDataExplorerBlock, installSearchEngine].reduce(
+    (acc, apply) => apply(acc),
+    config,
+  );
 
   return final;
 };

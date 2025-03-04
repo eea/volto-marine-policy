@@ -1,4 +1,3 @@
-import React from 'react';
 import { BodyClass } from '@plone/volto/helpers';
 import {
   ItemMetadataSnippet,
