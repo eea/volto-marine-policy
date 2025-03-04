@@ -512,10 +512,10 @@ const applyConfig = (config) => {
   const [installLinkEditor] = makeInlineElementPlugin(opts);
   config = installLinkEditor(config);
 
-  const final = [
-    installMsfdDataExplorerBlock,
-    installSearchEngine,
-  ].reduce((acc, apply) => apply(acc), config);
+  const final = [installMsfdDataExplorerBlock, installSearchEngine].reduce(
+    (acc, apply) => apply(acc),
+    config,
+  );
 
   return final;
 };
