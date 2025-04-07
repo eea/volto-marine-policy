@@ -132,19 +132,18 @@ export function getFilters(cases) {
     indicator_filter: {},
     project_filter: {},
     country_filter: {},
-
   };
 
   for (let key of Object.keys(cases)) {
     const _case = cases[key];
     // debugger;
-  //   let nwrms_implemented = _case.properties.measures;
-  //   nwrms_implemented.map((item) => {
-  //     if (!_filters.nwrms_implemented.hasOwnProperty(item['id'])) {
-  //       _filters.nwrms_implemented[item['id']] = item['title'];
-  //     }
-  //     return [];
-  //   });
+    //   let nwrms_implemented = _case.properties.measures;
+    //   nwrms_implemented.map((item) => {
+    //     if (!_filters.nwrms_implemented.hasOwnProperty(item['id'])) {
+    //       _filters.nwrms_implemented[item['id']] = item['title'];
+    //     }
+    //     return [];
+    //   });
 
     let countries = _case.properties.country;
     countries.map((item) => {
