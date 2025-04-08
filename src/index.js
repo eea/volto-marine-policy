@@ -28,7 +28,7 @@ import { linkDeserializer } from '@plone/volto-slate/editor/plugins/AdvancedLink
 import LinkEditSchema from '@plone/volto-slate/editor/plugins/AdvancedLink/schema';
 import { getBlocks } from '@plone/volto/helpers';
 import { defineMessages } from 'react-intl'; // , defineMessages
-
+import installDemoSitesExplorer from './components/Blocks/DemoSitesExplorer';
 import marineLogo from '@eeacms/volto-marine-policy/../theme/assets/images/Header/wise-marine-logo.svg';
 import marineLogoWhite from '@eeacms/volto-marine-policy/../theme/assets/images/Header/wise-marine-logo-white.svg';
 import eeaWhiteLogo from '@eeacms/volto-eea-design-system/../theme/themes/eea/assets/logo/eea-logo-white.svg';
@@ -108,6 +108,11 @@ const applyConfig = (config) => {
     breadcrumb,
     localnavigation,
   };
+
+  if (__SERVER__) {
+    const installExpressMiddleware = require('./express-middleware').default;
+    config = installExpressMiddleware(config);
+  }
 
   config.widgets.widget.text_align = TextAlignWidget;
   // check if it breaks the 'theme' field in volto-tabs-block in the 'horizontal carousel' layout
@@ -512,10 +517,11 @@ const applyConfig = (config) => {
   const [installLinkEditor] = makeInlineElementPlugin(opts);
   config = installLinkEditor(config);
 
-  const final = [installMsfdDataExplorerBlock, installSearchEngine].reduce(
-    (acc, apply) => apply(acc),
-    config,
-  );
+  const final = [
+    installMsfdDataExplorerBlock,
+    installSearchEngine,
+    installDemoSitesExplorer,
+  ].reduce((acc, apply) => apply(acc), config);
 
   return final;
 };
