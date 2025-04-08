@@ -1,10 +1,19 @@
 import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
+export function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export function centerAndResetMapZoom(map) {
   map.getView().animate({
-    zoom: 4,
+    zoom: 2.5,
     duration: 1000,
-    center: ol.proj.transform([10, 49], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.transform([10, 54], 'EPSG:4326', 'EPSG:3857'),
   });
 }
 
@@ -44,10 +53,16 @@ export function getFeatures(cases) {
       {
         title: c.properties.title,
         image: c.properties.image,
-        nwrm_type: c.properties.nwrm_type,
-        nwrms_implemented: c.properties.measures,
+        project: c.properties.project,
+        project_link: c.properties.project_link,
+        country: c.properties.country,
+        type_is_region: c.properties.type_is_region,
+        type: c.properties.type,
+        indicators: c.properties.indicators,
+        info: c.properties.info,
+        website: c.properties.website,
+        objective: c.properties.objective,
         description: c.properties.description,
-        sectors: c.properties.sectors,
         index: index,
         path: c.properties.path,
         color: c.properties.nwrm_type === 'Light' ? '#50B0A4' : '#0083E0',
@@ -74,10 +89,10 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
     } else {
       if (_case.properties.title.toLowerCase().match(searchInput)) {
         flag_searchInput = true;
-      } else if (
-        _case.properties.description.toLowerCase().match(searchInput)
-      ) {
-        flag_searchInput = true;
+        // } else if (
+        //   _case.properties.description.toLowerCase().match(searchInput)
+        // ) {
+        //   flag_searchInput = true;
       }
     }
 
@@ -106,6 +121,16 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
     //   });
     // }
 
+    if (!activeFilters.project_filter.length) {
+      flag_project = true;
+    } else {
+      let project = _case.properties.project;
+
+      activeFilters.project_filter.forEach((filter) => {
+        if (project === filter) flag_project = true;
+      });
+    }
+
     if (!activeFilters.country_filter.length) {
       flag_country = true;
     } else {
@@ -118,7 +143,11 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
       });
     }
 
-    return flag_case && flag_objective && flag_country && flag_searchInput
+    return flag_case &&
+      flag_objective &&
+      flag_country &&
+      flag_project &&
+      flag_searchInput
       ? _case
       : false;
   });
@@ -132,19 +161,24 @@ export function getFilters(cases) {
     indicator_filter: {},
     project_filter: {},
     country_filter: {},
-
   };
 
   for (let key of Object.keys(cases)) {
     const _case = cases[key];
     // debugger;
-  //   let nwrms_implemented = _case.properties.measures;
-  //   nwrms_implemented.map((item) => {
-  //     if (!_filters.nwrms_implemented.hasOwnProperty(item['id'])) {
-  //       _filters.nwrms_implemented[item['id']] = item['title'];
-  //     }
-  //     return [];
-  //   });
+    //   let nwrms_implemented = _case.properties.measures;
+    //   nwrms_implemented.map((item) => {
+    //     if (!_filters.nwrms_implemented.hasOwnProperty(item['id'])) {
+    //       _filters.nwrms_implemented[item['id']] = item['title'];
+    //     }
+    //     return [];
+    //   });
+
+    let project = _case.properties.project;
+
+    if (!_filters.project_filter.hasOwnProperty(project)) {
+      _filters.project_filter[project] = project;
+    }
 
     let countries = _case.properties.country;
     countries.map((item) => {

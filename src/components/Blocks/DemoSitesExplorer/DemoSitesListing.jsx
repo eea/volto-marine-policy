@@ -3,6 +3,7 @@ import {
   centerAndResetMapZoom,
   scrollToElement,
   zoomMapToFeatures,
+  isValidURL,
 } from './utils';
 
 const showPageNr = (pageNr, currentPage, numberOfPages) => {
@@ -88,36 +89,68 @@ export default function DemoSitesList(props) {
                 </p>
                 <div className="slot-bottom">
                   <div className="result-bottom">
-                    <div className="result-info">
-                      <span className="result-info-title">Sectors:</span>
-                      {/* <span>
-                        {selectedCase.sectors
-                          ? selectedCase.sectors.join(', ')
-                          : ''}
-                      </span> */}
-                    </div>
-                    <div className="result-info">
-                      <span className="result-info-title">
-                        NWRMs implemented:
-                      </span>
-                      {/* {selectedCase.nwrms_implemented.map((measure, index) => {
-                        return (
-                          <span>
+                    {selectedCase.info ? (
+                      <div className="result-info">
+                        <span className="result-info-title">Info: </span>
+                        <span>
+                          {isValidURL(selectedCase.info) ? (
                             <a
+                              href={selectedCase.info}
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={measure.path}
                             >
-                              {measure.title}
-                              {index !==
-                              selectedCase.nwrms_implemented.length - 1
-                                ? ', '
-                                : ''}
+                              {selectedCase.info}
                             </a>
-                          </span>
-                        );
-                      })} */}
-                    </div>
+                          ) : (
+                            <span>{selectedCase.info}</span>
+                          )}
+                        </span>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+
+                    {selectedCase.project ? (
+                      <div className="result-info">
+                        <span className="result-info-title">Project: </span>
+                        <span>{selectedCase.project}</span>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+
+                    {selectedCase.country ? (
+                      <div className="result-info">
+                        <span className="result-info-title">Country: </span>
+                        <span>{selectedCase.country}</span>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+
+                    {selectedCase.project_link ? (
+                      <div className="result-info">
+                        <span className="result-info-title">
+                          Project link:{' '}
+                        </span>
+                        <span>
+                          {isValidURL(selectedCase.project_link) ? (
+                            <a
+                              href={selectedCase.project_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {selectedCase.project_link}
+                            </a>
+                          ) : (
+                            <span>{selectedCase.project_link}</span>
+                          )}
+                        </span>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+
                     <div
                       className="result-info show-on-map"
                       tabIndex="0"
@@ -156,7 +189,7 @@ export default function DemoSitesList(props) {
                         {item.values_.title}
                       </a>
                     </h3>
-                    <p
+                    {/* <p
                       className="listing-description"
                       dangerouslySetInnerHTML={{
                         __html: searchInput
@@ -166,38 +199,71 @@ export default function DemoSitesList(props) {
                             )
                           : item.values_.description,
                       }}
-                    ></p>
+                    ></p> */}
                     <div className="slot-bottom">
                       <div className="result-bottom">
-                        <div className="result-info">
-                          <span className="result-info-title">Sectors:</span>
-                          {/* <span>{item.values_.sectors.join(', ')}</span> */}
-                        </div>
-                        <div className="result-info">
-                          <span className="result-info-title">
-                            NWRMs implemented:
-                          </span>
+                        {item.values_.info ? (
+                          <div className="result-info">
+                            <span className="result-info-title">Info: </span>
+                            <span>
+                              {isValidURL(item.values_.info) ? (
+                                <a
+                                  href={item.values_.info}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {item.values_.info}
+                                </a>
+                              ) : (
+                                <span>{item.values_.info}</span>
+                              )}
+                            </span>
+                          </div>
+                        ) : (
+                          ''
+                        )}
 
-                          {/* {item.values_.nwrms_implemented.map(
-                            (measure, index) => {
-                              return (
-                                <span>
-                                  <a
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href={measure.path}
-                                  >
-                                    {measure.title}
-                                    {index !==
-                                    item.values_.nwrms_implemented.length - 1
-                                      ? ', '
-                                      : ''}
-                                  </a>
-                                </span>
-                              );
-                            },
-                          )} */}
-                        </div>
+                        {item.values_.project ? (
+                          <div className="result-info">
+                            <span className="result-info-title">Project: </span>
+                            <span>{item.values_.project}</span>
+                          </div>
+                        ) : (
+                          ''
+                        )}
+
+                        {item.values_.country ? (
+                          <div className="result-info">
+                            <span className="result-info-title">Country: </span>
+                            <span>{item.values_.country}</span>
+                          </div>
+                        ) : (
+                          ''
+                        )}
+
+                        {item.values_.project_link ? (
+                          <div className="result-info">
+                            <span className="result-info-title">
+                              Project link:{' '}
+                            </span>
+                            <span>
+                              {isValidURL(item.values_.project_link) ? (
+                                <a
+                                  href={item.values_.project_link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {item.values_.project_link}
+                                </a>
+                              ) : (
+                                <span>{item.values_.project_link}</span>
+                              )}
+                            </span>
+                          </div>
+                        ) : (
+                          ''
+                        )}
+
                         <div
                           className="result-info show-on-map"
                           tabIndex="0"
@@ -213,6 +279,10 @@ export default function DemoSitesList(props) {
 
                             zoomMapToFeatures(map, [item], 5000);
                             onSelectedCase(item.values_);
+
+                            const popupOverlay =
+                              document.getElementById('popup-overlay');
+                            popupOverlay.style.visibility = 'visible';
 
                             setTimeout(() => {
                               const coords =

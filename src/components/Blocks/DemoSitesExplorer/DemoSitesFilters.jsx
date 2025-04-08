@@ -157,7 +157,7 @@ export function DemoSitesFilters(props) {
 }
 
 export function SearchBox(props) {
-  const { setSearchInput, map } = props;
+  const { setSearchInput, map, onSelectedCase } = props;
   const [showClearButton, setShowClearButton] = React.useState(false);
 
   return (
@@ -177,7 +177,9 @@ export function SearchBox(props) {
                   return;
                 }
                 let searchInput = normalizeSearchInput(event.target.value);
-
+                onSelectedCase(null);
+                // const popupOverlay = document.getElementById('popup-overlay');
+                // popupOverlay.style.visibility = 'hidden';
                 setSearchInput(searchInput);
                 scrollToElement('search-input');
                 centerAndResetMapZoom(map);

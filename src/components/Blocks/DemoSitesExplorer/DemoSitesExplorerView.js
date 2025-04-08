@@ -68,6 +68,7 @@ export default function DemoSitesExplorerView(props) {
             setActiveFilters={setActiveFilters}
             searchInput={searchInput}
             setSearchInput={setSearchInput}
+            onSelectedCase={onSelectedCase}
             map={map}
           />
         )}

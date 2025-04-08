@@ -119,9 +119,9 @@ export default function DemoSitesMap(props) {
     <div id="ol-map-container">
       <MapWithSelection
         view={{
-          center: ol.proj.fromLonLat([10, 49]),
+          center: ol.proj.fromLonLat([10, 54]),
           showFullExtent: true,
-          zoom: 4,
+          zoom: 2.5,
         }}
         pixelRatio={1}
         // controls={ol.control.defaults({ attribution: false })}
