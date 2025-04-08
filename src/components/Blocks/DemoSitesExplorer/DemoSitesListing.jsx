@@ -30,7 +30,7 @@ const showPageNr = (pageNr, currentPage, numberOfPages) => {
 };
 
 export default function DemoSitesList(props) {
-  const { selectedCase, onSelectedCase, pointsSource, map, searchInput } =
+  const { selectedCase, onSelectedCase, pointsSource, map } =
     props;
   // const reSearch = new RegExp(`\\b(${searchInput})\\b`, 'gi');
   const [currentPage, setCurrentPage] = React.useState(1);
