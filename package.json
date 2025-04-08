@@ -36,7 +36,7 @@
     "@eeacms/volto-globalsearch": "2.0.8",
     "@eeacms/volto-searchlib": "2.0.12",
     "@eeacms/volto-tabs-block": "*",
-    "axios": "0.25.0",
+    "axios": "0.30.0",
     "d3-array": "^2.12.1",
     "jquery": "3.6.0",
     "razzle-plugin-scss": "^4.2.18",
