@@ -36,7 +36,7 @@ export default function InfoOverlay({
     function handler(evt) {
       const { pixel, target } = evt;
       const features = target.getFeaturesAtPixel(pixel);
-      const popupOverlay = overlay.element; // document.getElementById('popup-overlay');
+      // const popupOverlay = overlay.element; // document.getElementById('popup-overlay');
 
       if (
         features.length &&

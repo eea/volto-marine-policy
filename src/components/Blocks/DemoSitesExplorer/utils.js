@@ -77,7 +77,7 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
   const data = cases.filter((_case) => {
     let flag_searchInput = false;
     let flag_objective = false;
-    let flag_indicator = false;
+    // let flag_indicator = false;
     let flag_project = false;
     let flag_country = false;
     let flag_case = demoSitesIds
