@@ -34,7 +34,7 @@
     "@eeacms/volto-eea-website-theme": "*",
     "@eeacms/volto-embed": "*",
     "@eeacms/volto-globalsearch": "2.0.10",
-    "@eeacms/volto-searchlib": "2.0.14",
+    "@eeacms/volto-searchlib": "2.0.15",
     "@eeacms/volto-tabs-block": "*",
     "axios": "0.25.0",
     "d3-array": "^2.12.1",
