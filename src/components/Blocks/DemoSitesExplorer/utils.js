@@ -1,5 +1,12 @@
 import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
+export const truncateText = (str, max = 50) => {
+  if (str.length <= max) {
+    return str;
+  }
+  return str.substring(0, max) + '...';
+};
+
 export function isValidURL(string) {
   try {
     new URL(string);
@@ -40,6 +47,17 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
 
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
+  const colors = {
+    "Carbon-neutral and circular blue economy": '#004b7f',
+    "Digital twin of the ocean": '#004b7f',
+    "Prevent and eliminate pollution of waters": '#fdaf20',
+    "Protect and restore marine and freshwater ecosystems": '#007b6c',
+    "Public mobilisation and engagement": '#004b7f',
+  }
+  const width = {
+    "Demo site": 6,
+    "Associated region": 10,
+  }
 
   return cases.map((c, index) => {
     const {
@@ -65,7 +83,8 @@ export function getFeatures(cases) {
         description: c.properties.description,
         index: index,
         path: c.properties.path,
-        color: c.properties.nwrm_type === 'Light' ? '#50B0A4' : '#0083E0',
+        color: colors[c.properties.objective] || '#B83230',
+        width: width[c.properties.type_is_region],
       },
       false,
     );
@@ -100,12 +119,10 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
     if (!activeFilters.objective_filter.length) {
       flag_objective = true;
     } else {
-      let objective = _case.properties.objective?.map((item) => {
-        return item['id'].toString();
-      });
+      let objective = _case.properties.objective;
 
       activeFilters.objective_filter.forEach((filter) => {
-        if (objective?.includes(filter)) flag_objective = true;
+        if (objective === filter) flag_objective = true;
       });
     }
 
@@ -174,15 +191,19 @@ export function getFilters(cases) {
     //     return [];
     //   });
 
-    let project = _case.properties.project;
+    let objective = _case.properties.objective;
+    if (objective && !_filters.objective_filter.hasOwnProperty(objective)) {
+      _filters.objective_filter[objective] = objective;
+    }
 
-    if (!_filters.project_filter.hasOwnProperty(project)) {
+    let project = _case.properties.project;
+    if (project && !_filters.project_filter.hasOwnProperty(project)) {
       _filters.project_filter[project] = project;
     }
 
     let countries = _case.properties.country;
     countries.map((item) => {
-      if (!_filters.country_filter.hasOwnProperty(item)) {
+      if (item && !_filters.country_filter.hasOwnProperty(item)) {
         _filters.country_filter[item] = item;
       }
       return [];

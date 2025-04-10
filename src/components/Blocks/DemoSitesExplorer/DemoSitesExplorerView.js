@@ -4,7 +4,6 @@ import { addAppURL } from '@plone/volto/helpers';
 import config from '@plone/volto/registry';
 import DemoSitesMap from './DemoSitesMap';
 import { ActiveFilters, DemoSitesFilters, SearchBox } from './DemoSitesFilters';
-// import DemoSitesList from './DemoSitesListing';
 
 import { filterCases, getFilters } from './utils';
 import { useCases } from './hooks';
@@ -61,7 +60,7 @@ export default function DemoSitesExplorerView(props) {
   return (
     <div className="searchlib-block">
       <Grid.Row>
-        {hideFilters ? null : (
+        {/* {hideFilters ? null : (
           <SearchBox
             filters={filters}
             activeFilters={activeFilters}
@@ -71,7 +70,7 @@ export default function DemoSitesExplorerView(props) {
             onSelectedCase={onSelectedCase}
             map={map}
           />
-        )}
+        )} */}
       </Grid.Row>
       <Grid.Row>
         {hideFilters ? null : (

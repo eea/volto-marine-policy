@@ -1,13 +1,14 @@
 import React from 'react';
-import { isValidURL } from './utils';
+import { isValidURL, truncateText } from './utils';
 
 export default function FeatureDisplay({ feature }) {
+
   return feature ? (
     <div id="csepopup">
       <h3>
         <strong>
           <a target="_blank" rel="noopener noreferrer" href={feature.path}>
-            {feature.title}
+            {truncateText(feature.title)}
           </a>
         </strong>
       </h3>

@@ -157,7 +157,7 @@ export default function DemoSitesList(props) {
                       onKeyDown={() => {}}
                       onClick={() => {
                         // scroll to the map
-                        scrollToElement('search-input');
+                        // scrollToElement('search-input');
                         // reset map zoom
                         onSelectedCase(null);
                         centerAndResetMapZoom(map);
@@ -274,7 +274,7 @@ export default function DemoSitesList(props) {
                               .array_[9].getFeatures()
                               .clear();
                             // scroll to the map
-                            scrollToElement('ol-map-container');
+                            // scrollToElement('ol-map-container');
 
                             zoomMapToFeatures(map, [item], 5000);
                             onSelectedCase(item.values_);

@@ -135,7 +135,7 @@ export default function DemoSitesMap(props) {
                 String(resetMapButtonClass),
               )}
               onClick={() => {
-                scrollToElement('search-input');
+                // scrollToElement('search-input');
                 onSelectedCase(null);
                 centerAndResetMapZoom(map);
                 map.getInteractions().array_[9].getFeatures().clear();
@@ -165,7 +165,7 @@ export default function DemoSitesMap(props) {
           <MapContextGateway setMap={setMap} />
         </Layers>
       </MapWithSelection>
-      {hideFilters ? null : (
+      {/* {hideFilters ? null : (
         <DemoSitesList
           map={map}
           activeItems={activeItems}
@@ -174,13 +174,13 @@ export default function DemoSitesMap(props) {
           pointsSource={pointsSource}
           searchInput={searchInput}
         />
-      )}
+      )} */}
     </div>
   ) : null;
 }
 
 const selectedClusterStyle = (selectedFeature) => {
-  function _clusterStyle(feature) {
+  function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
     let style = styleCache[size];
 
@@ -193,7 +193,7 @@ const selectedClusterStyle = (selectedFeature) => {
           }),
           fill: new ol.style.Fill({
             // 309ebc blue 3 + green 3 mix
-            color: '#309ebc', // #006BB8 #309ebc
+            color: '#006BB8', // #006BB8 #309ebc
           }),
         }),
         text: new ol.style.Text({
@@ -207,8 +207,10 @@ const selectedClusterStyle = (selectedFeature) => {
     }
 
     if (size === 1) {
-      // let color = feature.values_.features[0].values_['color'];
-      let color = '#50B0A4'; // #0083E0 #50B0A4
+      let color = feature.values_.features[0].values_['color'];
+      let width = feature.values_.features[0].values_['width'];
+      // console.log(color)
+      // let color = '#0083E0'; // #0083E0 #50B0A4
 
       return new ol.style.Style({
         image: new ol.style.Circle({
@@ -218,7 +220,7 @@ const selectedClusterStyle = (selectedFeature) => {
           }),
           stroke: new ol.style.Stroke({
             color: color,
-            width: 6,
+            width: width,
           }),
         }),
       });

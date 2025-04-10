@@ -87,7 +87,7 @@ export function DemoSitesFilter(props) {
                       });
                     }
                     setActiveFilters(temp);
-                    scrollToElement('search-input');
+                    // scrollToElement('search-input');
                     centerAndResetMapZoom(map);
                   }}
                 />
@@ -181,7 +181,7 @@ export function SearchBox(props) {
                 // const popupOverlay = document.getElementById('popup-overlay');
                 // popupOverlay.style.visibility = 'hidden';
                 setSearchInput(searchInput);
-                scrollToElement('search-input');
+                // scrollToElement('search-input');
                 centerAndResetMapZoom(map);
               }}
             ></input>
@@ -199,7 +199,7 @@ export function SearchBox(props) {
                         searchInputElement.value = '';
                         setSearchInput('');
                         setShowClearButton(false);
-                        scrollToElement('search-input');
+                        // scrollToElement('search-input');
                         centerAndResetMapZoom(map);
                       }}
                     ></i>
@@ -219,7 +219,7 @@ export function SearchBox(props) {
                   );
 
                   setSearchInput(searchInputVal);
-                  scrollToElement('search-input');
+                  // scrollToElement('search-input');
                   centerAndResetMapZoom(map);
                 }}
                 onKeyDown={() => {}}
@@ -261,7 +261,7 @@ export function ActiveFilters(props) {
       project_filter: [],
       country_filter: [],
     });
-    scrollToElement('search-input');
+    // scrollToElement('search-input');
   };
 
   const removeFilter = (filterName, filterCode) => {
@@ -310,7 +310,7 @@ export function ActiveFilters(props) {
                       onKeyPress={() => {}}
                       onClick={() => {
                         removeFilter('objective_filter', filterCode);
-                        scrollToElement('search-input');
+                        // scrollToElement('search-input');
                       }}
                       role="button"
                       className="close icon"
@@ -335,7 +335,7 @@ export function ActiveFilters(props) {
                       onKeyPress={() => {}}
                       onClick={() => {
                         removeFilter('indicator_filter', filterCode);
-                        scrollToElement('search-input');
+                        // scrollToElement('search-input');
                       }}
                       role="button"
                       className="close icon"
@@ -360,7 +360,7 @@ export function ActiveFilters(props) {
                       onKeyPress={() => {}}
                       onClick={() => {
                         removeFilter('project_filter', filterCode);
-                        scrollToElement('search-input');
+                        // scrollToElement('search-input');
                       }}
                       role="button"
                       className="close icon"
@@ -385,7 +385,7 @@ export function ActiveFilters(props) {
                       onKeyPress={() => {}}
                       onClick={() => {
                         removeFilter('country_filter', filterCode);
-                        scrollToElement('search-input');
+                        // scrollToElement('search-input');
                       }}
                       role="button"
                       className="close icon"
