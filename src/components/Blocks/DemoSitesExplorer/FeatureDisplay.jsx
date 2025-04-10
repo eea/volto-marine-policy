@@ -2,7 +2,6 @@ import React from 'react';
 import { isValidURL, truncateText } from './utils';
 
 export default function FeatureDisplay({ feature }) {
-
   return feature ? (
     <div id="csepopup">
       <h3>

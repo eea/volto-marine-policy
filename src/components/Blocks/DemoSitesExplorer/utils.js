@@ -48,16 +48,16 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
   const colors = {
-    "Carbon-neutral and circular blue economy": '#004b7f',
-    "Digital twin of the ocean": '#004b7f',
-    "Prevent and eliminate pollution of waters": '#fdaf20',
-    "Protect and restore marine and freshwater ecosystems": '#007b6c',
-    "Public mobilisation and engagement": '#004b7f',
-  }
+    'Carbon-neutral and circular blue economy': '#004b7f',
+    'Digital twin of the ocean': '#004b7f',
+    'Prevent and eliminate pollution of waters': '#fdaf20',
+    'Protect and restore marine and freshwater ecosystems': '#007b6c',
+    'Public mobilisation and engagement': '#004b7f',
+  };
   const width = {
-    "Demo site": 6,
-    "Associated region": 10,
-  }
+    'Demo site': 6,
+    'Associated region': 10,
+  };
 
   return cases.map((c, index) => {
     const {
