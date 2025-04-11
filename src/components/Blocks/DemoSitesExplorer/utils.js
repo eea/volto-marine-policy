@@ -55,14 +55,14 @@ export function getFeatures(cases) {
     'Public mobilisation and engagement': '#004b7f',
   };
   const width = {
-    "Demo site": 6,
-    "Associated region": 8,
-  }
+    'Demo site': 6,
+    'Associated region': 8,
+  };
 
   const radius = {
-    "Demo site": 6,
-    "Associated region": 5,
-  }
+    'Demo site': 6,
+    'Associated region': 5,
+  };
 
   return cases.map((c, index) => {
     const {
@@ -193,7 +193,10 @@ export function getFilters(cases) {
 
     let indicators = _case.properties.indicators;
     indicators.map((item) => {
-      if (item['title'] && !_filters.indicator_filter.hasOwnProperty(item['id'])) {
+      if (
+        item['title'] &&
+        !_filters.indicator_filter.hasOwnProperty(item['id'])
+      ) {
         _filters.indicator_filter[item['id']] = item['title'];
       }
       return [];
