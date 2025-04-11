@@ -7,10 +7,9 @@ import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
 import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
-import DemoSitesList from './DemoSitesListing';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
-import { centerAndResetMapZoom, getFeatures, scrollToElement } from './utils';
+import { centerAndResetMapZoom, getFeatures } from './utils';
 
 const styleCache = {};
 const MapContextGateway = ({ setMap }) => {
@@ -28,7 +27,6 @@ export default function DemoSitesMap(props) {
     hideFilters,
     selectedCase,
     onSelectedCase,
-    searchInput,
     map,
     setMap,
   } = props;
@@ -165,16 +163,6 @@ export default function DemoSitesMap(props) {
           <MapContextGateway setMap={setMap} />
         </Layers>
       </MapWithSelection>
-      {/* {hideFilters ? null : (
-        <DemoSitesList
-          map={map}
-          activeItems={activeItems}
-          selectedCase={selectedCase}
-          onSelectedCase={onSelectedCase}
-          pointsSource={pointsSource}
-          searchInput={searchInput}
-        />
-      )} */}
     </div>
   ) : null;
 }

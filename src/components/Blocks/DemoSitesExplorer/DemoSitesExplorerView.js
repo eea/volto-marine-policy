@@ -3,7 +3,7 @@ import { Grid } from 'semantic-ui-react'; // Dropdown,
 import { addAppURL } from '@plone/volto/helpers';
 import config from '@plone/volto/registry';
 import DemoSitesMap from './DemoSitesMap';
-import { ActiveFilters, DemoSitesFilters, SearchBox } from './DemoSitesFilters';
+import { ActiveFilters, DemoSitesFilters } from './DemoSitesFilters';
 
 import { filterCases, getFilters } from './utils';
 import { useCases } from './hooks';
@@ -18,7 +18,6 @@ export default function DemoSitesExplorerView(props) {
   let cases = useCases(addAppURL(cases_url));
   const { demoSitesIds } = props; // case studies from measure view
   const [selectedCase, onSelectedCase] = React.useState(null);
-  const [searchInput, setSearchInput] = React.useState('');
   const hideFilters = demoSitesIds ? true : false;
 
   const [activeFilters, setActiveFilters] = React.useState({
@@ -49,29 +48,15 @@ export default function DemoSitesExplorerView(props) {
       cases,
       activeFilters,
       demoSitesIds,
-      searchInput,
     );
 
     setActiveItems(activeItems);
-  }, [demoSitesIds, activeFilters, cases, searchInput]);
+  }, [demoSitesIds, activeFilters, cases]);
 
   if (__SERVER__) return '';
 
   return (
     <div className="searchlib-block">
-      <Grid.Row>
-        {/* {hideFilters ? null : (
-          <SearchBox
-            filters={filters}
-            activeFilters={activeFilters}
-            setActiveFilters={setActiveFilters}
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-            onSelectedCase={onSelectedCase}
-            map={map}
-          />
-        )} */}
-      </Grid.Row>
       <Grid.Row>
         {hideFilters ? null : (
           <ActiveFilters
@@ -101,7 +86,6 @@ export default function DemoSitesExplorerView(props) {
                 hideFilters={hideFilters}
                 selectedCase={selectedCase}
                 onSelectedCase={onSelectedCase}
-                searchInput={searchInput}
                 map={map}
                 setMap={setMap}
               />

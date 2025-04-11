@@ -98,9 +98,8 @@ export function getFeatures(cases) {
   });
 }
 
-export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
+export function filterCases(cases, activeFilters, demoSitesIds) {
   const data = cases.filter((_case) => {
-    let flag_searchInput = false;
     let flag_objective = false;
     let flag_indicator = false;
     let flag_project = false;
@@ -108,18 +107,6 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
     let flag_case = demoSitesIds
       ? demoSitesIds.includes(_case.properties.url.split('/').pop())
       : true;
-
-    if (!searchInput) {
-      flag_searchInput = true;
-    } else {
-      if (_case.properties.title.toLowerCase().match(searchInput)) {
-        flag_searchInput = true;
-        // } else if (
-        //   _case.properties.description.toLowerCase().match(searchInput)
-        // ) {
-        //   flag_searchInput = true;
-      }
-    }
 
     // debugger;
     if (!activeFilters.objective_filter.length) {
@@ -170,8 +157,7 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
       flag_objective &&
       flag_indicator &&
       flag_country &&
-      flag_project &&
-      flag_searchInput
+      flag_project
       ? _case
       : false;
   });
