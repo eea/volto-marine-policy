@@ -209,12 +209,13 @@ const selectedClusterStyle = (selectedFeature) => {
     if (size === 1) {
       let color = feature.values_.features[0].values_['color'];
       let width = feature.values_.features[0].values_['width'];
+      let radius = feature.values_.features[0].values_['radius'];
       // console.log(color)
       // let color = '#0083E0'; // #0083E0 #50B0A4
 
       return new ol.style.Style({
         image: new ol.style.Circle({
-          radius: 6,
+          radius: radius,
           fill: new ol.style.Fill({
             color: '#fff',
           }),
