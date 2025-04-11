@@ -1,5 +1,12 @@
 import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
+export const truncateText = (str, max = 50) => {
+  if (str.length <= max) {
+    return str;
+  }
+  return str.substring(0, max) + '...';
+};
+
 export function isValidURL(string) {
   try {
     new URL(string);
@@ -40,6 +47,22 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
 
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
+  const colors = {
+    'Carbon-neutral and circular blue economy': '#004b7f',
+    'Digital twin of the ocean': '#004b7f',
+    'Prevent and eliminate pollution of waters': '#fdaf20',
+    'Protect and restore marine and freshwater ecosystems': '#007b6c',
+    'Public mobilisation and engagement': '#004b7f',
+  };
+  const width = {
+    'Demo site': 6,
+    'Associated region': 8,
+  };
+
+  const radius = {
+    'Demo site': 6,
+    'Associated region': 5,
+  };
 
   return cases.map((c, index) => {
     const {
@@ -65,7 +88,9 @@ export function getFeatures(cases) {
         description: c.properties.description,
         index: index,
         path: c.properties.path,
-        color: c.properties.nwrm_type === 'Light' ? '#50B0A4' : '#0083E0',
+        color: colors[c.properties.objective] || '#B83230',
+        width: width[c.properties.type_is_region],
+        radius: radius[c.properties.type_is_region],
       },
       false,
     );
@@ -73,53 +98,38 @@ export function getFeatures(cases) {
   });
 }
 
-export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
+export function filterCases(cases, activeFilters, demoSitesIds) {
   const data = cases.filter((_case) => {
-    let flag_searchInput = false;
     let flag_objective = false;
-    // let flag_indicator = false;
+    let flag_indicator = false;
     let flag_project = false;
     let flag_country = false;
     let flag_case = demoSitesIds
       ? demoSitesIds.includes(_case.properties.url.split('/').pop())
       : true;
 
-    if (!searchInput) {
-      flag_searchInput = true;
-    } else {
-      if (_case.properties.title.toLowerCase().match(searchInput)) {
-        flag_searchInput = true;
-        // } else if (
-        //   _case.properties.description.toLowerCase().match(searchInput)
-        // ) {
-        //   flag_searchInput = true;
-      }
-    }
-
     // debugger;
     if (!activeFilters.objective_filter.length) {
       flag_objective = true;
     } else {
-      let objective = _case.properties.objective?.map((item) => {
-        return item['id'].toString();
-      });
+      let objective = _case.properties.objective;
 
       activeFilters.objective_filter.forEach((filter) => {
-        if (objective?.includes(filter)) flag_objective = true;
+        if (objective === filter) flag_objective = true;
       });
     }
 
-    // if (!activeFilters.sectors.length) {
-    //   flag_sectors = true;
-    // } else {
-    //   let sectors = _case.properties.sectors?.map((item) => {
-    //     return item.toString();
-    //   });
+    if (!activeFilters.indicator_filter.length) {
+      flag_indicator = true;
+    } else {
+      let indicators = _case.properties.indicators?.map((item) => {
+        return item['id'].toString();
+      });
 
-    //   activeFilters.sectors.forEach((filter) => {
-    //     if (sectors?.includes(filter)) flag_sectors = true;
-    //   });
-    // }
+      activeFilters.indicator_filter.forEach((filter) => {
+        if (indicators?.includes(filter)) flag_indicator = true;
+      });
+    }
 
     if (!activeFilters.project_filter.length) {
       flag_project = true;
@@ -145,9 +155,9 @@ export function filterCases(cases, activeFilters, demoSitesIds, searchInput) {
 
     return flag_case &&
       flag_objective &&
+      flag_indicator &&
       flag_country &&
-      flag_project &&
-      flag_searchInput
+      flag_project
       ? _case
       : false;
   });
@@ -166,23 +176,31 @@ export function getFilters(cases) {
   for (let key of Object.keys(cases)) {
     const _case = cases[key];
     // debugger;
-    //   let nwrms_implemented = _case.properties.measures;
-    //   nwrms_implemented.map((item) => {
-    //     if (!_filters.nwrms_implemented.hasOwnProperty(item['id'])) {
-    //       _filters.nwrms_implemented[item['id']] = item['title'];
-    //     }
-    //     return [];
-    //   });
+
+    let indicators = _case.properties.indicators;
+    indicators.map((item) => {
+      if (
+        item['title'] &&
+        !_filters.indicator_filter.hasOwnProperty(item['id'])
+      ) {
+        _filters.indicator_filter[item['id']] = item['title'];
+      }
+      return [];
+    });
+
+    let objective = _case.properties.objective;
+    if (objective && !_filters.objective_filter.hasOwnProperty(objective)) {
+      _filters.objective_filter[objective] = objective;
+    }
 
     let project = _case.properties.project;
-
-    if (!_filters.project_filter.hasOwnProperty(project)) {
+    if (project && !_filters.project_filter.hasOwnProperty(project)) {
       _filters.project_filter[project] = project;
     }
 
-    let countries = _case.properties.country;
+    let countries = _case.properties.country || [];
     countries.map((item) => {
-      if (!_filters.country_filter.hasOwnProperty(item)) {
+      if (item && !_filters.country_filter.hasOwnProperty(item)) {
         _filters.country_filter[item] = item;
       }
       return [];

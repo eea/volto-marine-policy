@@ -1,5 +1,5 @@
 import React from 'react';
-import { isValidURL } from './utils';
+import { isValidURL, truncateText } from './utils';
 
 export default function FeatureDisplay({ feature }) {
   return feature ? (
@@ -7,7 +7,7 @@ export default function FeatureDisplay({ feature }) {
       <h3>
         <strong>
           <a target="_blank" rel="noopener noreferrer" href={feature.path}>
-            {feature.title}
+            {truncateText(feature.title)}
           </a>
         </strong>
       </h3>
@@ -66,10 +66,10 @@ export default function FeatureDisplay({ feature }) {
         ''
       )}
 
-      {/* <div>
-        <h4>NWRMs implemented</h4>
+      <div>
+        <h4>Indicators</h4>
         <ul>
-          {feature.nwrms_implemented.map((item, index) => {
+          {feature.indicators.map((item, index) => {
             return (
               <li key={index}>
                 <a
@@ -83,9 +83,9 @@ export default function FeatureDisplay({ feature }) {
             );
           })}
         </ul>
-      </div> */}
+      </div>
       {/* <div>
-        <h4>Sectors </h4>
+        <h4>Indicators</h4>
         <ul>
           {feature.sectors.map((item, index) => {
             return <li key={index}>{item}</li>;

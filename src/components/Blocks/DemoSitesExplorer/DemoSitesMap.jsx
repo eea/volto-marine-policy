@@ -7,10 +7,9 @@ import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
 import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
-import DemoSitesList from './DemoSitesListing';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
-import { centerAndResetMapZoom, getFeatures, scrollToElement } from './utils';
+import { centerAndResetMapZoom, getFeatures } from './utils';
 
 const styleCache = {};
 const MapContextGateway = ({ setMap }) => {
@@ -28,7 +27,6 @@ export default function DemoSitesMap(props) {
     hideFilters,
     selectedCase,
     onSelectedCase,
-    searchInput,
     map,
     setMap,
   } = props;
@@ -135,7 +133,7 @@ export default function DemoSitesMap(props) {
                 String(resetMapButtonClass),
               )}
               onClick={() => {
-                scrollToElement('search-input');
+                // scrollToElement('search-input');
                 onSelectedCase(null);
                 centerAndResetMapZoom(map);
                 map.getInteractions().array_[9].getFeatures().clear();
@@ -165,22 +163,12 @@ export default function DemoSitesMap(props) {
           <MapContextGateway setMap={setMap} />
         </Layers>
       </MapWithSelection>
-      {hideFilters ? null : (
-        <DemoSitesList
-          map={map}
-          activeItems={activeItems}
-          selectedCase={selectedCase}
-          onSelectedCase={onSelectedCase}
-          pointsSource={pointsSource}
-          searchInput={searchInput}
-        />
-      )}
     </div>
   ) : null;
 }
 
 const selectedClusterStyle = (selectedFeature) => {
-  function _clusterStyle(feature) {
+  function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
     let style = styleCache[size];
 
@@ -193,7 +181,7 @@ const selectedClusterStyle = (selectedFeature) => {
           }),
           fill: new ol.style.Fill({
             // 309ebc blue 3 + green 3 mix
-            color: '#309ebc', // #006BB8 #309ebc
+            color: '#006BB8', // #006BB8 #309ebc
           }),
         }),
         text: new ol.style.Text({
@@ -207,18 +195,21 @@ const selectedClusterStyle = (selectedFeature) => {
     }
 
     if (size === 1) {
-      // let color = feature.values_.features[0].values_['color'];
-      let color = '#50B0A4'; // #0083E0 #50B0A4
+      let color = feature.values_.features[0].values_['color'];
+      let width = feature.values_.features[0].values_['width'];
+      let radius = feature.values_.features[0].values_['radius'];
+      // console.log(color)
+      // let color = '#0083E0'; // #0083E0 #50B0A4
 
       return new ol.style.Style({
         image: new ol.style.Circle({
-          radius: 6,
+          radius: radius,
           fill: new ol.style.Fill({
             color: '#fff',
           }),
           stroke: new ol.style.Stroke({
             color: color,
-            width: 6,
+            width: width,
           }),
         }),
       });
