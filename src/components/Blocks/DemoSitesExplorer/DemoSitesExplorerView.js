@@ -44,11 +44,7 @@ export default function DemoSitesExplorerView(props) {
   ]);
 
   React.useEffect(() => {
-    let activeItems = filterCases(
-      cases,
-      activeFilters,
-      demoSitesIds,
-    );
+    let activeItems = filterCases(cases, activeFilters, demoSitesIds);
 
     setActiveItems(activeItems);
   }, [demoSitesIds, activeFilters, cases]);
