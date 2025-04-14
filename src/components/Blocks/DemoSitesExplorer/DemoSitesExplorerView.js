@@ -14,11 +14,12 @@ export default function DemoSitesExplorerView(props) {
   const cases_url = config.settings.prefixPath
     ? '/@@demo-sites-map.arcgis.json'
     : '/marine/@@demo-sites-map.arcgis.json';
-
   let cases = useCases(addAppURL(cases_url));
-  const { demoSitesIds } = props; // case studies from measure view
   const [selectedCase, onSelectedCase] = React.useState(null);
-  const hideFilters = demoSitesIds ? true : false;
+
+  const { properties } = props;
+  const hideFilters = properties['@type'] === 'indicator_mo' ? true : false;
+  const indicatorOnly = hideFilters ? properties['title'] : null;
 
   const [activeFilters, setActiveFilters] = React.useState({
     objective_filter: [],
@@ -32,7 +33,7 @@ export default function DemoSitesExplorerView(props) {
   const [map, setMap] = React.useState();
 
   React.useEffect(() => {
-    const _filters = getFilters(cases);
+    const _filters = getFilters(cases, indicatorOnly);
     setFilters(_filters);
   }, [
     cases,
@@ -41,36 +42,34 @@ export default function DemoSitesExplorerView(props) {
     activeFilters.project_filter,
     activeFilters.country_filter,
     activeItems.length,
+    indicatorOnly,
   ]);
 
   React.useEffect(() => {
-    let activeItems = filterCases(cases, activeFilters, demoSitesIds);
+    let activeItems = filterCases(cases, activeFilters, indicatorOnly);
 
     setActiveItems(activeItems);
-  }, [demoSitesIds, activeFilters, cases]);
+  }, [activeFilters, cases, indicatorOnly]);
 
   if (__SERVER__) return '';
 
   return (
     <div className="searchlib-block">
       <Grid.Row>
-        {hideFilters ? null : (
-          <ActiveFilters
-            filters={filters}
-            activeFilters={activeFilters}
-            setActiveFilters={setActiveFilters}
-          />
-        )}
+        <ActiveFilters
+          filters={filters}
+          activeFilters={activeFilters}
+          setActiveFilters={setActiveFilters}
+        />
       </Grid.Row>
       <Grid.Row stretched={true} id="cse-filter">
-        {hideFilters ? null : (
-          <DemoSitesFilters
-            filters={filters}
-            activeFilters={activeFilters}
-            setActiveFilters={setActiveFilters}
-            map={map}
-          />
-        )}
+        <DemoSitesFilters
+          filters={filters}
+          activeFilters={activeFilters}
+          hideFilters={hideFilters}
+          setActiveFilters={setActiveFilters}
+          map={map}
+        />
       </Grid.Row>
       <Grid.Row>
         {cases.length ? (

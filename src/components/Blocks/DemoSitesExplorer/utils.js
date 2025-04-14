@@ -98,15 +98,22 @@ export function getFeatures(cases) {
   });
 }
 
-export function filterCases(cases, activeFilters, demoSitesIds) {
+export function filterCases(cases, activeFilters, indicatorOnly) {
   const data = cases.filter((_case) => {
     let flag_objective = false;
     let flag_indicator = false;
     let flag_project = false;
     let flag_country = false;
-    let flag_case = demoSitesIds
-      ? demoSitesIds.includes(_case.properties.url.split('/').pop())
-      : true;
+    let flag_indicatorOnly = false;
+
+    if (indicatorOnly) {
+      let indicators = _case.properties.indicators?.map((item) => {
+        return item['title'].toString();
+      });
+      if (indicators?.includes(indicatorOnly)) flag_indicatorOnly = true;
+    } else {
+      flag_indicatorOnly = true;
+    }
 
     // debugger;
     if (!activeFilters.objective_filter.length) {
@@ -153,7 +160,7 @@ export function filterCases(cases, activeFilters, demoSitesIds) {
       });
     }
 
-    return flag_case &&
+    return flag_indicatorOnly &&
       flag_objective &&
       flag_indicator &&
       flag_country &&
@@ -165,7 +172,7 @@ export function filterCases(cases, activeFilters, demoSitesIds) {
   return data;
 }
 
-export function getFilters(cases) {
+export function getFilters(cases, indicatorOnly) {
   let _filters = {
     objective_filter: {},
     indicator_filter: {},
@@ -195,13 +202,33 @@ export function getFilters(cases) {
 
     let project = _case.properties.project;
     if (project && !_filters.project_filter.hasOwnProperty(project)) {
-      _filters.project_filter[project] = project;
+      if (!indicatorOnly) {
+        _filters.project_filter[project] = project;
+      } else {
+        let indicators = _case.properties.indicators?.map((item) => {
+          return item['title'].toString();
+        });
+        if (indicators?.includes(indicatorOnly)) {
+          _filters.project_filter[project] = project;
+        }
+      }
+      // _filters.project_filter[project] = project;
     }
 
     let countries = _case.properties.country || [];
     countries.map((item) => {
       if (item && !_filters.country_filter.hasOwnProperty(item)) {
-        _filters.country_filter[item] = item;
+        if (!indicatorOnly) {
+          _filters.country_filter[item] = item;
+        } else {
+          let indicators = _case.properties.indicators?.map((item) => {
+            return item['title'].toString();
+          });
+          if (indicators?.includes(indicatorOnly)) {
+            _filters.country_filter[item] = item;
+          }
+        }
+        // _filters.country_filter[item] = item;
       }
       return [];
     });

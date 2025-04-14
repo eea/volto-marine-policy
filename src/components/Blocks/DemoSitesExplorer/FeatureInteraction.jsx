@@ -35,18 +35,14 @@ export const useStyles = () => {
   return { selected, selectStyle };
 };
 
-export default function FeatureInteraction({
-  onFeatureSelect,
-  hideFilters,
-  selectedCase,
-}) {
+export default function FeatureInteraction({ onFeatureSelect }) {
   // console.log('featureinteraction', selectedCase);
   const { map } = useMapContext();
   const { selectStyle } = useStyles();
 
   const select = new ol.interaction.Select({
     condition: ol.condition.click,
-    style: hideFilters ? null : selectStyle,
+    style: selectStyle,
   });
 
   React.useEffect(() => {
@@ -59,11 +55,10 @@ export default function FeatureInteraction({
         const subfeatures = feature.values_.features;
         if (subfeatures.length === 1) {
           const selectedFeature = subfeatures[0].values_;
-          if (hideFilters) {
-            const url = window.location.origin + selectedFeature.path;
-            // window.open(url);
-            window.location.href = url;
-          }
+          // if (hideFilters) {
+          //   const url = window.location.origin + selectedFeature.path;
+          //   window.location.href = url;
+          // }
           onFeatureSelect(selectedFeature);
           // scrollToElement('ol-map-container');
           // map.getView().animate({
@@ -89,7 +84,7 @@ export default function FeatureInteraction({
 
     return () => map.removeInteraction(select);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, selectStyle, onFeatureSelect, hideFilters]);
+  }, [map, selectStyle, onFeatureSelect]);
 
   return null;
 }

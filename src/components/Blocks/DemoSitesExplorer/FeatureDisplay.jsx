@@ -67,7 +67,7 @@ export default function FeatureDisplay({ feature }) {
       )}
 
       <div>
-        <h4>Indicators</h4>
+        <span className="popup-title blue">Indicators</span>
         <ul>
           {feature.indicators.map((item, index) => {
             return (

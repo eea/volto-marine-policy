@@ -126,23 +126,21 @@ export default function DemoSitesMap(props) {
       >
         <Controls attribution={false} />
         <Layers>
-          {hideFilters ? null : (
-            <button
-              className={cx(
-                'reset-map-button ui button secondary',
-                String(resetMapButtonClass),
-              )}
-              onClick={() => {
-                // scrollToElement('search-input');
-                onSelectedCase(null);
-                centerAndResetMapZoom(map);
-                map.getInteractions().array_[9].getFeatures().clear();
-              }}
-            >
-              <span className="result-info-title">Reset map</span>
-              <i className="icon ri-map-2-line"></i>
-            </button>
-          )}
+          <button
+            className={cx(
+              'reset-map-button ui button secondary',
+              String(resetMapButtonClass),
+            )}
+            onClick={() => {
+              // scrollToElement('search-input');
+              onSelectedCase(null);
+              centerAndResetMapZoom(map);
+              map.getInteractions().array_[9].getFeatures().clear();
+            }}
+          >
+            <span className="result-info-title">Reset map</span>
+            <i className="icon ri-map-2-line"></i>
+          </button>
           <InfoOverlay
             selectedFeature={selectedCase}
             onFeatureSelect={onSelectedCase}
@@ -151,8 +149,8 @@ export default function DemoSitesMap(props) {
           />
           <FeatureInteraction
             onFeatureSelect={onSelectedCase}
-            hideFilters={hideFilters}
-            selectedCase={selectedCase}
+            // hideFilters={hideFilters}
+            // selectedCase={selectedCase}
           />
           <Layer.Tile source={tileWMSSources[0]} zIndex={0} />
           <Layer.Vector
