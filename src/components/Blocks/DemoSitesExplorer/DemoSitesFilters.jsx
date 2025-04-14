@@ -101,7 +101,7 @@ export function DemoSitesFilter(props) {
 }
 
 export function DemoSitesFilters(props) {
-  const { filters, activeFilters, setActiveFilters, map } = props;
+  const { filters, activeFilters, hideFilters, setActiveFilters, map } = props;
 
   React.useEffect(() => {
     window.addEventListener('click', (event) => {
@@ -117,24 +117,30 @@ export function DemoSitesFilters(props) {
 
   return (
     <>
-      <DemoSitesFilter
-        filterTitle="Objective"
-        filterName="objective_filter"
-        filters={filters}
-        activeFilters={activeFilters}
-        setActiveFilters={setActiveFilters}
-        map={map}
-      />
-
-      <DemoSitesFilter
-        filterTitle="Indicator"
-        filterName="indicator_filter"
-        filters={filters}
-        activeFilters={activeFilters}
-        setActiveFilters={setActiveFilters}
-        map={map}
-      />
-
+      {!hideFilters ? (
+        <DemoSitesFilter
+          filterTitle="Objective"
+          filterName="objective_filter"
+          filters={filters}
+          activeFilters={activeFilters}
+          setActiveFilters={setActiveFilters}
+          map={map}
+        />
+      ) : (
+        ''
+      )}
+      {!hideFilters ? (
+        <DemoSitesFilter
+          filterTitle="Indicator"
+          filterName="indicator_filter"
+          filters={filters}
+          activeFilters={activeFilters}
+          setActiveFilters={setActiveFilters}
+          map={map}
+        />
+      ) : (
+        ''
+      )}
       <DemoSitesFilter
         filterTitle="Project"
         filterName="project_filter"
@@ -143,7 +149,6 @@ export function DemoSitesFilters(props) {
         setActiveFilters={setActiveFilters}
         map={map}
       />
-
       <DemoSitesFilter
         filterTitle="Country"
         filterName="country_filter"
