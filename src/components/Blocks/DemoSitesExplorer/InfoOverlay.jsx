@@ -38,9 +38,7 @@ export default function InfoOverlay({
       const features = target.getFeaturesAtPixel(pixel);
       // const popupOverlay = overlay.element; // document.getElementById('popup-overlay');
 
-      if (
-        features.length
-      ) {
+      if (features.length) {
         setShowTooltip(true);
       } else {
         // handle a click in an overlay popup

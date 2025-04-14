@@ -35,9 +35,7 @@ export const useStyles = () => {
   return { selected, selectStyle };
 };
 
-export default function FeatureInteraction({
-  onFeatureSelect
-}) {
+export default function FeatureInteraction({ onFeatureSelect }) {
   // console.log('featureinteraction', selectedCase);
   const { map } = useMapContext();
   const { selectStyle } = useStyles();
