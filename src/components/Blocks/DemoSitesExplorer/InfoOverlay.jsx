@@ -43,7 +43,7 @@ export default function InfoOverlay({
       // const popupOverlay = overlay.element; // document.getElementById('popup-overlay');
 
       if (features.length) {
-        const coordinate = evt.coordinate
+        const coordinate = evt.coordinate;
         overlay.setPosition(coordinate);
         setShowTooltip(true);
       } else {

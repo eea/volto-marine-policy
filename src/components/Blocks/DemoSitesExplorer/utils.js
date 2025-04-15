@@ -130,7 +130,7 @@ export function filterCases(cases, activeFilters, indicatorOnly) {
       flag_indicator = true;
     } else {
       let indicators = _case.properties.indicators?.map((item) => {
-        return '_'+ item['id'].toString();
+        return '_' + item['id'].toString();
       });
 
       activeFilters.indicator_filter.forEach((filter) => {
@@ -188,7 +188,7 @@ export function getFilters(cases, indicatorOnly) {
     indicators.map((item) => {
       if (
         item['title'] &&
-        !_filters.indicator_filter.hasOwnProperty('_'+ item['id'])
+        !_filters.indicator_filter.hasOwnProperty('_' + item['id'])
       ) {
         _filters.indicator_filter['_' + item['id']] = item['title'];
       }

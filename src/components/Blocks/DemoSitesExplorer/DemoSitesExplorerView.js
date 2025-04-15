@@ -87,7 +87,7 @@ export default function DemoSitesExplorerView(props) {
             </Grid.Column>
             <Grid.Column mobile={2} tablet={2} computer={2}>
               <div className="legend">
-                <div className='legend-row legend-subtitle'>Legend</div>
+                <div className="legend-row legend-subtitle">Legend</div>
                 <div className="legend-row">
                   <div className="circle">
                     <div className="dot-demosite"></div>

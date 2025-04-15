@@ -29,7 +29,7 @@ export function DemoSitesFilter(props) {
 
   if (customOrder.length > 0) {
     sortedEntries = entries.sort(
-      (a, b) => customOrder.indexOf(a[0]) - customOrder.indexOf(b[0])
+      (a, b) => customOrder.indexOf(a[0]) - customOrder.indexOf(b[0]),
     );
     // if(entries.length > 0 ) debugger;
   } else {
@@ -145,7 +145,7 @@ export function DemoSitesFilters(props) {
             'Prevent and eliminate pollution of waters',
             'Carbon-neutral and circular blue economy',
             'Digital twin of the ocean',
-            'Public mobilisation and engagement'
+            'Public mobilisation and engagement',
           ]}
         />
       ) : (
