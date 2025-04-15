@@ -27,9 +27,13 @@ export default function InfoOverlay({
 
     const overlay = new ol.Overlay({
       element: document.getElementById('popup-overlay'),
-      positioning: 'bottom-center',
-      offset: [0, -10],
+      positioning: 'bottom-left',
+      offset: [0, 0],
       stopEvent: false,
+      // autoPan: true,
+      // autoPanAnimation: {
+      //     duration: 250,
+      // },
     });
     map.addOverlay(overlay);
 
@@ -39,8 +43,12 @@ export default function InfoOverlay({
       // const popupOverlay = overlay.element; // document.getElementById('popup-overlay');
 
       if (features.length) {
+        const coordinate = evt.coordinate
+        overlay.setPosition(coordinate);
         setShowTooltip(true);
       } else {
+        // const coordinate = evt.coordinate
+        // overlay.setPosition(coordinate);
         // handle a click in an overlay popup
         if (evt.originalEvent.target.tagName === 'A') return;
         setShowTooltip(false);
@@ -64,7 +72,7 @@ export default function InfoOverlay({
     <div
       id="popup-overlay"
       style={{
-        position: 'absolute',
+        // position: 'absolute', // TODO POPUP
         zIndex: 1,
         visibility: showTooltip ? 'visible' : 'hidden',
       }}

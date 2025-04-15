@@ -74,7 +74,7 @@ export default function DemoSitesExplorerView(props) {
       <Grid.Row>
         {cases.length ? (
           <Grid columns={12}>
-            <Grid.Column mobile={12} tablet={12} computer={12}>
+            <Grid.Column mobile={10} tablet={10} computer={10}>
               <DemoSitesMap
                 items={cases}
                 activeItems={activeItems}
@@ -84,6 +84,23 @@ export default function DemoSitesExplorerView(props) {
                 map={map}
                 setMap={setMap}
               />
+            </Grid.Column>
+            <Grid.Column mobile={2} tablet={2} computer={2}>
+              <div className="legend">
+                <div className='legend-row legend-subtitle'>Legend</div>
+                <div className="legend-row">
+                  <div className="circle">
+                    <div className="dot-demosite"></div>
+                  </div>
+                  <div>Demo site</div>
+                </div>
+                <div className="legend-row">
+                  <div className="circle">
+                    <div className="dot-region"></div>
+                  </div>
+                  <div>Associated region</div>
+                </div>
+              </div>
             </Grid.Column>
           </Grid>
         ) : null}

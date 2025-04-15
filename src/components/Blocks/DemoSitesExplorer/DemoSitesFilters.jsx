@@ -23,6 +23,21 @@ export function DemoSitesFilter(props) {
     map,
   } = props;
 
+  const customOrder = props?.customOrder || [];
+  const entries = Object.entries(filters?.[filterName] || {});
+  let sortedEntries = [];
+
+  if (customOrder.length > 0) {
+    sortedEntries = entries.sort(
+      (a, b) => customOrder.indexOf(a[0]) - customOrder.indexOf(b[0])
+    );
+    // if(entries.length > 0 ) debugger;
+  } else {
+    sortedEntries = entries.sort((a, b) => a[1].localeCompare(b[1]));
+  }
+  const sortedData = Object.fromEntries(sortedEntries);
+  filters[filterName] = sortedData;
+
   const showInputs = (event) => {
     event.currentTarget.parentElement.classList.add('active');
   };
@@ -65,7 +80,7 @@ export function DemoSitesFilter(props) {
 
         <div className="filter-inputs">
           {Object.entries(filters?.[filterName] || {})
-            .sort((item1, item2) => item1[1].localeCompare(item2[1]))
+            // .sort((item1, item2) => item1[1].localeCompare(item2[1]))
             .map(([value, label], index) => (
               <label
                 htmlFor={label + index}
@@ -119,12 +134,19 @@ export function DemoSitesFilters(props) {
     <>
       {!hideFilters ? (
         <DemoSitesFilter
-          filterTitle="Objective"
+          filterTitle="Objective/Enabler"
           filterName="objective_filter"
           filters={filters}
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
           map={map}
+          customOrder={[
+            'Protect and restore marine and freshwater ecosystems',
+            'Prevent and eliminate pollution of waters',
+            'Carbon-neutral and circular blue economy',
+            'Digital twin of the ocean',
+            'Public mobilisation and engagement'
+          ]}
         />
       ) : (
         ''

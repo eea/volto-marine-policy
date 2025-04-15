@@ -39,13 +39,25 @@ export default function FeatureDisplay({ feature }) {
       {feature.project ? (
         <div>
           <span className="popup-title blue">Project: </span>
-          <span>{feature.project}</span>
+          <span>
+            {isValidURL(feature.project_link) ? (
+              <a
+                href={feature.project_link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {feature.project}
+              </a>
+            ) : (
+              <span>{feature.project}</span>
+            )}
+          </span>
         </div>
       ) : (
         ''
       )}
 
-      {feature.project_link ? (
+      {/* {feature.project_link ? (
         <div>
           <span className="popup-title blue">Project link: </span>
           <span>
@@ -64,7 +76,7 @@ export default function FeatureDisplay({ feature }) {
         </div>
       ) : (
         ''
-      )}
+      )} */}
 
       <div>
         <span className="popup-title blue">Indicators</span>
