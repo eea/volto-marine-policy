@@ -212,7 +212,7 @@ const selectedClusterStyle = (selectedFeature) => {
         }),
       });
     } else {
-      return style;
+      return clusterStyle;
     }
   }
   return _clusterStyle;
