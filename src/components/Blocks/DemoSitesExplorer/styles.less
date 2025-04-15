@@ -2,7 +2,7 @@
   padding-top: 2em;
 }
 
-#csepopup>span {
+#csepopup > span {
   display: 'block';
   margin-bottom: '10px';
   background-color: '#ddd';
@@ -381,20 +381,18 @@
 }
 
 .ol-zoom.ol-control {
-
   .ol-zoom-in,
   .ol-zoom-out {
     background-color: rgba(0, 131, 224, 0.5);
   }
 }
 
-
 .legend {
+  position: absolute;
+  bottom: 2em;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  position: absolute;
-  bottom: 2em;
   gap: 0.5em;
 
   .legend-row {
@@ -409,35 +407,35 @@
   }
 
   .circle {
-    gap: 0.5em;
+    position: relative;
     width: 22px;
     min-width: 22px;
     height: 22px;
-    background-color: #007265;
     /* dark green shade */
     border-radius: 50%;
-    position: relative;
+    background-color: #007265;
+    gap: 0.5em;
   }
 
   .dot-demosite {
-    width: 8px;
-    height: 8px;
-    background-color: white;
-    border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: white;
     transform: translate(-50%, -50%);
   }
 
   .dot-region {
-    width: 2px;
-    height: 2px;
-    background-color: white;
-    border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background-color: white;
     transform: translate(-50%, -50%);
   }
 }
