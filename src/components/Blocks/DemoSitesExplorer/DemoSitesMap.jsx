@@ -54,7 +54,7 @@ export default function DemoSitesMap(props) {
 
   const [clusterSource] = React.useState(
     new ol.source.Cluster({
-      distance: 19,
+      distance: 0,
       source: pointsSource,
     }),
   );
@@ -168,10 +168,10 @@ export default function DemoSitesMap(props) {
 const selectedClusterStyle = (selectedFeature) => {
   function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
-    let style = styleCache[size];
+    let clusterStyle = styleCache[size];
 
-    if (!style) {
-      style = new ol.style.Style({
+    if (!clusterStyle) {
+      clusterStyle = new ol.style.Style({
         image: new ol.style.Circle({
           radius: 12 + Math.min(Math.floor(size / 3), 10),
           stroke: new ol.style.Stroke({
@@ -189,10 +189,10 @@ const selectedClusterStyle = (selectedFeature) => {
           }),
         }),
       });
-      styleCache[size] = style;
+      styleCache[size] = clusterStyle;
     }
-
-    if (size === 1) {
+    // set size === 1 to enable clusterization
+    if (size) {
       let color = feature.values_.features[0].values_['color'];
       let width = feature.values_.features[0].values_['width'];
       let radius = feature.values_.features[0].values_['radius'];
@@ -212,7 +212,7 @@ const selectedClusterStyle = (selectedFeature) => {
         }),
       });
     } else {
-      return style;
+      return clusterStyle;
     }
   }
   return _clusterStyle;

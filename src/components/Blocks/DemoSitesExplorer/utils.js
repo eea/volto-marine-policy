@@ -48,11 +48,11 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
   const colors = {
-    'Carbon-neutral and circular blue economy': '#004b7f',
+    'Carbon-neutral and circular blue economy': '#f9eb8a',
     'Digital twin of the ocean': '#004b7f',
     'Prevent and eliminate pollution of waters': '#fdaf20',
     'Protect and restore marine and freshwater ecosystems': '#007b6c',
-    'Public mobilisation and engagement': '#004b7f',
+    'Public mobilisation and engagement': '#9e83b6',
   };
   const width = {
     'Demo site': 6,
@@ -130,7 +130,7 @@ export function filterCases(cases, activeFilters, indicatorOnly) {
       flag_indicator = true;
     } else {
       let indicators = _case.properties.indicators?.map((item) => {
-        return item['id'].toString();
+        return '_' + item['id'].toString();
       });
 
       activeFilters.indicator_filter.forEach((filter) => {
@@ -188,9 +188,9 @@ export function getFilters(cases, indicatorOnly) {
     indicators.map((item) => {
       if (
         item['title'] &&
-        !_filters.indicator_filter.hasOwnProperty(item['id'])
+        !_filters.indicator_filter.hasOwnProperty('_' + item['id'])
       ) {
-        _filters.indicator_filter[item['id']] = item['title'];
+        _filters.indicator_filter['_' + item['id']] = item['title'];
       }
       return [];
     });
