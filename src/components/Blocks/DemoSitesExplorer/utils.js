@@ -187,7 +187,8 @@ export function getFilters(cases, indicatorOnly) {
     let indicators = _case.properties.indicators;
     indicators.map((item) => {
       if (
-        item['title'] && item['title'] != '0' &&
+        item['title'] &&
+        item['title'] != '0' &&
         !_filters.indicator_filter.hasOwnProperty('_' + item['id'])
       ) {
         _filters.indicator_filter['_' + item['id']] = item['title'];
