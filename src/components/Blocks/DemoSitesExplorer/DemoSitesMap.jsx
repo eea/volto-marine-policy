@@ -67,7 +67,7 @@ export default function DemoSitesMap(props) {
       pointsSource.addFeatures(getFeatures(activeItems));
       hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
     }
-  }, [map, activeItems, pointsSource]);
+  }, [map, activeItems, pointsSource, hideFilters]);
 
   React.useEffect(() => {
     if (!map) return null;
