@@ -78,24 +78,28 @@ export default function FeatureDisplay({ feature }) {
         ''
       )} */}
 
-      <div>
-        <span className="popup-title blue">Indicators</span>
-        <ul>
-          {feature.indicators.map((item, index) => {
-            return (
-              <li key={index}>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={item['path']}
-                >
-                  {item['title']}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {feature.indicators.length > 0 ? (
+        <div>
+          <span className="popup-title blue">Indicators</span>
+          <ul>
+            {feature.indicators.map((item, index) => {
+              return (
+                <li key={index}>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={item['path']}
+                  >
+                    {item['title']}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        ''
+      )}
       {/* <div>
         <h4>Indicators</h4>
         <ul>

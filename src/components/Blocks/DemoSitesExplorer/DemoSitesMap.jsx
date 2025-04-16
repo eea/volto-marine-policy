@@ -9,7 +9,7 @@ import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
-import { centerAndResetMapZoom, getFeatures } from './utils';
+import { centerAndResetMapZoom, getFeatures, zoomMapToFeatures } from './utils';
 
 const styleCache = {};
 const MapContextGateway = ({ setMap }) => {
@@ -60,11 +60,14 @@ export default function DemoSitesMap(props) {
   );
 
   React.useEffect(() => {
+    if (!map) return null;
+
     if (activeItems) {
       pointsSource.clear();
       pointsSource.addFeatures(getFeatures(activeItems));
+      hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
     }
-  }, [activeItems, pointsSource]);
+  }, [map, activeItems, pointsSource]);
 
   React.useEffect(() => {
     if (!map) return null;
@@ -134,7 +137,11 @@ export default function DemoSitesMap(props) {
             onClick={() => {
               // scrollToElement('search-input');
               onSelectedCase(null);
-              centerAndResetMapZoom(map);
+              if (hideFilters) {
+                zoomMapToFeatures(map, getFeatures(activeItems));
+              } else {
+                centerAndResetMapZoom(map);
+              }
               map.getInteractions().array_[9].getFeatures().clear();
             }}
           >
