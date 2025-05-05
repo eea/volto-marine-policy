@@ -137,6 +137,7 @@ export default function DemoSitesMap(props) {
             onClick={() => {
               // scrollToElement('search-input');
               onSelectedCase(null);
+              // clearFilters();
               if (hideFilters) {
                 zoomMapToFeatures(map, getFeatures(activeItems));
               } else {

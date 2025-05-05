@@ -141,12 +141,24 @@ export function DemoSitesFilters(props) {
           setActiveFilters={setActiveFilters}
           map={map}
           customOrder={[
-            'Protect and restore marine and freshwater ecosystems',
+            'Protecting and restoring marine and freshwater ecosystems and biodiversity',
             'Prevent and eliminate pollution of waters',
-            'Carbon-neutral and circular blue economy',
+            'Making the sustainable blue economy carbon-neutral and circular',
             'Digital twin of the ocean',
             'Public mobilisation and engagement',
           ]}
+        />
+      ) : (
+        ''
+      )}
+      {!hideFilters ? (
+        <DemoSitesFilter
+          filterTitle="Target"
+          filterName="target_filter"
+          filters={filters}
+          activeFilters={activeFilters}
+          setActiveFilters={setActiveFilters}
+          map={map}
         />
       ) : (
         ''
@@ -284,6 +296,7 @@ export function ActiveFilters(props) {
     }
     setActiveFilters({
       objective_filter: [],
+      target_filter: [],
       indicator_filter: [],
       project_filter: [],
       country_filter: [],
@@ -337,6 +350,31 @@ export function ActiveFilters(props) {
                       onKeyPress={() => {}}
                       onClick={() => {
                         removeFilter('objective_filter', filterCode);
+                        // scrollToElement('search-input');
+                      }}
+                      role="button"
+                      className="close icon"
+                    ></i>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            ''
+          )}
+          {activeFilters.target_filter.length > 0 ? (
+            <div className="filter-wrapper">
+              <div className="filter-label">Target:</div>
+              {activeFilters.target_filter.map((filterCode) => {
+                const filterLabel = filters.target_filter[filterCode];
+                return (
+                  <div className="ui basic label filter-value">
+                    <span>{filterLabel}</span>
+                    <i
+                      tabIndex="0"
+                      onKeyPress={() => {}}
+                      onClick={() => {
+                        removeFilter('target_filter', filterCode);
                         // scrollToElement('search-input');
                       }}
                       role="button"

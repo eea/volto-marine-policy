@@ -48,10 +48,12 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
   const colors = {
-    'Carbon-neutral and circular blue economy': '#f9eb8a',
+    'Making the sustainable blue economy carbon-neutral and circular':
+      '#f9eb8a',
     'Digital twin of the ocean': '#004b7f',
     'Prevent and eliminate pollution of waters': '#fdaf20',
-    'Protect and restore marine and freshwater ecosystems': '#007b6c',
+    'Protecting and restoring marine and freshwater ecosystems and biodiversity':
+      '#007b6c',
     'Public mobilisation and engagement': '#9e83b6',
   };
   const width = {
@@ -85,6 +87,7 @@ export function getFeatures(cases) {
         info: c.properties.info,
         website: c.properties.website,
         objective: c.properties.objective,
+        target: c.properties.target,
         description: c.properties.description,
         index: index,
         path: c.properties.path,
@@ -101,6 +104,7 @@ export function getFeatures(cases) {
 export function filterCases(cases, activeFilters, indicatorOnly) {
   const data = cases.filter((_case) => {
     let flag_objective = false;
+    let flag_target = false;
     let flag_indicator = false;
     let flag_project = false;
     let flag_country = false;
@@ -122,7 +126,17 @@ export function filterCases(cases, activeFilters, indicatorOnly) {
       let objective = _case.properties.objective;
 
       activeFilters.objective_filter.forEach((filter) => {
-        if (objective === filter) flag_objective = true;
+        if (objective?.includes(filter)) flag_objective = true;
+      });
+    }
+
+    if (!activeFilters.target_filter.length) {
+      flag_target = true;
+    } else {
+      let target = _case.properties.target;
+
+      activeFilters.target_filter.forEach((filter) => {
+        if (target?.includes(filter)) flag_target = true;
       });
     }
 
@@ -162,6 +176,7 @@ export function filterCases(cases, activeFilters, indicatorOnly) {
 
     return flag_indicatorOnly &&
       flag_objective &&
+      flag_target &&
       flag_indicator &&
       flag_country &&
       flag_project
@@ -175,6 +190,7 @@ export function filterCases(cases, activeFilters, indicatorOnly) {
 export function getFilters(cases, indicatorOnly) {
   let _filters = {
     objective_filter: {},
+    target_filter: {},
     indicator_filter: {},
     project_filter: {},
     country_filter: {},
@@ -197,9 +213,19 @@ export function getFilters(cases, indicatorOnly) {
     });
 
     let objective = _case.properties.objective;
-    if (objective && !_filters.objective_filter.hasOwnProperty(objective)) {
-      _filters.objective_filter[objective] = objective;
-    }
+    objective.map((item) => {
+      if (item && !_filters.objective_filter.hasOwnProperty(item)) {
+        _filters.objective_filter[item] = item;
+      }
+      return [];
+    });
+
+    let target = _case.properties.target;
+    target.map((item) => {
+      if (item && !_filters.target_filter.hasOwnProperty(item)) {
+        _filters.target_filter[item] = item;
+      }
+    });
 
     let project = _case.properties.project;
     if (project && !_filters.project_filter.hasOwnProperty(project)) {

@@ -66,6 +66,7 @@ export default function FeatureInteraction({ onFeatureSelect }) {
           //   center: selectedFeature.geometry.flatCoordinates,
           // });
         } else {
+          debugger;
           onFeatureSelect(null);
           zoomMapToFeatures(map, subfeatures);
         }

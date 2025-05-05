@@ -23,6 +23,7 @@ export default function DemoSitesExplorerView(props) {
 
   const [activeFilters, setActiveFilters] = React.useState({
     objective_filter: [],
+    target_filter: [],
     indicator_filter: [],
     project_filter: [],
     country_filter: [],
@@ -38,6 +39,7 @@ export default function DemoSitesExplorerView(props) {
   }, [
     cases,
     activeFilters.objective_filter,
+    activeFilters.target_filter,
     activeFilters.indicator_filter,
     activeFilters.project_filter,
     activeFilters.country_filter,
@@ -74,7 +76,7 @@ export default function DemoSitesExplorerView(props) {
       <Grid.Row>
         {cases.length ? (
           <Grid columns={12}>
-            <Grid.Column mobile={10} tablet={10} computer={10}>
+            <Grid.Column mobile={8} tablet={8} computer={8}>
               <DemoSitesMap
                 items={cases}
                 activeItems={activeItems}
@@ -85,22 +87,25 @@ export default function DemoSitesExplorerView(props) {
                 setMap={setMap}
               />
             </Grid.Column>
-            <Grid.Column mobile={2} tablet={2} computer={2}>
-              <div className="legend">
-                <div className="legend-row legend-subtitle">Legend</div>
-                <div className="legend-row">
-                  <div className="circle">
-                    <div className="dot-demosite"></div>
+            <Grid.Column mobile={4} tablet={4} computer={4}>
+              <Grid.Row>OBJECTIVES CHART and FILTER</Grid.Row>
+              <Grid.Row>
+                <div className="legend">
+                  <div className="legend-row legend-subtitle">Legend</div>
+                  <div className="legend-row">
+                    <div className="circle">
+                      <div className="dot-demosite"></div>
+                    </div>
+                    <div>Demo site</div>
                   </div>
-                  <div>Demo site</div>
-                </div>
-                <div className="legend-row">
-                  <div className="circle">
-                    <div className="dot-region"></div>
+                  <div className="legend-row">
+                    <div className="circle">
+                      <div className="dot-region"></div>
+                    </div>
+                    <div>Associated region</div>
                   </div>
-                  <div>Associated region</div>
                 </div>
-              </div>
+              </Grid.Row>
             </Grid.Column>
           </Grid>
         ) : null}
