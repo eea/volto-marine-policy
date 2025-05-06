@@ -2,7 +2,7 @@
   padding-top: 2em;
 }
 
-#csepopup > span {
+#csepopup>span {
   display: 'block';
   margin-bottom: '10px';
   background-color: '#ddd';
@@ -381,6 +381,7 @@
 }
 
 .ol-zoom.ol-control {
+
   .ol-zoom-in,
   .ol-zoom-out {
     background-color: rgba(0, 131, 224, 0.5);
@@ -388,7 +389,7 @@
 }
 
 .legend {
-  position: absolute;
+  // position: absolute;
   bottom: 2em;
   display: flex;
   flex-direction: row;
@@ -440,10 +441,18 @@
   }
 }
 
+.right-side-filters {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .objectives-chart {
   &.fade-in {
     animation: fadeIn 1s ease-in forwards;
-    opacity: 0; /* Start invisible */
+    opacity: 0;
+    /* Start invisible */
   }
 
   @keyframes fadeIn {
@@ -474,7 +483,7 @@
     display: flex;
     flex-direction: column;
     padding-left: 1.3em;
-    gap: 0.7em;
+    gap: 0.5em;
     list-style: none;
   }
 
@@ -521,8 +530,8 @@
       font-weight: 500;
 
       &::before {
-        width: 2em;
-        height: 0.7em;
+        width: 1em;
+        height: 1em;
       }
     }
   }

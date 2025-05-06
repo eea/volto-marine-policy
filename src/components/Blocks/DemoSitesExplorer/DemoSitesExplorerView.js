@@ -92,7 +92,12 @@ export default function DemoSitesExplorerView(props) {
                 setHighlightedIndex={setHighlightedIndex}
               />
             </Grid.Column>
-            <Grid.Column mobile={4} tablet={4} computer={4}>
+            <Grid.Column
+              mobile={4}
+              tablet={4}
+              computer={4}
+              className="right-side-filters"
+            >
               <Grid.Row>
                 {!hideFilters ? (
                   <ObjectivesChart

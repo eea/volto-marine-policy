@@ -30,6 +30,7 @@ const ObjectivesChart = ({
     for (const item of items) {
       item.properties.objective.map((obj) => {
         objectiveCounts[obj] = (objectiveCounts[obj] || 0) + 1;
+        return;
       });
     }
     const _sorted = Object.entries(objectiveCounts).sort(
@@ -39,7 +40,40 @@ const ObjectivesChart = ({
     );
     const sortedObjectiveCounts = Object.fromEntries(_sorted);
     setObjectives(sortedObjectiveCounts);
+
+    // cycle through objectives on by one
+    setHighlightedIndex(-1);
+
+    const interval = setInterval(() => {
+      setHighlightedIndex((prevIndex) => {
+        if (prevIndex + 1 >= Object.keys(sortedObjectiveCounts).length + 1) {
+          clearInterval(interval); // Stop after last item
+          return prevIndex;
+        }
+        return prevIndex + 1;
+      });
+    }, 2000); // Highlight one item per second
+
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
+
+  // React.useEffect(() => {
+  //   // cycle through objectives on by one
+  //   if (!objectives) return;
+  //   setHighlightedIndex(-1);
+
+  //   const interval = setInterval(() => {
+  //     setHighlightedIndex((prevIndex) => {
+  //       if (prevIndex + 1 >= Object.keys(objectives).length + 1) {
+  //         clearInterval(interval); // Stop after last item
+  //         return prevIndex;
+  //       }
+  //       return prevIndex + 1;
+  //     });
+  //   }, 2000); // Highlight one item per second
+
+  //   return () => clearInterval(interval); // Cleanup on unmount
+  // }, [objectives]);
 
   React.useEffect(() => {
     // set the objective filter by the current index
@@ -54,34 +88,23 @@ const ObjectivesChart = ({
     setActiveFilters(tempFilters);
   }, [highlightedIndex]);
 
-  React.useEffect(() => {
-    // cycle through objectives on by one
-    if (!objectives) return;
-    setHighlightedIndex(-1);
-
-    const interval = setInterval(() => {
-      setHighlightedIndex((prevIndex) => {
-        if (prevIndex + 1 >= Object.keys(objectives).length + 1) {
-          clearInterval(interval); // Stop after last item
-          return prevIndex;
-        }
-        return prevIndex + 1;
-      });
-    }, 2000); // Highlight one item per second
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [objectives]);
-
   const handleClick = (event) => {
     const point = event.points[0];
     const label = point.label;
-    const value = point.value;
+    // const value = point.value;
 
     const tempFilters = JSON.parse(JSON.stringify(activeFilters));
-    tempFilters['objective_filter'] = [];
-    tempFilters['objective_filter'].push(label);
+    if (tempFilters['objective_filter'].includes(label)) {
+      tempFilters['objective_filter'] = tempFilters['objective_filter'].filter(
+        (i) => i !== label,
+      );
+      setHighlightedIndex(5);
+    } else {
+      tempFilters['objective_filter'] = [];
+      tempFilters['objective_filter'].push(label);
+      setHighlightedIndex(Object.keys(objectives).indexOf(label));
+    }
     setActiveFilters(tempFilters);
-    setHighlightedIndex(Object.keys(objectives).indexOf(label));
   };
 
   const handleHover = () => {
@@ -106,7 +129,7 @@ const ObjectivesChart = ({
     i === highlightedIndex ? customColors[i % customColors.length] : grayColor,
   );
 
-  console.log(highlightedIndex);
+  // console.log(highlightedIndex);
 
   return highlightedIndex >= -1 ? (
     <div className="objectives-chart fade-in">

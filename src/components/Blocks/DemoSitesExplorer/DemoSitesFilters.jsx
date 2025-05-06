@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   centerAndResetMapZoom,
-  objectivesCustomOrder,
   clearFilters,
 } from './utils';
 
@@ -276,15 +275,16 @@ export function SearchBox(props) {
 
 export function ActiveFilters(props) {
   const { filters, activeFilters, setActiveFilters } = props;
-  const hasActiveFilters = Object.entries(activeFilters).some(
-    ([filterName, filterList]) => {
-      return false;
-      if (filterList.length > 0) {
-        return true;
-      }
-      return false;
-    },
-  );
+  const hasActiveFilters = false;
+  // const hasActiveFilters = Object.entries(activeFilters).some(
+  //   ([filterName, filterList]) => {
+  //     return false;
+  //     if (filterList.length > 0) {
+  //       return true;
+  //     }
+  //     return false;
+  //   },
+  // );
 
   const removeFilter = (filterName, filterCode) => {
     const temp = JSON.parse(JSON.stringify(activeFilters));

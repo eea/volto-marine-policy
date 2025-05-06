@@ -10,7 +10,7 @@ import FeatureInteraction from './FeatureInteraction';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
 import {
-  centerAndResetMapZoom,
+  // centerAndResetMapZoom,
   clearFilters,
   getFeatures,
   zoomMapToFeatures,
