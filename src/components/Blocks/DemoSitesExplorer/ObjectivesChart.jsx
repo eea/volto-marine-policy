@@ -50,43 +50,23 @@ const ObjectivesChart = ({
           clearInterval(interval); // Stop after last item
           return prevIndex;
         }
+
+        const tempFilters = JSON.parse(JSON.stringify(activeFilters));
+        const currentObjective = Object.keys(sortedObjectiveCounts)[
+          prevIndex + 1
+        ];
+        tempFilters['objective_filter'] = [];
+        if (currentObjective) {
+          tempFilters['objective_filter'].push(currentObjective);
+        }
+        setActiveFilters(tempFilters);
+
         return prevIndex + 1;
       });
     }, 2000); // Highlight one item per second
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
-
-  // React.useEffect(() => {
-  //   // cycle through objectives on by one
-  //   if (!objectives) return;
-  //   setHighlightedIndex(-1);
-
-  //   const interval = setInterval(() => {
-  //     setHighlightedIndex((prevIndex) => {
-  //       if (prevIndex + 1 >= Object.keys(objectives).length + 1) {
-  //         clearInterval(interval); // Stop after last item
-  //         return prevIndex;
-  //       }
-  //       return prevIndex + 1;
-  //     });
-  //   }, 2000); // Highlight one item per second
-
-  //   return () => clearInterval(interval); // Cleanup on unmount
-  // }, [objectives]);
-
-  React.useEffect(() => {
-    // set the objective filter by the current index
-    if (highlightedIndex < 0) return;
-
-    const tempFilters = JSON.parse(JSON.stringify(activeFilters));
-    const currentObjective = Object.keys(objectives)[highlightedIndex];
-    tempFilters['objective_filter'] = [];
-    if (currentObjective) {
-      tempFilters['objective_filter'].push(currentObjective);
-    }
-    setActiveFilters(tempFilters);
-  }, [highlightedIndex]);
 
   const handleClick = (event) => {
     const point = event.points[0];
