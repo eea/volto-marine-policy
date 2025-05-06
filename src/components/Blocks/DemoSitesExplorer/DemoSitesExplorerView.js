@@ -104,7 +104,7 @@ export default function DemoSitesExplorerView(props) {
                     setActiveFilters={setActiveFilters}
                     map={map}
                     highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}    
+                    setHighlightedIndex={setHighlightedIndex}
                   />
                 ) : (
                   ''
