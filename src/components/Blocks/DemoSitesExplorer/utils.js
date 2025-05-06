@@ -64,15 +64,15 @@ export function getExtentOfFeatures(features) {
 
 export function zoomMapToFeatures(map, features, threshold = 500) {
   const extent = getExtentOfFeatures(features);
-  
+
   // let extentBuffer = (extent[3] - extent[1] + extent[2] - extent[0]) / 4;
   // extentBuffer = extentBuffer < threshold ? threshold : extentBuffer;
   // const paddedExtent = ol.extent.buffer(extent, extentBuffer);
-  
+
   const width = extent[2] - extent[0];
   const height = extent[3] - extent[1];
   const bufferFactor = 0.05; // 5% buffer
-  
+
   let extentBuffer = Math.max(width, height) * bufferFactor;
   extentBuffer = extentBuffer < threshold ? threshold : extentBuffer;
   const paddedExtent = ol.extent.buffer(extent, extentBuffer);

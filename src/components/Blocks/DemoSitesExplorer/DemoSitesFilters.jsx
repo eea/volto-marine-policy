@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  centerAndResetMapZoom,
-  clearFilters,
-} from './utils';
+import { centerAndResetMapZoom, clearFilters } from './utils';
 
 const normalizeSearchInput = (searchInput) => {
   let normInput = searchInput
