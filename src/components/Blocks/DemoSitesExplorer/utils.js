@@ -1,5 +1,30 @@
 import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
+export const objectivesCustomOrder = [
+  'Protecting and restoring marine and freshwater ecosystems and biodiversity',
+  'Prevent and eliminate pollution of waters',
+  'Making the sustainable blue economy carbon-neutral and circular',
+  'Digital twin of the ocean',
+  'Public mobilisation and engagement',
+];
+
+export const clearFilters = (setActiveFilters) => {
+  const filterInputs = document.querySelectorAll(
+    '#cse-filter .filter-input input',
+  );
+  for (let i = 0; i < filterInputs.length; i++) {
+    filterInputs[i].checked = false;
+  }
+  setActiveFilters({
+    objective_filter: [],
+    target_filter: [],
+    indicator_filter: [],
+    project_filter: [],
+    country_filter: [],
+  });
+  // scrollToElement('search-input');
+};
+
 export const truncateText = (str, max = 50) => {
   if (str.length <= max) {
     return str;
@@ -42,18 +67,22 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
   let extentBuffer = (extent[3] - extent[1] + extent[2] - extent[0]) / 4;
   extentBuffer = extentBuffer < threshold ? threshold : extentBuffer;
   const paddedExtent = ol.extent.buffer(extent, extentBuffer);
-  map.getView().fit(paddedExtent, { ...map.getSize(), duration: 1000 });
+  try {
+    map.getView().fit(paddedExtent, { ...map.getSize(), duration: 1000 });
+  } catch (error) {
+    // no features available, zooming fails
+  }
 }
 
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
   const colors = {
-    'Making the sustainable blue economy carbon-neutral and circular':
-      '#f9eb8a',
-    'Digital twin of the ocean': '#004b7f',
-    'Prevent and eliminate pollution of waters': '#fdaf20',
     'Protecting and restoring marine and freshwater ecosystems and biodiversity':
       '#007b6c',
+    'Prevent and eliminate pollution of waters': '#fdaf20',
+    'Making the sustainable blue economy carbon-neutral and circular':
+      '#004b7f',
+    'Digital twin of the ocean': '#f9eb8a',
     'Public mobilisation and engagement': '#9e83b6',
   };
   const width = {
@@ -91,7 +120,7 @@ export function getFeatures(cases) {
         description: c.properties.description,
         index: index,
         path: c.properties.path,
-        color: colors[c.properties.objective] || '#B83230',
+        color: colors[c.properties.objective[0]] || '#B83230',
         width: width[c.properties.type_is_region],
         radius: radius[c.properties.type_is_region],
       },

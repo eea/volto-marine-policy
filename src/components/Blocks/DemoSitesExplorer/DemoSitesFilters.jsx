@@ -1,6 +1,10 @@
 import React from 'react';
 
-import { centerAndResetMapZoom } from './utils';
+import {
+  centerAndResetMapZoom,
+  objectivesCustomOrder,
+  clearFilters,
+} from './utils';
 
 const normalizeSearchInput = (searchInput) => {
   let normInput = searchInput
@@ -132,7 +136,7 @@ export function DemoSitesFilters(props) {
 
   return (
     <>
-      {!hideFilters ? (
+      {/* {!hideFilters ? (
         <DemoSitesFilter
           filterTitle="Objective/Enabler"
           filterName="objective_filter"
@@ -140,17 +144,11 @@ export function DemoSitesFilters(props) {
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
           map={map}
-          customOrder={[
-            'Protecting and restoring marine and freshwater ecosystems and biodiversity',
-            'Prevent and eliminate pollution of waters',
-            'Making the sustainable blue economy carbon-neutral and circular',
-            'Digital twin of the ocean',
-            'Public mobilisation and engagement',
-          ]}
+          customOrder={objectivesCustomOrder}
         />
       ) : (
         ''
-      )}
+      )} */}
       {!hideFilters ? (
         <DemoSitesFilter
           filterTitle="Target"
@@ -280,29 +278,13 @@ export function ActiveFilters(props) {
   const { filters, activeFilters, setActiveFilters } = props;
   const hasActiveFilters = Object.entries(activeFilters).some(
     ([filterName, filterList]) => {
+      return false;
       if (filterList.length > 0) {
         return true;
       }
       return false;
     },
   );
-
-  const clearFilters = () => {
-    const filterInputs = document.querySelectorAll(
-      '#cse-filter .filter-input input',
-    );
-    for (let i = 0; i < filterInputs.length; i++) {
-      filterInputs[i].checked = false;
-    }
-    setActiveFilters({
-      objective_filter: [],
-      target_filter: [],
-      indicator_filter: [],
-      project_filter: [],
-      country_filter: [],
-    });
-    // scrollToElement('search-input');
-  };
 
   const removeFilter = (filterName, filterCode) => {
     const temp = JSON.parse(JSON.stringify(activeFilters));
@@ -329,7 +311,7 @@ export function ActiveFilters(props) {
       <div className="filter-list-header">
         <h4 className="filter-list-title">Active filters</h4>
         <button
-          onClick={clearFilters}
+          onClick={() => clearFilters(setActiveFilters)}
           className="ui mini basic compact button clear-btn"
         >
           clear all
