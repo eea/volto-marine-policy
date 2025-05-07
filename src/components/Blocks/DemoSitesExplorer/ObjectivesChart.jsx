@@ -18,36 +18,33 @@ const ObjectivesChart = ({
   highlightedIndex,
   setHighlightedIndex,
 }) => {
-  const [objectives, setObjectives] = React.useState({});
   const chartRef = useRef(null);
+  const objectiveCounts = {};
+
+  for (const item of items) {
+    item.properties.objective.map((obj) => {
+      objectiveCounts[obj] = (objectiveCounts[obj] || 0) + 1;
+      return [];
+    });
+  }
+  const _sorted = Object.entries(objectiveCounts).sort(
+    (a, b) =>
+      objectivesCustomOrder.indexOf(a[0]) -
+      objectivesCustomOrder.indexOf(b[0]),
+  );
+  const objectives = Object.fromEntries(_sorted);
 
   React.useEffect(() => {
     // set the objectives and the count
     if (!items) return;
     if (highlightedIndex >= 0) return;
 
-    const objectiveCounts = {};
-
-    for (const item of items) {
-      item.properties.objective.map((obj) => {
-        objectiveCounts[obj] = (objectiveCounts[obj] || 0) + 1;
-        return [];
-      });
-    }
-    const _sorted = Object.entries(objectiveCounts).sort(
-      (a, b) =>
-        objectivesCustomOrder.indexOf(a[0]) -
-        objectivesCustomOrder.indexOf(b[0]),
-    );
-    const sortedObjectiveCounts = Object.fromEntries(_sorted);
-    setObjectives(sortedObjectiveCounts);
-
     // cycle through objectives on by one
     setHighlightedIndex(-1);
 
     const interval = setInterval(() => {
       setHighlightedIndex((prevIndex) => {
-        if (prevIndex + 1 >= Object.keys(sortedObjectiveCounts).length + 1) {
+        if (prevIndex + 1 >= Object.keys(objectives).length + 1) {
           clearInterval(interval); // Stop after last item
           return prevIndex;
         }
@@ -55,11 +52,12 @@ const ObjectivesChart = ({
       });
     }, 2000);
 
-    console.log('1');
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [items]);
+  }, [items, setHighlightedIndex]);
 
   React.useEffect(() => {
+    if (!objectives) return;
+
     const currentObjective = Object.keys(objectives)[highlightedIndex];
     const filterKey = 'objective_filter';
     const newValue = currentObjective ? [currentObjective] : [];
@@ -120,8 +118,6 @@ const ObjectivesChart = ({
   const inactiveColors = labels.map((_, i) =>
     i === highlightedIndex ? customColors[i % customColors.length] : grayColor,
   );
-
-  // console.log(highlightedIndex);
 
   return highlightedIndex >= -1 ? (
     <div className="objectives-chart fade-in">
