@@ -2,10 +2,11 @@ import React from 'react';
 import { Grid } from 'semantic-ui-react'; // Dropdown,
 import { addAppURL } from '@plone/volto/helpers';
 import config from '@plone/volto/registry';
+import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
+
 import DemoSitesMap from './DemoSitesMap';
 import { ActiveFilters, DemoSitesFilters } from './DemoSitesFilters';
 import ObjectivesChart from './ObjectivesChart';
-
 import { filterCases, getFilters } from './utils';
 import { useCases } from './hooks';
 
@@ -100,17 +101,19 @@ export default function DemoSitesExplorerView(props) {
             >
               <Grid.Row>
                 {!hideFilters ? (
-                  <ObjectivesChart
-                    items={cases}
-                    activeItems={activeItems}
-                    filters={filters}
-                    activeFilters={activeFilters}
-                    hideFilters={hideFilters}
-                    setActiveFilters={setActiveFilters}
-                    map={map}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
+                  <VisibilitySensor>
+                    <ObjectivesChart
+                      items={cases}
+                      activeItems={activeItems}
+                      filters={filters}
+                      activeFilters={activeFilters}
+                      hideFilters={hideFilters}
+                      setActiveFilters={setActiveFilters}
+                      map={map}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  </VisibilitySensor>
                 ) : (
                   ''
                 )}

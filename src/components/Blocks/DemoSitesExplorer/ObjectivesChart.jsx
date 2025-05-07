@@ -9,7 +9,7 @@ const Plot = loadable(() => import('react-plotly.js'));
 
 const ObjectivesChart = ({
   items,
-  //   activeItems,
+  // activeItems,
   //   filters,
   activeFilters,
   setActiveFilters,
@@ -50,12 +50,22 @@ const ObjectivesChart = ({
         return prevIndex + 1;
       });
     }, 2000);
+    // console.log('init');
     return () => clearInterval(interval); // Cleanup on unmount
   }, [items, objectivesLength, highlightedIndex, setHighlightedIndex]);
 
   React.useEffect(() => {
     // if (!objectives) return;
-    if (highlightedIndex === -1) return;
+    if (highlightedIndex === -1) {
+      setActiveFilters({
+        objective_filter: [undefined],
+        target_filter: [],
+        indicator_filter: [],
+        project_filter: [],
+        country_filter: [],
+      });
+      return;
+    }
 
     const currentObjective = Object.keys(objectives)[highlightedIndex];
     const filterKey = 'objective_filter';
@@ -75,6 +85,7 @@ const ObjectivesChart = ({
         [filterKey]: newValue,
       };
     });
+    // console.log(highlightedIndex, activeFilters);
   }, [objectives, activeFilters, setActiveFilters, highlightedIndex]);
 
   const handleClick = (event) => {

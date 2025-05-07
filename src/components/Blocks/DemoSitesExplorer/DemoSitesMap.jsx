@@ -130,7 +130,7 @@ export default function DemoSitesMap(props) {
         view={{
           center: ol.proj.fromLonLat([10, 54]),
           showFullExtent: true,
-          zoom: 2.5,
+          zoom: 3,
         }}
         pixelRatio={1}
         // controls={ol.control.defaults({ attribution: false })}
