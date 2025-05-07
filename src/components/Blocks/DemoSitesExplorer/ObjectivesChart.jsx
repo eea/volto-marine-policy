@@ -32,30 +32,28 @@ const ObjectivesChart = ({
       objectivesCustomOrder.indexOf(a[0]) - objectivesCustomOrder.indexOf(b[0]),
   );
   const objectives = Object.fromEntries(_sorted);
+  const objectivesLength = Object.keys(objectives).length;
 
   React.useEffect(() => {
     // set the objectives and the count
     if (!items) return;
-    if (highlightedIndex >= 0) return;
-
-    // cycle through objectives on by one
-    setHighlightedIndex(-1);
 
     const interval = setInterval(() => {
       setHighlightedIndex((prevIndex) => {
-        if (prevIndex + 1 >= Object.keys(objectives).length + 1) {
+        if (prevIndex + 1 >= objectivesLength + 1) {
           clearInterval(interval); // Stop after last item
           return prevIndex;
         }
         return prevIndex + 1;
       });
     }, 2000);
-
+    console.log('1', highlightedIndex);
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [items, setHighlightedIndex]);
+  }, [items, objectivesLength, highlightedIndex, setHighlightedIndex]);
 
   React.useEffect(() => {
-    if (!objectives) return;
+    // if (!objectives) return;
+    if (highlightedIndex === -1) return;
 
     const currentObjective = Object.keys(objectives)[highlightedIndex];
     const filterKey = 'objective_filter';
@@ -75,7 +73,8 @@ const ObjectivesChart = ({
         [filterKey]: newValue,
       };
     });
-  }, [activeFilters, setActiveFilters, highlightedIndex]);
+    console.log('2',highlightedIndex);
+  }, [objectives, activeFilters, setActiveFilters, highlightedIndex]);
 
   const handleClick = (event) => {
     const point = event.points[0];
