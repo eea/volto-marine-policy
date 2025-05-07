@@ -24,13 +24,14 @@ const ObjectivesChart = ({
   React.useEffect(() => {
     // set the objectives and the count
     if (!items) return;
+    if (highlightedIndex >= 0) return;
 
     const objectiveCounts = {};
 
     for (const item of items) {
       item.properties.objective.map((obj) => {
         objectiveCounts[obj] = (objectiveCounts[obj] || 0) + 1;
-        return;
+        return [];
       });
     }
     const _sorted = Object.entries(objectiveCounts).sort(
@@ -50,23 +51,34 @@ const ObjectivesChart = ({
           clearInterval(interval); // Stop after last item
           return prevIndex;
         }
-
-        const tempFilters = JSON.parse(JSON.stringify(activeFilters));
-        const currentObjective = Object.keys(sortedObjectiveCounts)[
-          prevIndex + 1
-        ];
-        tempFilters['objective_filter'] = [];
-        if (currentObjective) {
-          tempFilters['objective_filter'].push(currentObjective);
-        }
-        setActiveFilters(tempFilters);
-
         return prevIndex + 1;
       });
-    }, 2000); // Highlight one item per second
+    }, 2000);
 
+    console.log('1');
     return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  }, [items]);
+
+  React.useEffect(() => {
+    const currentObjective = Object.keys(objectives)[highlightedIndex];
+    const filterKey = 'objective_filter';
+    const newValue = currentObjective ? [currentObjective] : [];
+
+    setActiveFilters((prev) => {
+      const currentValues = prev[filterKey];
+      // Don't update if no change
+      const isSame =
+        currentValues.length === newValue.length &&
+        currentValues.every((v, i) => v === newValue[i]);
+
+      if (isSame) return prev;
+
+      return {
+        ...prev,
+        [filterKey]: newValue,
+      };
+    });
+  }, [activeFilters, setActiveFilters, highlightedIndex]);
 
   const handleClick = (event) => {
     const point = event.points[0];
@@ -130,7 +142,7 @@ const ObjectivesChart = ({
                 // textinfo: highlightedIndex === 5 ? 'value' : 'none',
                 hole: 0.4,
                 insidetextorientation: 'radial',
-                hoverinfo: 'label',
+                hoverinfo: 'label+value',
                 marker: {
                   colors:
                     highlightedIndex === 5 ? customColors : inactiveColors, // Apply custom colors here

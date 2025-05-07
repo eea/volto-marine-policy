@@ -269,6 +269,7 @@ export function getFilters(cases, indicatorOnly) {
       if (item && !_filters.target_filter.hasOwnProperty(item)) {
         _filters.target_filter[item] = item;
       }
+      return [];
     });
 
     let project = _case.properties.project;
