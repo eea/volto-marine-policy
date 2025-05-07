@@ -47,7 +47,6 @@ const ObjectivesChart = ({
         return prevIndex + 1;
       });
     }, 2000);
-    console.log('1', highlightedIndex);
     return () => clearInterval(interval); // Cleanup on unmount
   }, [items, objectivesLength, highlightedIndex, setHighlightedIndex]);
 
@@ -73,7 +72,6 @@ const ObjectivesChart = ({
         [filterKey]: newValue,
       };
     });
-    console.log('2', highlightedIndex);
   }, [objectives, activeFilters, setActiveFilters, highlightedIndex]);
 
   const handleClick = (event) => {
