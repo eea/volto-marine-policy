@@ -18,6 +18,7 @@ const ObjectivesChart = ({
   highlightedIndex,
   setHighlightedIndex,
 }) => {
+  const initialized = useRef(false);
   const chartRef = useRef(null);
   const objectiveCounts = {};
 
@@ -37,11 +38,13 @@ const ObjectivesChart = ({
   React.useEffect(() => {
     // set the objectives and the count
     if (!items) return;
+    if (initialized.current) return;
 
     const interval = setInterval(() => {
       setHighlightedIndex((prevIndex) => {
         if (prevIndex + 1 >= objectivesLength + 1) {
           clearInterval(interval); // Stop after last item
+          initialized.current = true;
           return prevIndex;
         }
         return prevIndex + 1;

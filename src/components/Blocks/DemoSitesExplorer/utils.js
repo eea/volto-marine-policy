@@ -1,11 +1,11 @@
 import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 
 export const objectivesCustomOrder = [
-  'Protecting and restoring marine and freshwater ecosystems and biodiversity',
-  'Prevent and eliminate pollution of waters',
-  'Making the sustainable blue economy carbon-neutral and circular',
-  'Digital twin of the ocean',
-  'Public mobilisation and engagement',
+  'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity',
+  'Objective 2: Prevent and eliminate pollution of our oceans, seas and waters',
+  'Objective 3: Make the sustainable blue economy carbon-neutral and circular',
+  'Enabler 1: Digital twin of the ocean',
+  'Enabler 2: Public mobilisation and engagement',
 ];
 
 export const clearFilters = (setActiveFilters) => {
@@ -92,13 +92,14 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
 export function getFeatures(cases) {
   const Feature = ol.ol.Feature;
   const colors = {
-    'Protecting and restoring marine and freshwater ecosystems and biodiversity':
+    'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity':
       '#007b6c',
-    'Prevent and eliminate pollution of waters': '#fdaf20',
-    'Making the sustainable blue economy carbon-neutral and circular':
+    'Objective 2: Prevent and eliminate pollution of our oceans, seas and waters':
+      '#fdaf20',
+    'Objective 3: Make the sustainable blue economy carbon-neutral and circular':
       '#004b7f',
-    'Digital twin of the ocean': '#f9eb8a',
-    'Public mobilisation and engagement': '#9e83b6',
+    'Enabler 1: Digital twin of the ocean': '#f9eb8a',
+    'Enabler 2: Public mobilisation and engagement': '#9e83b6',
   };
   const width = {
     'Demo site': 6,
