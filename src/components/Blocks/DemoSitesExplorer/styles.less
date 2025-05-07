@@ -388,12 +388,12 @@
 }
 
 .legend {
-  position: absolute;
+  // position: absolute;
   bottom: 2em;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  gap: 0.5em;
+  gap: 1em;
 
   .legend-row {
     display: flex;
@@ -437,5 +437,101 @@
     border-radius: 50%;
     background-color: white;
     transform: translate(-50%, -50%);
+  }
+}
+
+.right-side-filters {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.objectives-chart {
+  &.fade-in {
+    animation: fadeIn 1s ease-in forwards;
+    opacity: 0;
+    /* Start invisible */
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .main-svg {
+    overflow: visible !important;
+  }
+
+  .hoverlayer {
+    overflow: visible !important;
+  }
+
+  .chart-title {
+    font-size: 1em;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .chart-container {
+    text-align: center;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1.3em;
+    gap: 0.5em;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 0.8em;
+    line-height: 1.5em;
+
+    &.C007b6c::before {
+      background-color: #007b6c;
+    }
+
+    &.Cfdaf20::before {
+      background-color: #fdaf20;
+    }
+
+    &.C004b7f::before {
+      background-color: #004b7f;
+    }
+
+    &.Cf9eb8a::before {
+      background-color: #f9eb8a;
+    }
+
+    &.C9e83b6::before {
+      background-color: #9e83b6;
+    }
+
+    &::before {
+      width: 0.7em;
+      height: 0.7em;
+      flex-shrink: 0;
+      border-radius: 2px;
+      /* change as needed */
+      margin-right: 8px;
+      content: '';
+    }
+
+    &.active {
+      font-size: 1em;
+      // color: red;
+      font-weight: 500;
+
+      &::before {
+        width: 1em;
+        height: 1em;
+      }
+    }
   }
 }

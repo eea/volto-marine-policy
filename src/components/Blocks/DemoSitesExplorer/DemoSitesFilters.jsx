@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { centerAndResetMapZoom } from './utils';
+import { centerAndResetMapZoom, clearFilters } from './utils';
 
 const normalizeSearchInput = (searchInput) => {
   let normInput = searchInput
@@ -132,7 +132,7 @@ export function DemoSitesFilters(props) {
 
   return (
     <>
-      {!hideFilters ? (
+      {/* {!hideFilters ? (
         <DemoSitesFilter
           filterTitle="Objective/Enabler"
           filterName="objective_filter"
@@ -140,13 +140,19 @@ export function DemoSitesFilters(props) {
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
           map={map}
-          customOrder={[
-            'Protect and restore marine and freshwater ecosystems',
-            'Prevent and eliminate pollution of waters',
-            'Carbon-neutral and circular blue economy',
-            'Digital twin of the ocean',
-            'Public mobilisation and engagement',
-          ]}
+          customOrder={objectivesCustomOrder}
+        />
+      ) : (
+        ''
+      )} */}
+      {!hideFilters ? (
+        <DemoSitesFilter
+          filterTitle="Target"
+          filterName="target_filter"
+          filters={filters}
+          activeFilters={activeFilters}
+          setActiveFilters={setActiveFilters}
+          map={map}
         />
       ) : (
         ''
@@ -266,30 +272,16 @@ export function SearchBox(props) {
 
 export function ActiveFilters(props) {
   const { filters, activeFilters, setActiveFilters } = props;
-  const hasActiveFilters = Object.entries(activeFilters).some(
-    ([filterName, filterList]) => {
-      if (filterList.length > 0) {
-        return true;
-      }
-      return false;
-    },
-  );
-
-  const clearFilters = () => {
-    const filterInputs = document.querySelectorAll(
-      '#cse-filter .filter-input input',
-    );
-    for (let i = 0; i < filterInputs.length; i++) {
-      filterInputs[i].checked = false;
-    }
-    setActiveFilters({
-      objective_filter: [],
-      indicator_filter: [],
-      project_filter: [],
-      country_filter: [],
-    });
-    // scrollToElement('search-input');
-  };
+  const hasActiveFilters = false;
+  // const hasActiveFilters = Object.entries(activeFilters).some(
+  //   ([filterName, filterList]) => {
+  //     return false;
+  //     if (filterList.length > 0) {
+  //       return true;
+  //     }
+  //     return false;
+  //   },
+  // );
 
   const removeFilter = (filterName, filterCode) => {
     const temp = JSON.parse(JSON.stringify(activeFilters));
@@ -316,7 +308,7 @@ export function ActiveFilters(props) {
       <div className="filter-list-header">
         <h4 className="filter-list-title">Active filters</h4>
         <button
-          onClick={clearFilters}
+          onClick={() => clearFilters(setActiveFilters)}
           className="ui mini basic compact button clear-btn"
         >
           clear all
@@ -337,6 +329,31 @@ export function ActiveFilters(props) {
                       onKeyPress={() => {}}
                       onClick={() => {
                         removeFilter('objective_filter', filterCode);
+                        // scrollToElement('search-input');
+                      }}
+                      role="button"
+                      className="close icon"
+                    ></i>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            ''
+          )}
+          {activeFilters.target_filter.length > 0 ? (
+            <div className="filter-wrapper">
+              <div className="filter-label">Target:</div>
+              {activeFilters.target_filter.map((filterCode) => {
+                const filterLabel = filters.target_filter[filterCode];
+                return (
+                  <div className="ui basic label filter-value">
+                    <span>{filterLabel}</span>
+                    <i
+                      tabIndex="0"
+                      onKeyPress={() => {}}
+                      onClick={() => {
+                        removeFilter('target_filter', filterCode);
                         // scrollToElement('search-input');
                       }}
                       role="button"

@@ -9,7 +9,12 @@ import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
-import { centerAndResetMapZoom, getFeatures, zoomMapToFeatures } from './utils';
+import {
+  // centerAndResetMapZoom,
+  clearFilters,
+  getFeatures,
+  zoomMapToFeatures,
+} from './utils';
 
 const styleCache = {};
 const MapContextGateway = ({ setMap }) => {
@@ -24,11 +29,13 @@ export default function DemoSitesMap(props) {
   const {
     items,
     activeItems,
+    setActiveFilters,
     hideFilters,
     selectedCase,
     onSelectedCase,
     map,
     setMap,
+    setHighlightedIndex,
   } = props;
   const features = getFeatures(items);
   const [resetMapButtonClass, setResetMapButtonClass] =
@@ -65,7 +72,8 @@ export default function DemoSitesMap(props) {
     if (activeItems) {
       pointsSource.clear();
       pointsSource.addFeatures(getFeatures(activeItems));
-      hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
+      // hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
+      zoomMapToFeatures(map, getFeatures(activeItems));
     }
   }, [map, activeItems, pointsSource, hideFilters]);
 
@@ -122,7 +130,7 @@ export default function DemoSitesMap(props) {
         view={{
           center: ol.proj.fromLonLat([10, 54]),
           showFullExtent: true,
-          zoom: 2.5,
+          zoom: 3,
         }}
         pixelRatio={1}
         // controls={ol.control.defaults({ attribution: false })}
@@ -137,15 +145,18 @@ export default function DemoSitesMap(props) {
             onClick={() => {
               // scrollToElement('search-input');
               onSelectedCase(null);
+              clearFilters(setActiveFilters);
+              setHighlightedIndex(5);
               if (hideFilters) {
                 zoomMapToFeatures(map, getFeatures(activeItems));
               } else {
-                centerAndResetMapZoom(map);
+                // centerAndResetMapZoom(map);
+                zoomMapToFeatures(map, getFeatures(activeItems));
               }
               map.getInteractions().array_[9].getFeatures().clear();
             }}
           >
-            <span className="result-info-title">Reset map</span>
+            <span className="result-info-title">Reset filters</span>
             <i className="icon ri-map-2-line"></i>
           </button>
           <InfoOverlay
