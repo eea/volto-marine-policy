@@ -86,9 +86,9 @@ export default function FeatureDisplay({ feature }) {
               return (
                 <li key={index}>
                   <span
-                    // target="_blank"
-                    // rel="noopener noreferrer"
-                    // href={item['path']}
+                  // target="_blank"
+                  // rel="noopener noreferrer"
+                  // href={item['path']}
                   >
                     {item['title']}
                   </span>
