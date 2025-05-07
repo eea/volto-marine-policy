@@ -29,8 +29,7 @@ const ObjectivesChart = ({
   }
   const _sorted = Object.entries(objectiveCounts).sort(
     (a, b) =>
-      objectivesCustomOrder.indexOf(a[0]) -
-      objectivesCustomOrder.indexOf(b[0]),
+      objectivesCustomOrder.indexOf(a[0]) - objectivesCustomOrder.indexOf(b[0]),
   );
   const objectives = Object.fromEntries(_sorted);
 
