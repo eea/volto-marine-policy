@@ -73,7 +73,7 @@ const ObjectivesChart = ({
         [filterKey]: newValue,
       };
     });
-    console.log('2',highlightedIndex);
+    console.log('2', highlightedIndex);
   }, [objectives, activeFilters, setActiveFilters, highlightedIndex]);
 
   const handleClick = (event) => {
