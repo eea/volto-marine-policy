@@ -137,6 +137,11 @@ export default function DemoSitesMap(props) {
       >
         <Controls attribution={false} />
         <Layers>
+          {!activeItems.length && (
+            <div className="no-results-message">
+              No results found. Please refine your filters.
+            </div>
+          )}
           <button
             className={cx(
               'reset-map-button ui button secondary',
