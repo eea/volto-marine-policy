@@ -104,12 +104,12 @@ export default function DemoSitesExplorerView(props) {
                   <VisibilitySensor>
                     <ObjectivesChart
                       items={cases}
-                      activeItems={activeItems}
-                      filters={filters}
+                      // activeItems={activeItems}
+                      // filters={filters}
                       activeFilters={activeFilters}
-                      hideFilters={hideFilters}
                       setActiveFilters={setActiveFilters}
-                      map={map}
+                      // hideFilters={hideFilters}
+                      // map={map}
                       highlightedIndex={highlightedIndex}
                       setHighlightedIndex={setHighlightedIndex}
                     />

@@ -223,6 +223,9 @@ const ObjectivesChart = ({
           {Object.entries(objectives).map(([item, count], index) => (
             <li
               onClick={handleClick}
+              onKeyDown={() => {}}
+              tabIndex={index}
+              role="button"
               key={item}
               className={cx(
                 index === highlightedIndex ? 'active' : '',
