@@ -35,6 +35,7 @@ export default function DemoSitesMap(props) {
     onSelectedCase,
     map,
     setMap,
+    highlightedIndex,
     setHighlightedIndex,
   } = props;
   const features = getFeatures(items);
@@ -137,7 +138,7 @@ export default function DemoSitesMap(props) {
       >
         <Controls attribution={false} />
         <Layers>
-          {!activeItems.length && (
+          {highlightedIndex > 0 && !activeItems.length && (
             <div className="no-results-message">
               No results found. Please refine your filters.
             </div>

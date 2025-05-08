@@ -222,17 +222,20 @@ const ObjectivesChart = ({
         <ul>
           {Object.entries(objectives).map(([item, count], index) => (
             <li
-              onClick={handleClick}
-              onKeyDown={() => {}}
-              tabIndex={index}
-              role="button"
-              key={item}
               className={cx(
                 index === highlightedIndex ? 'active' : '',
                 customColors[index].replace('#', 'C'),
               )}
             >
-              {item}
+              <div
+                onClick={handleClick}
+                onKeyDown={() => {}}
+                tabIndex={index}
+                role="button"
+                key={item}
+              >
+                {item}
+              </div>
             </li>
           ))}
         </ul>
