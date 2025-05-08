@@ -56,19 +56,29 @@ const ObjectivesChart = ({
 
   React.useEffect(() => {
     // if (!objectives) return;
+    const filterKey = 'objective_filter';
+
     if (highlightedIndex === -1) {
-      setActiveFilters({
-        objective_filter: [undefined],
-        target_filter: [],
-        indicator_filter: [],
-        project_filter: [],
-        country_filter: [],
+      const newValue = [undefined];
+
+      setActiveFilters((prev) => {
+        const currentValues = prev[filterKey];
+        // Don't update if no change
+        const isSame =
+          currentValues.length === newValue.length &&
+          currentValues.every((v, i) => v === newValue[i]);
+
+        if (isSame) return prev;
+
+        return {
+          ...prev,
+          [filterKey]: newValue,
+        };
       });
       return;
     }
 
     const currentObjective = Object.keys(objectives)[highlightedIndex];
-    const filterKey = 'objective_filter';
     const newValue = currentObjective ? [currentObjective] : [];
 
     setActiveFilters((prev) => {
@@ -89,9 +99,15 @@ const ObjectivesChart = ({
   }, [objectives, activeFilters, setActiveFilters, highlightedIndex]);
 
   const handleClick = (event) => {
-    const point = event.points[0];
-    const label = point.label;
-    // const value = point.value;
+    let label = '';
+
+    if (event.points) {
+      const point = event.points[0];
+      label = point.label;
+      // const value = point.value;
+    } else {
+      label = event.target.textContent;
+    }
 
     const tempFilters = JSON.parse(JSON.stringify(activeFilters));
     if (tempFilters['objective_filter'].includes(label)) {
@@ -128,6 +144,8 @@ const ObjectivesChart = ({
   const inactiveColors = labels.map((_, i) =>
     i === highlightedIndex ? customColors[i % customColors.length] : grayColor,
   );
+
+  // console.log(highlightedIndex);
 
   return highlightedIndex >= -1 ? (
     <div className="objectives-chart fade-in">
@@ -204,6 +222,7 @@ const ObjectivesChart = ({
         <ul>
           {Object.entries(objectives).map(([item, count], index) => (
             <li
+              onClick={handleClick}
               key={item}
               className={cx(
                 index === highlightedIndex ? 'active' : '',
