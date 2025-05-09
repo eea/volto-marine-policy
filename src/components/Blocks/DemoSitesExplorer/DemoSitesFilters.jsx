@@ -20,7 +20,7 @@ export function DemoSitesFilter(props) {
     activeFilters,
     setActiveFilters,
     filterName,
-    map,
+    // map,
   } = props;
 
   const customOrder = props?.customOrder || [];
@@ -190,7 +190,7 @@ export function DemoSitesFilters(props) {
 }
 
 export function SearchBox(props) {
-  const { setSearchInput, map, onSelectedCase } = props;
+  const { setSearchInput, onSelectedCase } = props;
   const [showClearButton, setShowClearButton] = React.useState(false);
 
   return (

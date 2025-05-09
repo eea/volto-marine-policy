@@ -1,5 +1,5 @@
 import React from 'react';
-import { centerAndResetMapZoom, zoomMapToFeatures, isValidURL } from './utils';
+import { centerAndResetMapZoom, isValidURL } from './utils';
 
 const showPageNr = (pageNr, currentPage, numberOfPages) => {
   // show first 5 pages
