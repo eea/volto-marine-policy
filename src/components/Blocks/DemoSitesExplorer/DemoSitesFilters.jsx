@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { centerAndResetMapZoom, clearFilters } from './utils';
+import { clearFilters } from './utils';
 
 const normalizeSearchInput = (searchInput) => {
   let normInput = searchInput
@@ -103,7 +103,7 @@ export function DemoSitesFilter(props) {
                     }
                     setActiveFilters(temp);
                     // scrollToElement('search-input');
-                    centerAndResetMapZoom(map);
+                    // centerAndResetMapZoom(map);
                   }}
                 />
                 <span>{label}</span>
@@ -215,7 +215,7 @@ export function SearchBox(props) {
                 // popupOverlay.style.visibility = 'hidden';
                 setSearchInput(searchInput);
                 // scrollToElement('search-input');
-                centerAndResetMapZoom(map);
+                // centerAndResetMapZoom(map);
               }}
             ></input>
             <div className="terms-box-left">
@@ -233,7 +233,7 @@ export function SearchBox(props) {
                         setSearchInput('');
                         setShowClearButton(false);
                         // scrollToElement('search-input');
-                        centerAndResetMapZoom(map);
+                        // centerAndResetMapZoom(map);
                       }}
                     ></i>
                   </div>
@@ -253,7 +253,7 @@ export function SearchBox(props) {
 
                   setSearchInput(searchInputVal);
                   // scrollToElement('search-input');
-                  centerAndResetMapZoom(map);
+                  // centerAndResetMapZoom(map);
                 }}
                 onKeyDown={() => {}}
                 tabIndex="0"

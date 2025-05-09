@@ -2,7 +2,7 @@
   padding-top: 2em;
 }
 
-#csepopup > span {
+#csepopup>span {
   display: 'block';
   margin-bottom: '10px';
   background-color: '#ddd';
@@ -10,6 +10,7 @@
 
 .ol-map-wrapper,
 .ol-map {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
   height: 600px;
   min-height: 600px;
 
@@ -46,6 +47,7 @@
 
   h3 {
     font-size: 1.4rem;
+    color: #069;
   }
 
   h4 {
@@ -397,6 +399,7 @@
 }
 
 .ol-zoom.ol-control {
+
   .ol-zoom-in,
   .ol-zoom-out {
     background-color: rgba(0, 131, 224, 0.5);
@@ -427,9 +430,9 @@
     width: 22px;
     min-width: 22px;
     height: 22px;
-    /* dark green shade */
     border-radius: 50%;
-    background-color: #007265;
+    // background-color: #007265;
+    background-color: #0179cf;
     gap: 0.5em;
   }
 
@@ -464,6 +467,13 @@
 }
 
 .objectives-chart {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+
+  .js-plotly-plot .plotly,
+  .js-plotly-plot .plotly div {
+    font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+  }
+
   &.fade-in {
     animation: fadeIn 1s ease-in forwards;
     opacity: 0;

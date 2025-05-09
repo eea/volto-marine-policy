@@ -271,7 +271,7 @@ export default function DemoSitesList(props) {
                             // scroll to the map
                             // scrollToElement('ol-map-container');
 
-                            zoomMapToFeatures(map, [item], 5000);
+                            // zoomMapToFeatures(map, [item], 5000);
                             onSelectedCase(item.values_);
 
                             const popupOverlay =

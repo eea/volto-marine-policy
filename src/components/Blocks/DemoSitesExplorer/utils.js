@@ -43,7 +43,7 @@ export function isValidURL(string) {
 
 export function centerAndResetMapZoom(map) {
   map.getView().animate({
-    zoom: 2.5,
+    zoom: 3.4,
     duration: 1000,
     center: ol.proj.transform([10, 54], 'EPSG:4326', 'EPSG:3857'),
   });

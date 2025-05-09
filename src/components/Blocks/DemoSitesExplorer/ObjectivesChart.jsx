@@ -170,14 +170,18 @@ const ObjectivesChart = ({
                 marker: {
                   colors:
                     highlightedIndex === 5 ? customColors : inactiveColors, // Apply custom colors here
+                  line: {
+                    color: '#e0e0e0', // light gray
+                    width: 1, // thin border
+                  },
                 },
                 direction: 'clockwise',
                 // pull,
               },
             ]}
             layout={{
-              width: 250,
-              height: 250,
+              width: 300,
+              height: 300,
               // title: 'Objectives Distribution',
               showlegend: false,
               margin: {
@@ -193,6 +197,7 @@ const ObjectivesChart = ({
                       ? `${totalCount}`
                       : values[highlightedIndex] || '', // Display total count in the center
                   font: {
+                    family: "'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif",
                     size: 24, // Adjust font size as needed
                     weight: 'bold',
                   },

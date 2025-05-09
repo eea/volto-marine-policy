@@ -67,7 +67,7 @@ export default function FeatureInteraction({ onFeatureSelect }) {
           // });
         } else {
           onFeatureSelect(null);
-          zoomMapToFeatures(map, subfeatures);
+          // zoomMapToFeatures(map, subfeatures);
         }
       });
 
