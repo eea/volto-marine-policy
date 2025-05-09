@@ -10,10 +10,10 @@ import FeatureInteraction from './FeatureInteraction';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
 import {
-  // centerAndResetMapZoom,
+  centerAndResetMapZoom,
   clearFilters,
   getFeatures,
-  zoomMapToFeatures,
+  // zoomMapToFeatures,
 } from './utils';
 
 const styleCache = {};
@@ -35,6 +35,7 @@ export default function DemoSitesMap(props) {
     onSelectedCase,
     map,
     setMap,
+    highlightedIndex,
     setHighlightedIndex,
   } = props;
   const features = getFeatures(items);
@@ -73,7 +74,7 @@ export default function DemoSitesMap(props) {
       pointsSource.clear();
       pointsSource.addFeatures(getFeatures(activeItems));
       // hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
-      zoomMapToFeatures(map, getFeatures(activeItems));
+      // zoomMapToFeatures(map, getFeatures(activeItems));
     }
   }, [map, activeItems, pointsSource, hideFilters]);
 
@@ -130,13 +131,18 @@ export default function DemoSitesMap(props) {
         view={{
           center: ol.proj.fromLonLat([10, 54]),
           showFullExtent: true,
-          zoom: 3,
+          zoom: 3.4,
         }}
         pixelRatio={1}
         // controls={ol.control.defaults({ attribution: false })}
       >
         <Controls attribution={false} />
         <Layers>
+          {highlightedIndex > 0 && !activeItems.length && (
+            <div className="no-results-message">
+              No results found. Please refine your filters.
+            </div>
+          )}
           <button
             className={cx(
               'reset-map-button ui button secondary',
@@ -148,10 +154,11 @@ export default function DemoSitesMap(props) {
               clearFilters(setActiveFilters);
               setHighlightedIndex(5);
               if (hideFilters) {
-                zoomMapToFeatures(map, getFeatures(activeItems));
+                // zoomMapToFeatures(map, getFeatures(activeItems));
+                centerAndResetMapZoom(map);
               } else {
-                // centerAndResetMapZoom(map);
-                zoomMapToFeatures(map, getFeatures(activeItems));
+                centerAndResetMapZoom(map);
+                // zoomMapToFeatures(map, getFeatures(activeItems));
               }
               map.getInteractions().array_[9].getFeatures().clear();
             }}
@@ -211,7 +218,8 @@ const selectedClusterStyle = (selectedFeature) => {
     }
     // set size === 1 to enable clusterization
     if (size) {
-      let color = feature.values_.features[0].values_['color'];
+      // let color = feature.values_.features[0].values_['color'];
+      let color = '#0179cf';
       let width = feature.values_.features[0].values_['width'];
       let radius = feature.values_.features[0].values_['radius'];
       // console.log(color)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { centerAndResetMapZoom, zoomMapToFeatures, isValidURL } from './utils';
+import { centerAndResetMapZoom, isValidURL } from './utils';
 
 const showPageNr = (pageNr, currentPage, numberOfPages) => {
   // show first 5 pages
@@ -271,7 +271,7 @@ export default function DemoSitesList(props) {
                             // scroll to the map
                             // scrollToElement('ol-map-container');
 
-                            zoomMapToFeatures(map, [item], 5000);
+                            // zoomMapToFeatures(map, [item], 5000);
                             onSelectedCase(item.values_);
 
                             const popupOverlay =

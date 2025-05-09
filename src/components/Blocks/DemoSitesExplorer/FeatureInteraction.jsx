@@ -1,7 +1,7 @@
 import React from 'react';
 import { openlayers as ol } from '@eeacms/volto-openlayers-map';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
-import { zoomMapToFeatures } from './utils';
+// import { zoomMapToFeatures } from './utils';
 
 export const useStyles = () => {
   const selected = React.useMemo(
@@ -67,7 +67,7 @@ export default function FeatureInteraction({ onFeatureSelect }) {
           // });
         } else {
           onFeatureSelect(null);
-          zoomMapToFeatures(map, subfeatures);
+          // zoomMapToFeatures(map, subfeatures);
         }
       });
 

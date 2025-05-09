@@ -6,9 +6,13 @@ export default function FeatureDisplay({ feature }) {
     <div id="csepopup">
       <h3>
         <strong>
-          <a target="_blank" rel="noopener noreferrer" href={feature.path}>
+          <span
+          // target="_blank"
+          // rel="noopener noreferrer"
+          // href={feature.path}
+          >
             {truncateText(feature.title)}
-          </a>
+          </span>
         </strong>
       </h3>
       {feature.info ? (
@@ -57,6 +61,19 @@ export default function FeatureDisplay({ feature }) {
         ''
       )}
 
+      {feature.objective.length > 0 ? (
+        <div>
+          <span className="popup-title blue">Objective/Enabler</span>
+          <ul>
+            {feature.objective.map((item, index) => {
+              return <li key={index}>{item}</li>;
+            })}
+          </ul>
+        </div>
+      ) : (
+        ''
+      )}
+
       {/* {feature.project_link ? (
         <div>
           <span className="popup-title blue">Project link: </span>
@@ -100,14 +117,6 @@ export default function FeatureDisplay({ feature }) {
       ) : (
         ''
       )}
-      {/* <div>
-        <h4>Indicators</h4>
-        <ul>
-          {feature.sectors.map((item, index) => {
-            return <li key={index}>{item}</li>;
-          })}
-        </ul>
-      </div> */}
     </div>
   ) : null;
 }

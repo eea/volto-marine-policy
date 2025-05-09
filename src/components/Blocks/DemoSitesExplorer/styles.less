@@ -12,6 +12,23 @@
 .ol-map {
   height: 600px;
   min-height: 600px;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+
+  .no-results-message {
+    position: absolute;
+    z-index: 9;
+    top: 46%;
+    right: 28%;
+    bottom: 47%;
+    left: 27%;
+    padding: 0.5em 1em;
+    border: 4px solid #dfdfdf;
+    border-radius: 2px;
+    background-color: #0088e9;
+    color: #ffffff;
+    opacity: 0.6;
+    text-shadow: none;
+  }
 }
 
 #csepopup {
@@ -29,6 +46,7 @@
   }
 
   h3 {
+    color: #069;
     font-size: 1.4rem;
   }
 
@@ -411,9 +429,9 @@
     width: 22px;
     min-width: 22px;
     height: 22px;
-    /* dark green shade */
     border-radius: 50%;
-    background-color: #007265;
+    // background-color: #007265;
+    background-color: #0179cf;
     gap: 0.5em;
   }
 
@@ -448,6 +466,13 @@
 }
 
 .objectives-chart {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+
+  .js-plotly-plot .plotly,
+  .js-plotly-plot .plotly div {
+    font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+  }
+
   &.fade-in {
     animation: fadeIn 1s ease-in forwards;
     opacity: 0;
@@ -492,6 +517,11 @@
     align-items: center;
     font-size: 0.8em;
     line-height: 1.5em;
+
+    &:hover {
+      cursor: pointer;
+      font-weight: 500;
+    }
 
     &.C007b6c::before {
       background-color: #007b6c;
