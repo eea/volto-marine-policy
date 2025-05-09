@@ -197,7 +197,8 @@ const ObjectivesChart = ({
                       ? `${totalCount}`
                       : values[highlightedIndex] || '', // Display total count in the center
                   font: {
-                    family: "'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif",
+                    family:
+                      "'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif",
                     size: 24, // Adjust font size as needed
                     weight: 'bold',
                   },
