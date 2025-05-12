@@ -163,7 +163,7 @@ export default function DemoSitesMap(props) {
               map.getInteractions().array_[9].getFeatures().clear();
             }}
           >
-            <span className="result-info-title">Reset filters</span>
+            <span className="result-info-title">Reset map</span>
             <i className="icon ri-map-2-line"></i>
           </button>
           <InfoOverlay

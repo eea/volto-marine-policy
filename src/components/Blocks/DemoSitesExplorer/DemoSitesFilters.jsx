@@ -271,17 +271,22 @@ export function SearchBox(props) {
 }
 
 export function ActiveFilters(props) {
-  const { filters, activeFilters, setActiveFilters } = props;
-  const hasActiveFilters = false;
-  // const hasActiveFilters = Object.entries(activeFilters).some(
-  //   ([filterName, filterList]) => {
-  //     return false;
-  //     if (filterList.length > 0) {
-  //       return true;
-  //     }
-  //     return false;
-  //   },
-  // );
+  const {
+    filters,
+    activeFilters,
+    setActiveFilters,
+    setHighlightedIndex,
+    initialized,
+  } = props;
+  // const hasActiveFilters = false;
+  const hasActiveFilters = Object.entries(activeFilters).some(
+    ([filterName, filterList]) => {
+      if (filterList.length > 0) {
+        return true;
+      }
+      return false;
+    },
+  );
 
   const removeFilter = (filterName, filterCode) => {
     const temp = JSON.parse(JSON.stringify(activeFilters));
@@ -303,12 +308,15 @@ export function ActiveFilters(props) {
     setActiveFilters(temp);
   };
 
-  return hasActiveFilters ? (
+  return hasActiveFilters && initialized ? (
     <div className="ui segment active-filter-list">
       <div className="filter-list-header">
         <h4 className="filter-list-title">Active filters</h4>
         <button
-          onClick={() => clearFilters(setActiveFilters)}
+          onClick={() => {
+            setHighlightedIndex(5);
+            clearFilters(setActiveFilters);
+          }}
           className="ui mini basic compact button clear-btn"
         >
           clear all
@@ -328,6 +336,7 @@ export function ActiveFilters(props) {
                       tabIndex="0"
                       onKeyPress={() => {}}
                       onClick={() => {
+                        setHighlightedIndex(5);
                         removeFilter('objective_filter', filterCode);
                         // scrollToElement('search-input');
                       }}

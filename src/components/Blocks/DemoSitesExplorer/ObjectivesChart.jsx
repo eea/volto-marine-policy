@@ -17,8 +17,9 @@ const ObjectivesChart = ({
   //   map,
   highlightedIndex,
   setHighlightedIndex,
+  initialized,
+  setInitialized,
 }) => {
-  const initialized = useRef(false);
   const chartRef = useRef(null);
   const objectiveCounts = {};
 
@@ -38,13 +39,13 @@ const ObjectivesChart = ({
   React.useEffect(() => {
     // set the objectives and the count
     if (!items) return;
-    if (initialized.current) return;
+    if (initialized) return;
 
     const interval = setInterval(() => {
       setHighlightedIndex((prevIndex) => {
         if (prevIndex + 1 >= objectivesLength + 1) {
           clearInterval(interval); // Stop after last item
-          initialized.current = true;
+          setInitialized(true);
           return prevIndex;
         }
         return prevIndex + 1;
@@ -52,7 +53,14 @@ const ObjectivesChart = ({
     }, 2000);
     // console.log('init');
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [items, objectivesLength, highlightedIndex, setHighlightedIndex]);
+  }, [
+    items,
+    objectivesLength,
+    highlightedIndex,
+    setHighlightedIndex,
+    initialized,
+    setInitialized,
+  ]);
 
   React.useEffect(() => {
     // if (!objectives) return;
@@ -146,6 +154,7 @@ const ObjectivesChart = ({
   );
 
   // console.log(highlightedIndex);
+  // console.log(initialized);
 
   return highlightedIndex >= -1 ? (
     <div className="objectives-chart fade-in">
