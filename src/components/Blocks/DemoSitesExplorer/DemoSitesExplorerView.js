@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Grid } from 'semantic-ui-react'; // Dropdown,
 import { addAppURL } from '@plone/volto/helpers';
 import config from '@plone/volto/registry';
@@ -13,6 +13,7 @@ import { useCases } from './hooks';
 import './styles.less';
 
 export default function DemoSitesExplorerView(props) {
+  const initialized = useRef(false); // set to true after the chart animation is finished
   const cases_url = config.settings.prefixPath
     ? '/@@demo-sites-map.arcgis.json'
     : '/marine/@@demo-sites-map.arcgis.json';
@@ -65,6 +66,8 @@ export default function DemoSitesExplorerView(props) {
           filters={filters}
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
+          setHighlightedIndex={setHighlightedIndex}
+          initialized={initialized}
         />
       </Grid.Row>
       <Grid.Row stretched={true} id="cse-filter">
@@ -112,6 +115,7 @@ export default function DemoSitesExplorerView(props) {
                       // map={map}
                       highlightedIndex={highlightedIndex}
                       setHighlightedIndex={setHighlightedIndex}
+                      initialized={initialized}
                     />
                   </VisibilitySensor>
                 ) : (
