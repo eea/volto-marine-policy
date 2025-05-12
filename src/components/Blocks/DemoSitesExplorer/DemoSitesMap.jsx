@@ -124,7 +124,7 @@ export default function DemoSitesMap(props) {
 
   const MapWithSelection = React.useMemo(() => Map, []);
   // console.log('render');
-  
+
   return features.length > 0 ? (
     <div id="ol-map-container">
       <MapWithSelection

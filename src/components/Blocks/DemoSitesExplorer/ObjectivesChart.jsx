@@ -17,7 +17,7 @@ const ObjectivesChart = ({
   //   map,
   highlightedIndex,
   setHighlightedIndex,
-  initialized
+  initialized,
 }) => {
   const chartRef = useRef(null);
   const objectiveCounts = {};

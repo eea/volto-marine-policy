@@ -276,7 +276,7 @@ export function ActiveFilters(props) {
     activeFilters,
     setActiveFilters,
     setHighlightedIndex,
-    initialized
+    initialized,
   } = props;
   // const hasActiveFilters = false;
   const hasActiveFilters = Object.entries(activeFilters).some(
