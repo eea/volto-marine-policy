@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Grid } from 'semantic-ui-react'; // Dropdown,
 import { addAppURL } from '@plone/volto/helpers';
 import config from '@plone/volto/registry';
