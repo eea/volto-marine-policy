@@ -308,9 +308,7 @@ export function ActiveFilters(props) {
     setActiveFilters(temp);
   };
 
-  console.log(activeFilters);
-
-  return hasActiveFilters && initialized.current ? (
+  return hasActiveFilters && initialized ? (
     <div className="ui segment active-filter-list">
       <div className="filter-list-header">
         <h4 className="filter-list-title">Active filters</h4>

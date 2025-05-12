@@ -13,7 +13,7 @@ import { useCases } from './hooks';
 import './styles.less';
 
 export default function DemoSitesExplorerView(props) {
-  const initialized = useRef(false); // set to true after the chart animation is finished
+  const [initialized, setInitialized] = React.useState(false); // set to true after the chart animation is finished
   const cases_url = config.settings.prefixPath
     ? '/@@demo-sites-map.arcgis.json'
     : '/marine/@@demo-sites-map.arcgis.json';
@@ -116,6 +116,7 @@ export default function DemoSitesExplorerView(props) {
                       highlightedIndex={highlightedIndex}
                       setHighlightedIndex={setHighlightedIndex}
                       initialized={initialized}
+                      setInitialized={setInitialized}
                     />
                   </VisibilitySensor>
                 ) : (
