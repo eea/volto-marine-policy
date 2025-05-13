@@ -42,7 +42,7 @@
   font-size: 1rem;
 
   a:hover {
-    color: #0083e0;
+    color: #004b7f;
   }
 
   h3 {
@@ -128,7 +128,7 @@
 #cse-filter {
   display: flex;
   flex-direction: row;
-  margin-top: 1em;
+  margin-top: 0.5em;
   font-family: sans-serif;
   // gap: 3em;
 
@@ -138,7 +138,7 @@
     &.active {
       button span {
         //   box-shadow: 0 5px 0 #ffffff, 0 0 4px rgba(0, 0, 0, 0.25);
-        color: #0083e0;
+        color: #004b7f;
       }
 
       button {
@@ -161,8 +161,9 @@
       z-index: 9;
       display: inline-block;
       overflow: hidden;
-      padding: 0.5em 0em;
-      margin: 0 0.25em 0.25em 0;
+      padding: 0;
+      // padding: 0.5em 0em;
+      margin: 0 0.25em 0 0;
       // background-color: white !important;
       color: #3d5265 !important;
 
@@ -174,10 +175,10 @@
       // &:focus {
       //   color: rgba(0, 0, 0, 0.6) !important;
       // }
-      // &:hover {
-      // box-shadow: none;
-      // background-color: transparent !important;
-      // }
+      &:hover {
+        box-shadow: none;
+        // background-color: transparent;
+      }
 
       span {
         position: relative !important;
@@ -353,18 +354,18 @@
 }
 
 .searchlib-block .ui.basic.button.clear-btn {
-  color: #0083e0 !important;
+  color: #004b7f !important;
 }
 
 .searchlib-block .result-item .result-info {
   align-items: center;
 
   &.show-on-map {
-    color: #0083e0 !important;
+    color: #004b7f !important;
     cursor: pointer;
 
     .result-info-title {
-      color: #0083e0 !important;
+      color: #004b7f !important;
     }
   }
 }
@@ -386,7 +387,7 @@
   padding: 8px 6px 8px 12px;
   border: 4px solid #efefef;
   border-radius: 2px;
-  background-color: #0083e0;
+  background-color: #004b7f;
   gap: 0.5em;
   opacity: 0.6;
 
