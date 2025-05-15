@@ -82,11 +82,7 @@ export function DemoSitesFilter(props) {
           {Object.entries(filters?.[filterName] || {})
             // .sort((item1, item2) => item1[1].localeCompare(item2[1]))
             .map(([value, label], index) => (
-              <label
-                htmlFor={label}
-                className="filter-input"
-                key={label}
-              >
+              <label htmlFor={label} className="filter-input" key={label}>
                 <input
                   value={value}
                   type="checkbox"
