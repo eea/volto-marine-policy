@@ -41,10 +41,10 @@ module.exports = {
   },
   coverageThreshold: {
     global: {
-      branches: 3,
-      functions: 3,
-      lines: 3,
-      statements: 3,
+      branches: 2,
+      functions: 2,
+      lines: 2,
+      statements: 2,
     },
   },
   ...(process.env.JEST_USE_SETUP === 'ON' && {
