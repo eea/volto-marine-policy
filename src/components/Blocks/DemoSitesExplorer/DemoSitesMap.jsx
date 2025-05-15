@@ -91,10 +91,14 @@ export default function DemoSitesMap(props) {
         const coords = selectedCase.geometry.flatCoordinates;
         const pixel = map.getPixelFromCoordinate(coords);
         map.getInteractions().array_[9].getFeatures().clear();
-        map
-          .getInteractions()
-          .array_[9].getFeatures()
-          .push(map.getFeaturesAtPixel(pixel)[0]);
+        try {
+          map
+            .getInteractions()
+            .array_[9].getFeatures()
+            .push(map.getFeaturesAtPixel(pixel)[0]);
+        } catch (e) {
+          // console.error(e);
+        }
       } else {
         map.getInteractions().array_[9].getFeatures().clear();
       }

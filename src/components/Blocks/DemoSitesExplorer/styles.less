@@ -2,7 +2,7 @@
   padding-top: 2em;
 }
 
-#csepopup > span {
+#csepopup>span {
   display: 'block';
   margin-bottom: '10px';
   background-color: '#ddd';
@@ -401,6 +401,7 @@
 }
 
 .ol-zoom.ol-control {
+
   .ol-zoom-in,
   .ol-zoom-out {
     background-color: rgba(0, 131, 224, 0.5);
@@ -564,6 +565,12 @@
         width: 1em;
         height: 1em;
       }
+    }
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }
