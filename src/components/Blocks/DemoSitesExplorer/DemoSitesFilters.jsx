@@ -82,15 +82,11 @@ export function DemoSitesFilter(props) {
           {Object.entries(filters?.[filterName] || {})
             // .sort((item1, item2) => item1[1].localeCompare(item2[1]))
             .map(([value, label], index) => (
-              <label
-                htmlFor={label + index}
-                className="filter-input"
-                key={index}
-              >
+              <label htmlFor={label} className="filter-input" key={label}>
                 <input
                   value={value}
                   type="checkbox"
-                  id={label + index}
+                  id={label}
                   onChange={(e) => {
                     const temp = JSON.parse(JSON.stringify(activeFilters));
                     if (e.target.checked) {

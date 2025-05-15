@@ -9,7 +9,7 @@ const Plot = loadable(() => import('react-plotly.js'));
 
 const ObjectivesChart = ({
   items,
-  // activeItems,
+  activeItems,
   //   filters,
   activeFilters,
   setActiveFilters,
@@ -21,9 +21,29 @@ const ObjectivesChart = ({
   setInitialized,
 }) => {
   const chartRef = useRef(null);
-  const objectiveCounts = {};
+  let objectiveCounts = {};
 
-  for (const item of items) {
+  // if (!items) return;
+
+  items.forEach((item) => {
+    const _obj = item.properties.objective;
+
+    _obj.forEach((_o) => {
+      if (!(_o in objectiveCounts)) {
+        objectiveCounts[_o] = 0;
+      }
+    });
+  });
+
+  let itemsUsedForChart = [];
+
+  if (initialized) {
+    itemsUsedForChart = activeItems;
+  } else {
+    itemsUsedForChart = items;
+  }
+
+  for (const item of itemsUsedForChart) {
     item.properties.objective.map((obj) => {
       objectiveCounts[obj] = (objectiveCounts[obj] || 0) + 1;
       return [];
@@ -43,9 +63,9 @@ const ObjectivesChart = ({
 
     const interval = setInterval(() => {
       setHighlightedIndex((prevIndex) => {
+        if (prevIndex + 1 >= objectivesLength) setInitialized(true);
         if (prevIndex + 1 >= objectivesLength + 1) {
           clearInterval(interval); // Stop after last item
-          setInitialized(true);
           return prevIndex;
         }
         return prevIndex + 1;
@@ -63,6 +83,7 @@ const ObjectivesChart = ({
   ]);
 
   React.useEffect(() => {
+    // set the objectives filter based on chartclick or list selection
     // if (!objectives) return;
     const filterKey = 'objective_filter';
 
@@ -172,6 +193,7 @@ const ObjectivesChart = ({
                 labels: labels,
                 values: values,
                 textinfo: 'none',
+                sort: false,
                 // textinfo: highlightedIndex === 5 ? 'value' : 'none',
                 hole: 0.4,
                 insidetextorientation: 'radial',
@@ -240,6 +262,7 @@ const ObjectivesChart = ({
               className={cx(
                 index === highlightedIndex ? 'active' : '',
                 customColors[index].replace('#', 'C'),
+                count === 0 ? 'disabled' : '',
               )}
             >
               <div

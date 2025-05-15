@@ -38,10 +38,10 @@ export default function DemoSitesExplorerView(props) {
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
 
   React.useEffect(() => {
-    const _filters = getFilters(cases, indicatorOnly);
+    const _filters = getFilters(activeItems, indicatorOnly);
     setFilters(_filters);
   }, [
-    cases,
+    activeItems,
     activeFilters.objective_filter,
     activeFilters.target_filter,
     activeFilters.indicator_filter,
@@ -107,7 +107,7 @@ export default function DemoSitesExplorerView(props) {
                   <VisibilitySensor>
                     <ObjectivesChart
                       items={cases}
-                      // activeItems={activeItems}
+                      activeItems={activeItems}
                       // filters={filters}
                       activeFilters={activeFilters}
                       setActiveFilters={setActiveFilters}
