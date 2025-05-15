@@ -23,7 +23,7 @@ const ObjectivesChart = ({
   const chartRef = useRef(null);
   let objectiveCounts = {};
 
-  if (!items) return;
+  // if (!items) return;
 
   items.forEach((item) => {
     const _obj = item.properties.objective;

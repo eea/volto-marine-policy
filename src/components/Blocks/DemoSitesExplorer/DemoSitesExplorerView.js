@@ -41,7 +41,7 @@ export default function DemoSitesExplorerView(props) {
     const _filters = getFilters(activeItems, indicatorOnly);
     setFilters(_filters);
   }, [
-    cases,
+    activeItems,
     activeFilters.objective_filter,
     activeFilters.target_filter,
     activeFilters.indicator_filter,
