@@ -18,7 +18,7 @@ export const useStyles = ({ ol }) => {
           }),
         }),
       }),
-    [],
+    [ol],
   );
 
   const selectStyle = React.useCallback(
