@@ -128,8 +128,8 @@ function DemoSitesMap(props) {
   }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass]);
 
   const clusterStyle = React.useMemo(
-    () => selectedClusterStyle(selectedCase),
-    [selectedCase],
+    () => selectedClusterStyle({ selectedCase, ol }),
+    [selectedCase, ol],
   );
 
   const MapWithSelection = React.useMemo(() => Map, []);
@@ -200,7 +200,7 @@ function DemoSitesMap(props) {
   ) : null;
 }
 
-const selectedClusterStyle = (selectedFeature) => {
+const selectedClusterStyle = ({ selectedFeature, ol }) => {
   function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
     let clusterStyle = styleCache[size];
