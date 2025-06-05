@@ -35,7 +35,7 @@
     "@eeacms/volto-eea-website-theme": "*",
     "@eeacms/volto-embed": "*",
     "@eeacms/volto-globalsearch": "2.1.2",
-    "@eeacms/volto-openlayers-map": "0.3.2",
+    "@eeacms/volto-openlayers-map": "github:eea/volto-openlayers-map#fe98a11ef5f92335acaaff098ef7734c3f2ac2fa",
     "@eeacms/volto-searchlib": "2.0.16",
     "@eeacms/volto-tabs-block": "*",
     "axios": "0.30.0",
