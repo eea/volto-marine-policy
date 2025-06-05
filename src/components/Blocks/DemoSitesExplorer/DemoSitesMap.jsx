@@ -82,7 +82,7 @@ function DemoSitesMap(props) {
       // hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
       // zoomMapToFeatures(map, getFeatures(activeItems));
     }
-  }, [map, activeItems, pointsSource, hideFilters]);
+  }, [map, activeItems, pointsSource, hideFilters, ol]);
 
   React.useEffect(() => {
     if (!map) return null;
@@ -125,7 +125,7 @@ function DemoSitesMap(props) {
     return () => {
       map.un('moveend', moveendListener);
     };
-  }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass]);
+  }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass, ol]);
 
   const clusterStyle = React.useMemo(
     () => selectedClusterStyle({ selectedCase, ol }),
