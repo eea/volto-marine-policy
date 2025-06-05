@@ -2,12 +2,17 @@ import React from 'react';
 
 import cx from 'classnames';
 
-import { Map, Layer, Layers, Controls } from '@eeacms/volto-openlayers-map/api';
-import { openlayers as ol } from '@eeacms/volto-openlayers-map';
+import {
+  Map,
+  Layer,
+  Layers,
+  Controls,
+  useMapContext,
+} from '@eeacms/volto-openlayers-map/api';
+import { withOpenLayers } from '@eeacms/volto-openlayers-map';
 
 import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
-import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
 import {
   centerAndResetMapZoom,
@@ -25,7 +30,7 @@ const MapContextGateway = ({ setMap }) => {
   return null;
 };
 
-export default function DemoSitesMap(props) {
+function DemoSitesMap(props) {
   const {
     items,
     activeItems,
@@ -37,6 +42,7 @@ export default function DemoSitesMap(props) {
     setMap,
     highlightedIndex,
     setHighlightedIndex,
+    ol,
   } = props;
   const features = getFeatures(items);
   const [resetMapButtonClass, setResetMapButtonClass] =
@@ -159,9 +165,9 @@ export default function DemoSitesMap(props) {
               setHighlightedIndex(5);
               if (hideFilters) {
                 // zoomMapToFeatures(map, getFeatures(activeItems));
-                centerAndResetMapZoom(map);
+                centerAndResetMapZoom({ map, ol });
               } else {
-                centerAndResetMapZoom(map);
+                centerAndResetMapZoom({ map, ol });
                 // zoomMapToFeatures(map, getFeatures(activeItems));
               }
               map.getInteractions().array_[9].getFeatures().clear();
@@ -247,3 +253,5 @@ const selectedClusterStyle = (selectedFeature) => {
   }
   return _clusterStyle;
 };
+
+export default withOpenLayers(DemoSitesMap);
