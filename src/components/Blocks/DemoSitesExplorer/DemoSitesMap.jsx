@@ -44,7 +44,7 @@ function DemoSitesMap(props) {
     setHighlightedIndex,
     ol,
   } = props;
-  const features = getFeatures(items);
+  const features = getFeatures({ cases: items, ol });
   const [resetMapButtonClass, setResetMapButtonClass] =
     React.useState('inactive');
 
@@ -78,7 +78,7 @@ function DemoSitesMap(props) {
 
     if (activeItems) {
       pointsSource.clear();
-      pointsSource.addFeatures(getFeatures(activeItems));
+      pointsSource.addFeatures(getFeatures({ cases: activeItems, ol }));
       // hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
       // zoomMapToFeatures(map, getFeatures(activeItems));
     }
