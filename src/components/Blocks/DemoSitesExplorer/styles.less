@@ -2,7 +2,7 @@
   padding-top: 2em;
 }
 
-#csepopup > span {
+#csepopup>span {
   display: 'block';
   margin-bottom: '10px';
   background-color: '#ddd';
@@ -401,6 +401,7 @@
 }
 
 .ol-zoom.ol-control {
+
   .ol-zoom-in,
   .ol-zoom-out {
     background-color: rgba(0, 131, 224, 0.5);
@@ -409,11 +410,16 @@
 
 .legend {
   // position: absolute;
-  bottom: 2em;
+  // bottom: 2em;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   gap: 1em;
+  justify-content: center;
+
+  &.position-bottom {
+    margin-top: 1em;
+  }
 
   .legend-row {
     display: flex;
