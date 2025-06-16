@@ -409,11 +409,16 @@
 
 .legend {
   // position: absolute;
-  bottom: 2em;
+  // bottom: 2em;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  justify-content: center;
   gap: 1em;
+
+  &.position-bottom {
+    margin-top: 1em;
+  }
 
   .legend-row {
     display: flex;

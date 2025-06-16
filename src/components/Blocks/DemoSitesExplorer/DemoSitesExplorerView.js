@@ -36,6 +36,7 @@ export default function DemoSitesExplorerView(props) {
   const [filters, setFilters] = React.useState([]);
   const [map, setMap] = React.useState();
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
+  const columnsLength = hideFilters ? 12 : 8;
 
   React.useEffect(() => {
     const _filters = getFilters(activeItems, indicatorOnly);
@@ -82,7 +83,11 @@ export default function DemoSitesExplorerView(props) {
       <Grid.Row>
         {cases.length ? (
           <Grid columns={12}>
-            <Grid.Column mobile={8} tablet={8} computer={8}>
+            <Grid.Column
+              mobile={columnsLength}
+              tablet={columnsLength}
+              computer={columnsLength}
+            >
               <DemoSitesMap
                 items={cases}
                 activeItems={activeItems}
@@ -96,14 +101,14 @@ export default function DemoSitesExplorerView(props) {
                 setHighlightedIndex={setHighlightedIndex}
               />
             </Grid.Column>
-            <Grid.Column
-              mobile={4}
-              tablet={4}
-              computer={4}
-              className="right-side-filters"
-            >
-              <Grid.Row>
-                {!hideFilters ? (
+            {!hideFilters ? (
+              <Grid.Column
+                mobile={4}
+                tablet={4}
+                computer={4}
+                className="right-side-filters"
+              >
+                <Grid.Row>
                   <VisibilitySensor>
                     <ObjectivesChart
                       items={cases}
@@ -119,31 +124,52 @@ export default function DemoSitesExplorerView(props) {
                       setInitialized={setInitialized}
                     />
                   </VisibilitySensor>
-                ) : (
-                  ''
-                )}
-              </Grid.Row>
-              <Grid.Row>
-                <div className="legend">
-                  {/* <div className="legend-row legend-subtitle">Legend</div> */}
-                  <div className="legend-row">
-                    <div className="circle">
-                      <div className="dot-demosite"></div>
+                </Grid.Row>
+                <Grid.Row>
+                  <div className="legend">
+                    {/* <div className="legend-row legend-subtitle">Legend</div> */}
+                    <div className="legend-row">
+                      <div className="circle">
+                        <div className="dot-demosite"></div>
+                      </div>
+                      <div>Demo site</div>
                     </div>
-                    <div>Demo site</div>
-                  </div>
-                  <div className="legend-row">
-                    <div className="circle">
-                      <div className="dot-region"></div>
+                    <div className="legend-row">
+                      <div className="circle">
+                        <div className="dot-region"></div>
+                      </div>
+                      <div>Associated region</div>
                     </div>
-                    <div>Associated region</div>
                   </div>
-                </div>
-              </Grid.Row>
-            </Grid.Column>
+                </Grid.Row>
+              </Grid.Column>
+            ) : (
+              ''
+            )}
           </Grid>
         ) : null}
       </Grid.Row>
+      {hideFilters ? (
+        <Grid.Row stretched={true}>
+          <div className="legend position-bottom">
+            {/* <div className="legend-row legend-subtitle">Legend</div> */}
+            <div className="legend-row">
+              <div className="circle">
+                <div className="dot-demosite"></div>
+              </div>
+              <div>Demo site</div>
+            </div>
+            <div className="legend-row">
+              <div className="circle">
+                <div className="dot-region"></div>
+              </div>
+              <div>Associated region</div>
+            </div>
+          </div>
+        </Grid.Row>
+      ) : (
+        ''
+      )}
     </div>
   );
 }
