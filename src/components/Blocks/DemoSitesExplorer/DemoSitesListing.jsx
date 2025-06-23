@@ -1,5 +1,6 @@
 import React from 'react';
 import { centerAndResetMapZoom, isValidURL } from './utils';
+import { withOpenLayers } from '@eeacms/volto-openlayers-map';
 
 const showPageNr = (pageNr, currentPage, numberOfPages) => {
   // show first 5 pages
@@ -24,8 +25,8 @@ const showPageNr = (pageNr, currentPage, numberOfPages) => {
   return false;
 };
 
-export default function DemoSitesList(props) {
-  const { selectedCase, onSelectedCase, pointsSource, map } = props;
+function DemoSitesList(props) {
+  const { selectedCase, onSelectedCase, pointsSource, map, ol } = props;
   // const reSearch = new RegExp(`\\b(${searchInput})\\b`, 'gi');
   const [currentPage, setCurrentPage] = React.useState(1);
 
@@ -155,7 +156,7 @@ export default function DemoSitesList(props) {
                         // scrollToElement('search-input');
                         // reset map zoom
                         onSelectedCase(null);
-                        centerAndResetMapZoom(map);
+                        centerAndResetMapZoom({ map, ol });
                         map.getInteractions().array_[9].getFeatures().clear();
                       }}
                     >
@@ -376,3 +377,5 @@ export default function DemoSitesList(props) {
     </>
   );
 }
+
+export default withOpenLayers(DemoSitesList);
