@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import './style.less';
 
 const NISListingView = ({ items, isEditMode }) => {
-  console.log(items);
   return (
     <div className="items">
       {items.map((item, index) => (
