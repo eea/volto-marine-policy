@@ -3,6 +3,7 @@ export StickyHeader from './theme/Header/StickyHeader';
 export HeroSectionView from './theme/View/HeroSectionView';
 export FullwidthView from './theme/View/FullwidthView';
 export MetadataListingView from './theme/MetadataListingView/MetadataListingView';
+export NISListingView from './theme/NISListingView/NISListingView';
 export ItemMetadata from './theme/ItemMetadata/ItemMetadata';
 export ItemTitle from './theme/ItemMetadata/ItemTitle';
 export MetadataHeader from './theme/MetadataListingView/MetadataHeader';

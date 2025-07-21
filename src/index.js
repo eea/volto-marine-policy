@@ -5,6 +5,7 @@ import {
   DatabaseItemView,
   MetadataListingView,
   SimpleListingView,
+  NISListingView,
 } from './components';
 // import installAppExtras from './components/theme/AppExtras';
 // import HomePageView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageView';
@@ -151,6 +152,12 @@ const applyConfig = (config) => {
         id: 'simple',
         title: 'Simple Listing',
         template: SimpleListingView,
+        isDefault: false,
+      },
+      {
+        id: 'nis',
+        title: 'NIS Listing',
+        template: NISListingView,
         isDefault: false,
       },
     ],

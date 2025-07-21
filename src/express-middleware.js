@@ -30,7 +30,10 @@ export default function middleware(config) {
   // TODO: do we want catch all?
   // middleware.all(['**/@@*'], viewMiddleware);
 
-  middleware.all(['**/@@demo-sites-map.arcgis.json'], viewMiddleware);
+  middleware.all(
+    ['**/@@demo-sites-map.arcgis.json', '**/@@nis-export'],
+    viewMiddleware,
+  );
   middleware.id = 'viewsMiddleware';
   config.settings.expressMiddleware.push(middleware);
   return config;
