@@ -1,14 +1,15 @@
 import React from 'react';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
-import { openlayers as ol } from '@eeacms/volto-openlayers-map';
+import { withOpenLayers } from '@eeacms/volto-openlayers-map';
 import FeatureDisplay from './FeatureDisplay';
 import { usePrevious } from '@plone/volto/helpers/Utils/usePrevious';
 
-export default function InfoOverlay({
+function InfoOverlay({
   selectedFeature,
   onFeatureSelect,
   layerId,
   // hideFilters,
+  ol,
 }) {
   const { map } = useMapContext();
   const [tooltip, setTooltipRef] = React.useState();
@@ -63,7 +64,7 @@ export default function InfoOverlay({
       map.un('click', handler);
       map.removeOverlay(overlay);
     };
-  }, [map, tooltip, onFeatureSelect]); //
+  }, [map, tooltip, onFeatureSelect, ol]); //
 
   const [isClient, setIsClient] = React.useState(false);
   React.useEffect(() => setIsClient(true), []);
@@ -82,3 +83,5 @@ export default function InfoOverlay({
     </div>
   ) : null;
 }
+
+export default withOpenLayers(InfoOverlay);
