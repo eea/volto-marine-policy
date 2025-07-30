@@ -6,6 +6,27 @@
 
 .metadata-item {
   align-items: baseline;
-  padding: 8px 15px;
+  padding: 5px 10px;
   background-color: #ebebeb;
+  font-size: 0.9em;
+}
+
+.ui.table tr {
+  td, th {
+    border-left: 1px solid #BCBEC0 !important;
+
+    &:first-of-type {
+      border-left: none !important;
+    }
+  }
+}
+
+.ui.button.mini {
+  padding: 0.5em 0.8em;
+  vertical-align: middle;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
 }

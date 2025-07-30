@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   // HeroSectionView,
   // FullwidthView,
@@ -6,11 +5,12 @@ import {
   MetadataListingView,
   SimpleListingView,
   NISListingView,
+  NISMetadataSectionTableView,
 } from './components';
+import { addTableField } from '@eeacms/volto-metadata-block/components/manage/Blocks/MetadataSection/variations';
 // import installAppExtras from './components/theme/AppExtras';
 // import HomePageView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageView';
 // import HomePageInverseView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageInverseView';
-
 import installMsfdDataExplorerBlock from './components/Blocks/MsfdDataExplorerBlock';
 import { breadcrumb, localnavigation } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
@@ -159,6 +159,19 @@ const applyConfig = (config) => {
         title: 'NIS Listing',
         template: NISListingView,
         isDefault: false,
+      },
+    ],
+  };
+
+  config.blocks.blocksConfig.metadataSection = {
+    ...config.blocks.blocksConfig.metadataSection,
+    variations: [
+      ...config.blocks.blocksConfig.metadataSection.variations,
+      {
+        id: 'nis_table',
+        title: 'NIS Table',
+        view: NISMetadataSectionTableView,
+        schemaEnhancer: addTableField,
       },
     ],
   };
