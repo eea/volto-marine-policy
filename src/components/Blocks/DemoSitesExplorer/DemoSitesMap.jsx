@@ -2,12 +2,17 @@ import React from 'react';
 
 import cx from 'classnames';
 
-import { Map, Layer, Layers, Controls } from '@eeacms/volto-openlayers-map/api';
-import { openlayers as ol } from '@eeacms/volto-openlayers-map';
+import {
+  Map,
+  Layer,
+  Layers,
+  Controls,
+  useMapContext,
+} from '@eeacms/volto-openlayers-map/api';
+import { withOpenLayers } from '@eeacms/volto-openlayers-map';
 
 import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
-import { useMapContext } from '@eeacms/volto-openlayers-map/api';
 
 import {
   centerAndResetMapZoom,
@@ -25,7 +30,7 @@ const MapContextGateway = ({ setMap }) => {
   return null;
 };
 
-export default function DemoSitesMap(props) {
+function DemoSitesMap(props) {
   const {
     items,
     activeItems,
@@ -37,8 +42,9 @@ export default function DemoSitesMap(props) {
     setMap,
     highlightedIndex,
     setHighlightedIndex,
+    ol,
   } = props;
-  const features = getFeatures(items);
+  const features = getFeatures({ cases: items, ol });
   const [resetMapButtonClass, setResetMapButtonClass] =
     React.useState('inactive');
 
@@ -72,11 +78,11 @@ export default function DemoSitesMap(props) {
 
     if (activeItems) {
       pointsSource.clear();
-      pointsSource.addFeatures(getFeatures(activeItems));
+      pointsSource.addFeatures(getFeatures({ cases: activeItems, ol }));
       // hideFilters && zoomMapToFeatures(map, getFeatures(activeItems));
       // zoomMapToFeatures(map, getFeatures(activeItems));
     }
-  }, [map, activeItems, pointsSource, hideFilters]);
+  }, [map, activeItems, pointsSource, hideFilters, ol]);
 
   React.useEffect(() => {
     if (!map) return null;
@@ -119,11 +125,11 @@ export default function DemoSitesMap(props) {
     return () => {
       map.un('moveend', moveendListener);
     };
-  }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass]);
+  }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass, ol]);
 
   const clusterStyle = React.useMemo(
-    () => selectedClusterStyle(selectedCase),
-    [selectedCase],
+    () => selectedClusterStyle({ selectedCase, ol }),
+    [selectedCase, ol],
   );
 
   const MapWithSelection = React.useMemo(() => Map, []);
@@ -159,9 +165,9 @@ export default function DemoSitesMap(props) {
               setHighlightedIndex(5);
               if (hideFilters) {
                 // zoomMapToFeatures(map, getFeatures(activeItems));
-                centerAndResetMapZoom(map);
+                centerAndResetMapZoom({ map, ol });
               } else {
-                centerAndResetMapZoom(map);
+                centerAndResetMapZoom({ map, ol });
                 // zoomMapToFeatures(map, getFeatures(activeItems));
               }
               map.getInteractions().array_[9].getFeatures().clear();
@@ -194,7 +200,7 @@ export default function DemoSitesMap(props) {
   ) : null;
 }
 
-const selectedClusterStyle = (selectedFeature) => {
+const selectedClusterStyle = ({ selectedFeature, ol }) => {
   function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
     let clusterStyle = styleCache[size];
@@ -247,3 +253,5 @@ const selectedClusterStyle = (selectedFeature) => {
   }
   return _clusterStyle;
 };
+
+export default withOpenLayers(DemoSitesMap);
