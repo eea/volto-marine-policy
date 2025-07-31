@@ -68,6 +68,7 @@ const NISListingView = ({ items, isEditMode }) => {
                   className="ui button secondary mini"
                   href={`${item['@id']}`}
                   target="_blank"
+                  rel="noopener"
                 >
                   View
                 </a>
@@ -75,6 +76,7 @@ const NISListingView = ({ items, isEditMode }) => {
                   className="ui button primary mini"
                   href={`${item['@id']}/edit`}
                   target="_blank"
+                  rel="noopener"
                 >
                   Edit
                 </a>
