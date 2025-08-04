@@ -1,3 +1,6 @@
+// import ProgressWorkflow from '@eeacms/volto-workflow-progress/ProgressWorkflow';
+import ProgressWorkflow from '@eeacms/volto-marine-policy/components/theme/ProgressWorkflow/ProgressWorkflow';
+
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './style.less';
@@ -38,6 +41,7 @@ import './style.less';
 
 const NISListingView = ({ items, isEditMode }) => {
   console.log(items);
+
   return (
     <table className="ui table">
       <thead>
@@ -62,7 +66,7 @@ const NISListingView = ({ items, isEditMode }) => {
             <td>{item.nis_subregion}</td>
             <td>{item.nis_status}</td>
             <td>{item.nis_group}</td>
-            <td>
+            <td className="workflow-actions">
               <div className="action-buttons">
                 <a
                   className="ui button secondary mini"
@@ -80,6 +84,13 @@ const NISListingView = ({ items, isEditMode }) => {
                 >
                   Edit
                 </a>
+              </div>
+              <div className="workflow-progress">
+                <ProgressWorkflow
+                  content={item}
+                  pathname={item['@id']}
+                  token={123}
+                />
               </div>
             </td>
           </tr>

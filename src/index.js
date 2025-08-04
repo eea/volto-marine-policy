@@ -12,7 +12,7 @@ import { addTableField } from '@eeacms/volto-metadata-block/components/manage/Bl
 // import HomePageView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageView';
 // import HomePageInverseView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageInverseView';
 import installMsfdDataExplorerBlock from './components/Blocks/MsfdDataExplorerBlock';
-import { breadcrumb, localnavigation } from './reducers';
+import { breadcrumb, localnavigation, workflowProgressPath } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
 import './slate-styles.less';
@@ -108,6 +108,7 @@ const applyConfig = (config) => {
     ...(config.addonReducers || {}),
     breadcrumb,
     localnavigation,
+    workflowProgressPath,
   };
 
   if (__SERVER__) {
