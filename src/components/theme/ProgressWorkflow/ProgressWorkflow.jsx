@@ -7,7 +7,6 @@ import { doesNodeContainClick } from 'semantic-ui-react/dist/commonjs/lib';
 // import { getWorkflowProgress } from '@eeacms/volto-workflow-progress/actions';
 import '@eeacms/volto-workflow-progress/less/editor.less';
 
-
 /**
  * getGeonames function.
  * @function getGeonames
@@ -176,7 +175,9 @@ const ProgressWorkflow = (props) => {
         workflowProgressPath.result.done,
       );
       setWorkflowProgressSteps(
-        filterOutZeroStatesNotCurrent(workflowProgressPath.result.steps).reverse(),
+        filterOutZeroStatesNotCurrent(
+          workflowProgressPath.result.steps,
+        ).reverse(),
       );
     } else {
       if (currentState) {
@@ -230,49 +231,49 @@ const ProgressWorkflow = (props) => {
   // debugger;
   return isAuth && currentState && contentContainsPathname ? (
     // <Plug pluggable="main.toolbar.top"  order={0}>
-      <div className="toolbar-workflow-progress" >
-        <div ref={pusherRef}>
-          <button
-            className={`circle-right-btn ${
-              currentStateClass[currentStateKey]
-                ? `review-state-${currentStateKey}`
-                : currentState.done === 100
-                ? 'review-state-published'
-                : ''
-            }`}
-            id="toolbar-cut-blocks"
-            onClick={toggleVisibleSide}
-            title="Editing progress"
-          >
-            {`${currentState.done}%`}
-          </button>
-          <div className={`sidenav-ol sidenav-ol--wp is-hidden`}>
-            <ol
-              className="progress-reversed"
-              style={{
-                counterReset: `item ${workflowProgressSteps.length + 1}`,
-              }}
-            >
-              {workflowProgressSteps.map((progressItem) =>
-                itemTracker(progressItem, currentStateKey, currentState),
-              )}
-            </ol>
-          </div>
-        </div>
-        <div
-          className={`review-state-text ${
+    <div className="toolbar-workflow-progress">
+      <div ref={pusherRef}>
+        <button
+          className={`circle-right-btn ${
             currentStateClass[currentStateKey]
               ? `review-state-${currentStateKey}`
               : currentState.done === 100
               ? 'review-state-published'
               : ''
           }`}
+          id="toolbar-cut-blocks"
+          onClick={toggleVisibleSide}
+          title="Editing progress"
         >
-          {currentState.title}
+          {`${currentState.done}%`}
+        </button>
+        <div className={`sidenav-ol sidenav-ol--wp is-hidden`}>
+          <ol
+            className="progress-reversed"
+            style={{
+              counterReset: `item ${workflowProgressSteps.length + 1}`,
+            }}
+          >
+            {workflowProgressSteps.map((progressItem) =>
+              itemTracker(progressItem, currentStateKey, currentState),
+            )}
+          </ol>
         </div>
       </div>
-    // </Plug>
+      <div
+        className={`review-state-text ${
+          currentStateClass[currentStateKey]
+            ? `review-state-${currentStateKey}`
+            : currentState.done === 100
+            ? 'review-state-published'
+            : ''
+        }`}
+      >
+        {currentState.title}
+      </div>
+    </div>
   ) : (
+    // </Plug>
     ''
   );
 };

@@ -18,10 +18,13 @@ const initialState = {
  * @param {Object} action Action to be handled.
  * @returns {Object} New state.
  */
-export default function workflowProgressPath(state = initialState, action = {}) {
+export default function workflowProgressPath(
+  state = initialState,
+  action = {},
+) {
   let { result } = action;
   switch (action.type) {
-    case "WORKFLOW_PROGRESS_PATH_PENDING":
+    case 'WORKFLOW_PROGRESS_PATH_PENDING':
       return {
         // ...state,
         // get: {
@@ -39,7 +42,7 @@ export default function workflowProgressPath(state = initialState, action = {}) 
           },
         },
       };
-    case "WORKFLOW_PROGRESS_PATH_SUCCESS":
+    case 'WORKFLOW_PROGRESS_PATH_SUCCESS':
       return {
         // ...state,
         // get: {
@@ -59,7 +62,7 @@ export default function workflowProgressPath(state = initialState, action = {}) 
           result,
         },
       };
-    case "WORKFLOW_PROGRESS_PATH_FAIL":
+    case 'WORKFLOW_PROGRESS_PATH_FAIL':
       return {
         // ...state,
         // get: {
