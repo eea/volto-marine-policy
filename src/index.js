@@ -36,6 +36,7 @@ import eeaWhiteLogo from '@eeacms/volto-eea-design-system/../theme/themes/eea/as
 import europeanComissionLogo from '@eeacms/volto-marine-policy/static/ec_logo_white.svg';
 import MeasureView from '@eeacms/volto-marine-policy/components/Widgets/MeasureViewWidget';
 
+
 const available_colors = [
   '#ffffff',
   '#f7f3ef',
