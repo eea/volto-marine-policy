@@ -157,7 +157,7 @@ const applyConfig = (config) => {
       },
       {
         id: 'nis',
-        title: 'NIS Listing',
+        title: 'NIS Table',
         template: NISListingView,
         isDefault: false,
       },

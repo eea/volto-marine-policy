@@ -1,8 +1,7 @@
-// import { Pluggable, Plug } from '@plone/volto/components/manage/Pluggable';
 import config from '@plone/volto/registry';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { defineMessages, useIntl } from 'react-intl';
 import Select from 'react-select';
@@ -17,12 +16,14 @@ import Toast from '@plone/volto/components/manage/Toast/Toast';
 //   getCurrentStateMapping,
 // } from '@plone/volto/helpers/Workflows/Workflows';
 import {
-  getWorkflow,
   transitionWorkflow,
 } from '@plone/volto/actions/workflow/workflow';
 import '@eeacms/volto-workflow-progress/less/editor.less';
 
 const currentStateClass = {
+  draft: 'draft',
+  submitted: 'submitted',
+  approved: 'approved',
   published: 'published',
   private: 'private',
 };
@@ -289,7 +290,7 @@ const ProgressWorkflow = (props) => {
      */
     const filterOutZeroStatesNotCurrent = (states) => {
       const [firstState, ...rest] = states;
-
+      return states; // do not filter
       const result =
         firstState[1] > 0 // there aren't any 0% states
           ? states // return all states
@@ -376,14 +377,6 @@ const ProgressWorkflow = (props) => {
 
   // console.log('currentState: ', currentState);
   // console.log('currentStateKey:', currentStateKey);
-  // console.log(
-  //   uniqBy(
-  //     transitions.map((transition) => getWorkflowOptions(transition)),
-  //     'label',
-  //     // ).concat([currentStateKey, currentState.title])}
-  //   ),
-  // );
-  // debugger;
   // console.log(workflowProgressPath?.result?.transitions);
   return isAuth && currentState && contentContainsPathname ? (
     <>
@@ -452,7 +445,9 @@ const ProgressWorkflow = (props) => {
           }`}
           id="toolbar-cut-blocks"
           onClick={toggleVisibleSide}
+          onKeyDown={() => {}}
           title="Editing progress"
+          role='presentation'
         >
           {`${currentState.title}`}
         </div>

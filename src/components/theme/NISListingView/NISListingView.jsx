@@ -1,7 +1,7 @@
 // import ProgressWorkflow from '@eeacms/volto-workflow-progress/ProgressWorkflow';
 import ProgressWorkflow from '@eeacms/volto-marine-policy/components/theme/ProgressWorkflow/ProgressWorkflow';
 
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './style.less';
 
@@ -40,7 +40,7 @@ import './style.less';
 // };
 
 const NISListingView = ({ items, isEditMode }) => {
-  console.log(items);
+  // console.log(items);
 
   return (
     <table className="ui table">
