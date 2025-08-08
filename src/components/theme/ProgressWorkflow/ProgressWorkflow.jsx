@@ -136,7 +136,7 @@ export function getWorkflowProgress(item) {
     item,
     request: {
       op: 'get',
-      path: `${item}/@workflow.progress`,
+      path: `${item}/@workflow.progress.nis`,
       headers: {
         Accept: 'application/json',
       },
@@ -216,15 +216,12 @@ const ProgressWorkflow = (props) => {
   };
 
   const workflowProgressPath = useSelector((state) => {
-    // console.log(state?.workflowProgressPath);
     if (state?.workflowProgressPath?.[basePathname]?.get?.loaded === true) {
       const progress = state?.workflowProgressPath?.[basePathname]?.result;
-      // debugger;
-      // console.log(flattenToAppURL(progress['@id']), "===", basePathname + '/@workflow.progress');
       if (
         progress &&
         flattenToAppURL(progress['@id']).endsWith(
-          basePathname + '/@workflow.progress',
+          basePathname + '/@workflow.progress.nis',
         )
       ) {
         return state?.workflowProgressPath?.[basePathname];
