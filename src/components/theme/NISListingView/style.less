@@ -6,6 +6,116 @@
 
 .metadata-item {
   align-items: baseline;
-  padding: 8px 15px;
+  padding: 5px 10px;
   background-color: #ebebeb;
+  font-size: 0.9em;
+}
+
+.ui.table tr {
+  td,
+  th {
+    border-left: 1px solid #bcbec0 !important;
+
+    &:first-of-type {
+      border-left: none !important;
+    }
+  }
+}
+
+.ui.button.mini {
+  padding: 0.5em 0.8em;
+  vertical-align: middle;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.workflow-select {
+  // min-width: 10em;
+  width: 80%;
+  margin: auto;
+
+  .react-select__control {
+    min-height: unset;
+
+    .react-select__value-container {
+      // padding: 0 !important;
+    }
+
+    .react-select__indicator {
+      padding: 0;
+    }
+  }
+
+  .react-select__option {
+    text-align: left;
+  }
+
+  .react-select__menu {
+    border: 1px solid #b8c6c8;
+    border-top: none;
+    border-top-left-radius: 0.25em !important;
+    border-top-right-radius: 0.25em !important;
+  }
+}
+
+.workflow-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  .workflow-progress {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+
+    .sidenav-ol {
+      position: fixed;
+      top: 40%;
+      right: 0;
+      left: unset;
+      overflow: visible;
+      border: 1px solid #eef2f3;
+    }
+  }
+
+  .toolbar-workflow-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 !important;
+    gap: 0.25em;
+  }
+
+  .circle-right-btn {
+    height: auto !important;
+    padding: 0.5em 0.8em;
+    border-width: 1px !important;
+    border-radius: 0 !important;
+    border-radius: 0.25em !important;
+    margin: 0 !important;
+  }
+
+  .review-state-text {
+    line-height: normal;
+    // text-align: left;
+  }
+}
+
+.review-state-draft {
+  border-color: #ed4033 !important;
+  color: #ed4033 !important;
+}
+
+.review-state-submitted {
+  border-color: #f6a808 !important;
+  color: #f6a808 !important;
+}
+
+.review-state-approved {
+  border-color: #3ca34a !important;
+  color: #3ca34a !important;
 }
