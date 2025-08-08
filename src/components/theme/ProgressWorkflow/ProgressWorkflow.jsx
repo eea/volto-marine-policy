@@ -15,9 +15,7 @@ import Toast from '@plone/volto/components/manage/Toast/Toast';
 //   getWorkflowOptions,
 //   getCurrentStateMapping,
 // } from '@plone/volto/helpers/Workflows/Workflows';
-import {
-  transitionWorkflow,
-} from '@plone/volto/actions/workflow/workflow';
+import { transitionWorkflow } from '@plone/volto/actions/workflow/workflow';
 import '@eeacms/volto-workflow-progress/less/editor.less';
 
 const currentStateClass = {
@@ -447,7 +445,7 @@ const ProgressWorkflow = (props) => {
           onClick={toggleVisibleSide}
           onKeyDown={() => {}}
           title="Editing progress"
-          role='presentation'
+          role="presentation"
         >
           {`${currentState.title}`}
         </div>
