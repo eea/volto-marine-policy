@@ -287,26 +287,26 @@ const ProgressWorkflow = (props) => {
      * @returns {Object[]} result - array of arrays, same structure but filtered
      */
     const filterOutZeroStatesNotCurrent = (states) => {
-      const [firstState, ...rest] = states;
       return states; // do not filter
-      const result =
-        firstState[1] > 0 // there aren't any 0% states
-          ? states // return all states
-          : (() => {
-              // there are 0% states
-              const indexOfCurrentStateKey =
-                firstState[0].indexOf(currentStateKey);
-              if (indexOfCurrentStateKey > -1) {
-                const keys = [firstState[0][indexOfCurrentStateKey]];
-                const titles = [firstState[2][indexOfCurrentStateKey]];
-                const description = [firstState[3][indexOfCurrentStateKey]];
+      // const [firstState, ...rest] = states;
+      // const result =
+      //   firstState[1] > 0 // there aren't any 0% states
+      //     ? states // return all states
+      //     : (() => {
+      //         // there are 0% states
+      //         const indexOfCurrentStateKey =
+      //           firstState[0].indexOf(currentStateKey);
+      //         if (indexOfCurrentStateKey > -1) {
+      //           const keys = [firstState[0][indexOfCurrentStateKey]];
+      //           const titles = [firstState[2][indexOfCurrentStateKey]];
+      //           const description = [firstState[3][indexOfCurrentStateKey]];
 
-                return [[keys, 0, titles, description], ...rest]; // return only the current 0% state and test
-              }
-              return rest; // if current state in not a 0% return all rest
-            })();
+      //           return [[keys, 0, titles, description], ...rest]; // return only the current 0% state and test
+      //         }
+      //         return rest; // if current state in not a 0% return all rest
+      //       })();
 
-      return result;
+      // return result;
     };
 
     // filter out paths that don't have workflow (home, login, dexterity even if the content obj stays the same etc)
