@@ -44,8 +44,10 @@ const RenderListItems = ({ items, data }) => {
  * @extends Component
  */
 const View = ({ data, tocEntries }) => {
-  const titleFontSizeClass = data.title_font_size ? `toc-title-${data.title_font_size}` : 'toc-title-medium';
-  
+  const titleFontSizeClass = data.title_font_size
+    ? `toc-title-${data.title_font_size}`
+    : 'toc-title-medium';
+
   return (
     <>
       {data.title && !data.hide_title ? (
