@@ -4,11 +4,10 @@ import ProgressWorkflow from '@eeacms/volto-marine-policy/components/theme/Progr
 // import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './style.less';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
-import { Modal, Button, Select } from 'semantic-ui-react';
-import { hasPermission } from '@plone/volto/helpers';
+import { Button, Select } from 'semantic-ui-react';
 
 const NISListingView = ({ items, isEditMode }) => {
   // console.log(items);
@@ -19,7 +18,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const canEditPage = content?.['@components']?.actions?.object?.some(
     (action) => action.id === 'edit',
   );
-  console.log('canEditPage', canEditPage);
+  // console.log('canEditPage', canEditPage);
 
   const toggleSelection = (id) => {
     setSelectedItems((prev) =>
