@@ -33,7 +33,7 @@ const NISListingView = ({ items, isEditMode }) => {
   };
 
   const onBulkAssign = async (ids, assignee) => {
-    const res = await fetch(`${window.location.origin}/++api++/@bulk-assign`, {
+    await fetch(`${window.location.origin}/++api++/@bulk-assign`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,8 +46,8 @@ const NISListingView = ({ items, isEditMode }) => {
       }),
     });
 
-    const result = await res.json();
-    // window.location.reload();
+    // const result = await res.json();
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const NISListingView = ({ items, isEditMode }) => {
     };
     fetchUsers();
   }, []);
-  console.log(items);
+
   return (
     <>
       <table className="ui table">
