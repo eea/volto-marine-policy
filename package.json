@@ -24,7 +24,8 @@
     "@eeacms/volto-eea-website-theme",
     "@eeacms/volto-globalsearch",
     "@eeacms/volto-metadata-block",
-    "@eeacms/volto-workflow-progress"
+    "@eeacms/volto-workflow-progress",
+    "@plone-collective/volto-authomatic"
   ],
   "resolutions": {
     "react-countup/countup.js": "2.5.0",
@@ -42,6 +43,7 @@
     "@eeacms/volto-tabs-block": "*",
     "@eeacms/volto-metadata-block": "*",
     "@eeacms/volto-workflow-progress": "*",
+    "@plone-collective/volto-authomatic": "2.0.1",
     "axios": "0.30.0",
     "d3-array": "^2.12.1",
     "jquery": "3.6.0",
