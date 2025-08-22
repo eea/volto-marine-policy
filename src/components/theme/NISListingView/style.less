@@ -12,12 +12,13 @@
 }
 
 .ui.table tr {
+
   td,
   th {
-    border-left: 1px solid #bcbec0 !important;
+    border-right: 1px solid #bcbec0 !important;
 
-    &:first-of-type {
-      border-left: none !important;
+    &:last-of-type {
+      border-right: none !important;
     }
   }
 }
@@ -118,4 +119,30 @@
 .review-state-approved {
   border-color: #3ca34a !important;
   color: #3ca34a !important;
+}
+
+.users-assign-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.assigned-to-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ri-file-download-line {
+  margin-right: 5px;
+}
+
+.download-as-xls {
+  padding: 0.6em 0.5em !important;
 }
