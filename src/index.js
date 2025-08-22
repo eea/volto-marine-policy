@@ -36,23 +36,6 @@ import eeaWhiteLogo from '@eeacms/volto-eea-design-system/../theme/themes/eea/as
 import europeanComissionLogo from '@eeacms/volto-marine-policy/static/ec_logo_white.svg';
 import MeasureView from '@eeacms/volto-marine-policy/components/Widgets/MeasureViewWidget';
 
-const available_colors = [
-  '#ffffff',
-  '#f7f3ef',
-  '#e3edf7',
-  '#002d54',
-  '#59d3ff',
-  '#2dd2b7',
-  '#1271e1',
-  '#826A6A',
-  '#FAD0C3',
-  '#F3E2AB',
-  '#C1E1C5',
-  '#BEDADC',
-  '#BED3F3',
-  '#000000',
-];
-
 const restrictedBlocks = ['imagecards'];
 
 const messages = defineMessages({
@@ -203,8 +186,6 @@ const applyConfig = (config) => {
   });
 
   config.settings.navDepth = 3;
-
-  config.settings.available_colors = available_colors;
 
   // config.settings.externalRoutes = [
   //   ...(config.settings.externalRoutes || []),
