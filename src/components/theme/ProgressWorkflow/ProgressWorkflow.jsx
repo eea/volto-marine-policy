@@ -249,8 +249,8 @@ const ProgressWorkflow = (props) => {
     const rect = button.getBoundingClientRect();
 
     dropdown.style.position = 'fixed';
-    dropdown.style.top = `${rect.bottom}px`; // or rect.top
-    dropdown.style.left = `${rect.left}px`;
+    dropdown.style.top = `${rect.bottom - 35}px`; // or rect.top
+    dropdown.style.left = `${rect.left - 200}px`;
     dropdown.classList.toggle('is-hidden');
     // console.log(rect.bottom, rect.left);
   };
