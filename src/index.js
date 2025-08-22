@@ -16,6 +16,7 @@ import { breadcrumb, localnavigation, workflowProgressPath } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
 import './slate-styles.less';
+import './less/toc-title-sizes.less';
 
 import installSearchEngine from './search';
 

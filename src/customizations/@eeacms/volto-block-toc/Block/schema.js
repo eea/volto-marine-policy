@@ -1,0 +1,73 @@
+const TableOfContentsSchema = ({ data }) => {
+  const { variation = 'default' } = data;
+
+  return {
+    title: 'Table of Contents',
+    fieldsets: [
+      {
+        id: 'default',
+        title: 'Default',
+        fields: [
+          'title',
+          'hide_title',
+          'title_font_size',
+          ...(variation === 'default' ? ['ordered'] : []),
+          ...(variation === 'horizontalMenu' ? ['sticky'] : []),
+          ...(variation === 'accordionMenu' ? ['sticky', 'side_menu'] : []),
+          ...(variation === 'accordionMenu' ? ['bulleted_list'] : []),
+          'levels',
+        ],
+      },
+    ],
+    properties: {
+      title: {
+        title: 'Block title',
+      },
+      hide_title: {
+        title: 'Hide title',
+        type: 'boolean',
+      },
+      title_font_size: {
+        title: 'Title font size',
+        choices: [
+          ['small', 'Small'],
+          ['medium', 'Medium'],
+          ['large', 'Large'],
+        ],
+        default: 'medium',
+      },
+      sticky: {
+        title: 'Sticky on top',
+        type: 'boolean',
+      },
+      side_menu: {
+        title: 'Use as side menu',
+        type: 'boolean',
+      },
+      levels: {
+        title: 'Entries',
+        isMulti: true,
+        choices: [
+          ['h1', 'h1'],
+          ['h2', 'h2'],
+          ['h3', 'h3'],
+          ['h4', 'h4'],
+          ['h5', 'h5'],
+          ['h6', 'h6'],
+        ],
+      },
+      ordered: {
+        title: 'Ordered',
+        type: 'boolean',
+      },
+      bulleted_list: {
+        title: 'Use bullet list',
+        type: 'boolean',
+        description: 'Bullet point for child items',
+      },
+    },
+    required: [],
+  };
+};
+
+export default TableOfContentsSchema;
