@@ -50,7 +50,7 @@ const NISListingView = ({ items, isEditMode }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       const res = await fetch(
-        `${window.location.origin}/++api++/@vocabularies/nis_experts_vocabulary`,
+        `${window.location.origin}/marine/++api++/@vocabularies/nis_experts_vocabulary`,
         {
           headers: {
             Accept: 'application/json',
