@@ -30,7 +30,7 @@ const NISListingView = ({ items, isEditMode }) => {
   };
 
   const onBulkAssign = async (ids, assignee) => {
-    await fetch(`${window.location.origin}/++api++/@bulk-assign`, {
+    await fetch(`${window.location.origin}/marine/++api++/@bulk-assign`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
