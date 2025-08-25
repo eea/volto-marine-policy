@@ -89,7 +89,10 @@ const NISListingView = ({ items, isEditMode }) => {
               {canEditPage && (
                 <div>
                   <a
-                    href={`/++api++${window.location.pathname}/nis-export${window.location.search}`}
+                    href={`/marine/++api++${window.location.pathname.replace(
+                      '/marine',
+                      '',
+                    )}/nis-export${window.location.search}`}
                     title="Download"
                     target="_blank"
                     rel="noopener"
