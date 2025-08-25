@@ -14,9 +14,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
   const actions = useSelector((state) => state.actions.actions);
-  const canEditPage = actions?.object?.some(
-    (action) => action.id === 'edit',
-  );
+  const canEditPage = actions?.object?.some((action) => action.id === 'edit');
   // console.log('actions', actions);
 
   const toggleSelection = (id) => {
