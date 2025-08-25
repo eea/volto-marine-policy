@@ -10,15 +10,14 @@ import { Checkbox } from 'semantic-ui-react';
 import { Button, Select } from 'semantic-ui-react';
 
 const NISListingView = ({ items, isEditMode }) => {
-  // console.log(items);
   const [selectedItems, setSelectedItems] = useState([]);
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
-  const content = useSelector((state) => state.content.data);
-  const canEditPage = content?.['@components']?.actions?.object?.some(
+  const actions = useSelector((state) => state.actions.actions);
+  const canEditPage = actions?.object?.some(
     (action) => action.id === 'edit',
   );
-  // console.log('canEditPage', canEditPage);
+  // console.log('actions', actions);
 
   const toggleSelection = (id) => {
     setSelectedItems((prev) =>
