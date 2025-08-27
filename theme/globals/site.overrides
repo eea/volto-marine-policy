@@ -3,6 +3,7 @@
 *******************************/
 
 @import '../extras/print';
+@import '../extras/tocnav';
 
 .documentFirstHeading {
   border-bottom: none !important;
