@@ -113,7 +113,7 @@ export function getFeatures({ cases, ol }) {
     const {
       geometry: { coordinates },
     } = c;
-    const point = new Feature(
+    const point = new ol.ol.Feature(
       new ol.geom.Point(ol.proj.fromLonLat(coordinates)),
     );
     point.setId(index);
