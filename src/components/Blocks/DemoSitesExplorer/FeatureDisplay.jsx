@@ -102,13 +102,13 @@ export default function FeatureDisplay({ feature }) {
             {feature.indicators.map((item, index) => {
               return (
                 <li key={index}>
-                  <span
-                  // target="_blank"
-                  // rel="noopener noreferrer"
-                  // href={item['path']}
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={item['path']}
                   >
                     {item['title']}
-                  </span>
+                  </a>
                 </li>
               );
             })}

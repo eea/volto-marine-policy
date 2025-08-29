@@ -326,7 +326,7 @@ export function ActiveFilters(props) {
               {activeFilters.objective_filter.map((filterCode) => {
                 const filterLabel = filters.objective_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -352,7 +352,7 @@ export function ActiveFilters(props) {
               {activeFilters.target_filter.map((filterCode) => {
                 const filterLabel = filters.target_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -377,7 +377,7 @@ export function ActiveFilters(props) {
               {activeFilters.indicator_filter.map((filterCode) => {
                 const filterLabel = filters.indicator_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -402,7 +402,7 @@ export function ActiveFilters(props) {
               {activeFilters.project_filter.map((filterCode) => {
                 const filterLabel = filters.project_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -427,7 +427,7 @@ export function ActiveFilters(props) {
               {activeFilters.country_filter.map((filterCode) => {
                 const filterLabel = filters.country_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"

@@ -88,7 +88,7 @@ export function zoomMapToFeatures({ map, features, ol, threshold = 500 }) {
 }
 
 export function getFeatures({ cases, ol }) {
-  const Feature = ol.Feature;
+  const Feature = ol.Feature; // eslint-disable-line no-unused-vars
   const colors = {
     'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity':
       '#007b6c',
@@ -113,7 +113,7 @@ export function getFeatures({ cases, ol }) {
     const {
       geometry: { coordinates },
     } = c;
-    const point = new Feature(
+    const point = new ol.ol.Feature(
       new ol.geom.Point(ol.proj.fromLonLat(coordinates)),
     );
     point.setId(index);
