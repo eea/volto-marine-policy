@@ -164,7 +164,6 @@ export function DemoSitesFilters(props) {
     activeFilters,
     hideFilters,
     setActiveFilters,
-    map,
     highlightedIndex,
   } = props;
 
