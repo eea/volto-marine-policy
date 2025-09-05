@@ -77,7 +77,7 @@ export default function DemoSitesExplorerView(props) {
           activeFilters={activeFilters}
           hideFilters={hideFilters}
           setActiveFilters={setActiveFilters}
-          map={map}
+          highlightedIndex={highlightedIndex}
         />
       </Grid.Row>
       <Grid.Row>
