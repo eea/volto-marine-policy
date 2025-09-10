@@ -7,9 +7,10 @@ import './style.less';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
-import { Button, Select } from 'semantic-ui-react';
+import { Button, Select, Dimmer, Loader } from 'semantic-ui-react';
 
 const NISListingView = ({ items, isEditMode }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
@@ -29,19 +30,31 @@ const NISListingView = ({ items, isEditMode }) => {
     setAssignee(null);
   };
 
+  const handleBulkAssignAll = () => {
+    setSelectedItems(['All']);
+    // onBulkAssignAll(selectedItems, assignee);
+    // setSelectedItems([]);
+    // setAssignee(null);
+  };
+
   const onBulkAssign = async (ids, assignee) => {
-    await fetch(`${window.location.origin}/marine/++api++/@bulk-assign`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+    setIsLoading(true);
+    await fetch(
+      `${window.location.origin}/++api++/@bulk-assign${window.location.search}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          items: ids,
+          assigned_to: assignee,
+          search: window.location.search,
+        }),
       },
-      credentials: 'include',
-      body: JSON.stringify({
-        items: ids,
-        assigned_to: assignee,
-      }),
-    });
+    );
 
     // const result = await res.json();
     window.location.reload();
@@ -50,7 +63,7 @@ const NISListingView = ({ items, isEditMode }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       const res = await fetch(
-        `${window.location.origin}/marine/++api++/@vocabularies/nis_experts_vocabulary`,
+        `${window.location.origin}/++api++/@vocabularies/nis_experts_vocabulary`,
         {
           headers: {
             Accept: 'application/json',
@@ -72,8 +85,23 @@ const NISListingView = ({ items, isEditMode }) => {
     fetchUsers();
   }, []);
 
+  // console.log('items', items);
   return (
     <>
+      {isLoading && (
+        <Dimmer active inverted>
+          <Loader>Assigning...</Loader>
+        </Dimmer>
+      )}
+      <Button
+        className="primary"
+        size="small"
+        // color="green"
+        // disabled={!assignee}
+        onClick={handleBulkAssignAll}
+      >
+        Assign search results
+      </Button>
       <table className="ui table">
         <thead>
           <tr>
@@ -82,6 +110,7 @@ const NISListingView = ({ items, isEditMode }) => {
             <th>Scientific name accepted</th>
             <th>Region</th>
             <th>Subregion</th>
+            <th>Country</th>
             <th>Status</th>
             <th>Group</th>
             <th>Assigned to</th>
@@ -114,6 +143,7 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>{item.nis_scientificname_accepted}</td>
               <td>{item.nis_region}</td>
               <td>{item.nis_subregion}</td>
+              <td>{item.nis_country.join(', ')}</td>
               <td>{item.nis_status}</td>
               <td>{item.nis_group}</td>
               <td>
