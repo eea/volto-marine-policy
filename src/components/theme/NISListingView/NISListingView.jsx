@@ -40,7 +40,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const onBulkAssign = async (ids, assignee) => {
     setIsLoading(true);
     await fetch(
-      `${window.location.origin}/++api++/@bulk-assign${window.location.search}`,
+      `${window.location.origin}/marine/++api++/@bulk-assign${window.location.search}`,
       {
         method: 'POST',
         headers: {
@@ -63,7 +63,7 @@ const NISListingView = ({ items, isEditMode }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       const res = await fetch(
-        `${window.location.origin}/++api++/@vocabularies/nis_experts_vocabulary`,
+        `${window.location.origin}/marine/++api++/@vocabularies/nis_experts_vocabulary`,
         {
           headers: {
             Accept: 'application/json',
