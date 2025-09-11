@@ -29,7 +29,7 @@ async function getCurrentSearchItems() {
     try {
       query = normalizeQueryOperators(JSON.parse(parsed.query));
     } catch (e) {
-      console.error('Invalid query param JSON', e);
+      // console.error('Invalid query param JSON', e);
     }
   }
 
@@ -46,7 +46,7 @@ async function getCurrentSearchItems() {
 
   // call Plone
   try {
-    const response = await fetch('/++api++/@querystring-search', {
+    const response = await fetch('/marine/++api++/@querystring-search', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ async function getCurrentSearchItems() {
     });
     return response;
   } catch (err) {
-    console.error('Querystring search failed:', err);
+    // console.error('Querystring search failed:', err);
   }
 }
 
