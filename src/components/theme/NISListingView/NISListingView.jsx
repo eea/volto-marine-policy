@@ -1,7 +1,5 @@
-// import ProgressWorkflow from '@eeacms/volto-workflow-progress/ProgressWorkflow';
 import ProgressWorkflow from '@eeacms/volto-marine-policy/components/theme/ProgressWorkflow/ProgressWorkflow';
 
-// import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './style.less';
 import { useState, useEffect } from 'react';
@@ -16,7 +14,6 @@ const NISListingView = ({ items, isEditMode }) => {
   const [assignee, setAssignee] = useState(null);
   const actions = useSelector((state) => state.actions.actions);
   const canEditPage = actions?.object?.some((action) => action.id === 'edit');
-  // console.log('actions', actions);
 
   const toggleSelection = (id) => {
     setSelectedItems((prev) =>
@@ -32,9 +29,6 @@ const NISListingView = ({ items, isEditMode }) => {
 
   const handleBulkAssignAll = () => {
     setSelectedItems(['All']);
-    // onBulkAssignAll(selectedItems, assignee);
-    // setSelectedItems([]);
-    // setAssignee(null);
   };
 
   const onBulkAssign = async (ids, assignee) => {
@@ -56,7 +50,6 @@ const NISListingView = ({ items, isEditMode }) => {
       },
     );
 
-    // const result = await res.json();
     window.location.reload();
   };
 
@@ -85,7 +78,6 @@ const NISListingView = ({ items, isEditMode }) => {
     fetchUsers();
   }, []);
 
-  // console.log('items', items);
   return (
     <>
       {isLoading && (
@@ -93,15 +85,32 @@ const NISListingView = ({ items, isEditMode }) => {
           <Loader>Assigning...</Loader>
         </Dimmer>
       )}
-      <Button
-        className="primary"
-        size="small"
-        // color="green"
-        // disabled={!assignee}
-        onClick={handleBulkAssignAll}
-      >
-        Assign search results
-      </Button>
+      {canEditPage && (
+        <div className="download-button-wrapper">
+          <Button
+            className="primary"
+            size="small"
+            onClick={handleBulkAssignAll}
+          >
+            <i className="ri-user-add-line"></i>Assign search results
+          </Button>
+          <div>
+            <a
+              href={`/marine/++api++${window.location.pathname.replace(
+                '/marine',
+                '',
+              )}/nis-export${window.location.search}`}
+              title="Download"
+              target="_blank"
+              rel="noopener"
+              className="ui button primary download-as-xls"
+            >
+              <i className="ri-file-download-line"></i>
+              Download search results
+            </a>
+          </div>
+        </div>
+      )}
       <table className="ui table">
         <thead>
           <tr>
@@ -114,25 +123,7 @@ const NISListingView = ({ items, isEditMode }) => {
             <th>Status</th>
             <th>Group</th>
             <th>Assigned to</th>
-            <th>
-              {canEditPage && (
-                <div>
-                  <a
-                    href={`/marine/++api++${window.location.pathname.replace(
-                      '/marine',
-                      '',
-                    )}/nis-export${window.location.search}`}
-                    title="Download"
-                    target="_blank"
-                    rel="noopener"
-                    className="ui button primary download-as-xls"
-                  >
-                    <i className="ri-file-download-line"></i>
-                    Download
-                  </a>
-                </div>
-              )}
-            </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -143,7 +134,7 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>{item.nis_scientificname_accepted}</td>
               <td>{item.nis_region}</td>
               <td>{item.nis_subregion}</td>
-              <td>{item.nis_country.join(', ')}</td>
+              <td>{item.nis_country && item.nis_country.join(', ')}</td>
               <td>{item.nis_status}</td>
               <td>{item.nis_group}</td>
               <td>
