@@ -1,49 +1,115 @@
-// import ProgressWorkflow from '@eeacms/volto-workflow-progress/ProgressWorkflow';
 import ProgressWorkflow from '@eeacms/volto-marine-policy/components/theme/ProgressWorkflow/ProgressWorkflow';
 
-// import { Link } from 'react-router-dom';
+import qs from 'query-string';
 import PropTypes from 'prop-types';
 import './style.less';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
-import { Button, Select } from 'semantic-ui-react';
+import { Button, Select, Dimmer, Loader } from 'semantic-ui-react';
+
+function normalizeQueryOperators(query) {
+  return query.map((q) => {
+    // if the operator starts with "paqo", replace with full
+    if (q.o && q.o.startsWith('paqo.')) {
+      const op = q.o.replace('paqo.', 'plone.app.querystring.operation.');
+      return { ...q, o: op };
+    }
+    return q;
+  });
+}
+
+async function getCurrentSearchItems() {
+  // parse querystring into an object
+  const parsed = qs.parse(window.location.search);
+
+  // decode the `query` param, which is itself a JSON string
+  let query = [];
+  if (parsed.query) {
+    try {
+      query = normalizeQueryOperators(JSON.parse(parsed.query));
+    } catch (e) {
+      // console.error('Invalid query param JSON', e);
+    }
+  }
+
+  // build payload
+  const payload = {
+    metadata_fields: '_all',
+    b_size: parsed.b_size ? parseInt(parsed.b_size, 10) : 25,
+    limit: parsed.limit ? parseInt(parsed.limit, 10) : 3000,
+    query,
+    sort_on: parsed.sort_on || 'effective',
+    sort_order: parsed.sort_order || 'ascending',
+    b_start: parsed.b_start ? parseInt(parsed.b_start, 10) : 0,
+  };
+
+  // call Plone
+  try {
+    const response = await fetch('/marine/++api++/@querystring-search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    return response;
+  } catch (err) {
+    // console.error('Querystring search failed:', err);
+  }
+}
 
 const NISListingView = ({ items, isEditMode }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [itemsTotal, setItemsTotal] = useState(0);
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
   const actions = useSelector((state) => state.actions.actions);
   const canEditPage = actions?.object?.some((action) => action.id === 'edit');
-  // console.log('actions', actions);
 
   const toggleSelection = (id) => {
+    setItemsTotal(0);
     setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+      prev.includes(id)
+        ? prev.filter((x) => x !== id && x !== 'All')
+        : [...prev.filter((x) => x !== 'All'), id],
     );
   };
 
   const handleBulkAssign = () => {
+    setItemsTotal(0);
     onBulkAssign(selectedItems, assignee);
     setSelectedItems([]);
     setAssignee(null);
   };
 
-  const onBulkAssign = async (ids, assignee) => {
-    await fetch(`${window.location.origin}/marine/++api++/@bulk-assign`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        items: ids,
-        assigned_to: assignee,
-      }),
-    });
+  const handleBulkAssignAll = async () => {
+    const items = await getCurrentSearchItems();
+    const itemsTotal = await items.json();
+    setItemsTotal(itemsTotal.items_total);
+    setSelectedItems(['All']);
+  };
 
-    // const result = await res.json();
+  const onBulkAssign = async (ids, assignee) => {
+    setIsLoading(true);
+    await fetch(
+      `${window.location.origin}/marine/++api++/@bulk-assign${window.location.search}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          items: ids,
+          assigned_to: assignee,
+          search: window.location.search,
+        }),
+      },
+    );
+
     window.location.reload();
   };
 
@@ -74,6 +140,37 @@ const NISListingView = ({ items, isEditMode }) => {
 
   return (
     <>
+      {isLoading && (
+        <Dimmer active inverted>
+          <Loader>Assigning...</Loader>
+        </Dimmer>
+      )}
+      {canEditPage && (
+        <div className="download-button-wrapper">
+          <Button
+            className="primary"
+            size="small"
+            onClick={handleBulkAssignAll}
+          >
+            <i className="ri-user-add-line"></i>Assign search results
+          </Button>
+          <div>
+            <a
+              href={`/marine/++api++${window.location.pathname.replace(
+                '/marine',
+                '',
+              )}/nis-export${window.location.search}`}
+              title="Download"
+              target="_blank"
+              rel="noopener"
+              className="ui button primary download-as-xls"
+            >
+              <i className="ri-file-download-line"></i>
+              Download search results
+            </a>
+          </div>
+        </div>
+      )}
       <table className="ui table">
         <thead>
           <tr>
@@ -82,28 +179,11 @@ const NISListingView = ({ items, isEditMode }) => {
             <th>Scientific name accepted</th>
             <th>Region</th>
             <th>Subregion</th>
+            <th>Country</th>
             <th>Status</th>
             <th>Group</th>
             <th>Assigned to</th>
-            <th>
-              {canEditPage && (
-                <div>
-                  <a
-                    href={`/marine/++api++${window.location.pathname.replace(
-                      '/marine',
-                      '',
-                    )}/nis-export${window.location.search}`}
-                    title="Download"
-                    target="_blank"
-                    rel="noopener"
-                    className="ui button primary download-as-xls"
-                  >
-                    <i className="ri-file-download-line"></i>
-                    Download
-                  </a>
-                </div>
-              )}
-            </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -114,6 +194,7 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>{item.nis_scientificname_accepted}</td>
               <td>{item.nis_region}</td>
               <td>{item.nis_subregion}</td>
+              <td>{item.nis_country && item.nis_country.join(', ')}</td>
               <td>{item.nis_status}</td>
               <td>{item.nis_group}</td>
               <td>
@@ -163,8 +244,13 @@ const NISListingView = ({ items, isEditMode }) => {
       {selectedItems.length > 0 && (
         <div className="users-assign-container">
           <h4>
-            Assign {selectedItems.length} item
-            {selectedItems.length > 1 ? 's' : ''}
+            {itemsTotal > 0 &&
+              selectedItems[0] === 'All' &&
+              `Assign ${itemsTotal} search result items`}
+            {itemsTotal === 0 &&
+              `Assign ${selectedItems.length} selected item${
+                selectedItems.length > 1 ? 's' : ''
+              }`}
           </h4>
           <Select
             placeholder="Select expert"
