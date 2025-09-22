@@ -15,14 +15,6 @@ const MsfdDataExplorerBlockView = (props) => {
   const { editable } = props;
   const { article_select } = props.data;
 
-  const scripts = [
-    'https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js',
-    '/marine/++api++/++resource++msfd/js/jquery-ui.js',
-    '/marine/++api++/++resource++msfd/js/tabs.js',
-    '/marine/++api++/++resource++msfd/js/msfd_search.js',
-    '/marine/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
-  ];
-
   useEffect(() => {
     if (article_select) {
       axios
@@ -48,6 +40,13 @@ const MsfdDataExplorerBlockView = (props) => {
     global.jQuery = $;
 
     if (!loading) {
+      const scripts = [
+        'https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js',
+        '/marine/++api++/++resource++msfd/js/jquery-ui.js',
+        '/marine/++api++/++resource++msfd/js/tabs.js',
+        '/marine/++api++/++resource++msfd/js/msfd_search.js',
+        '/marine/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
+      ];
       const loadScripts = async () => {
         for (const src of scripts) {
           await new Promise((resolve, reject) => {
