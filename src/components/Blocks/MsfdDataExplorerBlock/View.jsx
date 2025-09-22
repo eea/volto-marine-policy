@@ -23,20 +23,6 @@ const MsfdDataExplorerBlockView = (props) => {
     '/marine/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
   ];
 
-  const loadScripts = async () => {
-    for (const src of scripts) {
-      await new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.type = 'text/javascript';
-        script.async = false; // load in order
-        script.onload = resolve;
-        script.onerror = reject;
-        document.body.appendChild(script);
-      });
-    }
-  };
-
   useEffect(() => {
     if (article_select) {
       axios
@@ -62,6 +48,19 @@ const MsfdDataExplorerBlockView = (props) => {
     global.jQuery = $;
 
     if (!loading) {
+      const loadScripts = async () => {
+        for (const src of scripts) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.type = 'text/javascript';
+            script.async = false; // load in order
+            script.onload = resolve;
+            script.onerror = reject;
+            document.body.appendChild(script);
+          });
+        }
+      };
       loadScripts();
       // .then(() => {
       //   console.log('All scripts loaded');
@@ -69,7 +68,7 @@ const MsfdDataExplorerBlockView = (props) => {
       // })
       // .catch((err) => console.error('Script load error', err));
     }
-  }, [loading, loadScripts]);
+  }, [loading]);
 
   // useEffect(() => {
   //   window.$ = $;
