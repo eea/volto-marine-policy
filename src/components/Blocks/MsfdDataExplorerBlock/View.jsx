@@ -15,6 +15,28 @@ const MsfdDataExplorerBlockView = (props) => {
   const { editable } = props;
   const { article_select } = props.data;
 
+  const scripts = [
+    'https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js',
+    '/marine/++api++/++resource++msfd/js/jquery-ui.js',
+    '/marine/++api++/++resource++msfd/js/tabs.js',
+    '/marine/++api++/++resource++msfd/js/msfd_search.js',
+    '/marine/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
+  ];
+
+  const loadScripts = async () => {
+    for (const src of scripts) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.type = 'text/javascript';
+        script.async = false; // load in order
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    }
+  };
+
   useEffect(() => {
     if (article_select) {
       axios
@@ -39,40 +61,55 @@ const MsfdDataExplorerBlockView = (props) => {
     window.jQuery = $;
     global.jQuery = $;
 
-    const scripts = [
-      'https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js',
-      '/marine/++api++/++resource++msfd/js/jquery-ui.js',
-      '/marine/++api++/++resource++msfd/js/tabs.js',
-      '/marine/++api++/++resource++msfd/js/msfd_search.js',
-      '/marine/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
-    ];
-
     if (!loading) {
-      $.getScript(scripts[0], () => {
-        $.getScript(scripts[1], () => {
-          $.getScript(scripts[2], () => {
-            $.getScript(scripts[3], () => {
-              $.getScript(scripts[4]);
-            });
-          });
-        });
-      });
-
-      // scripts.forEach((element) => {
-      //   // $.getScript(element);
-      //   const script = document.createElement('script');
-      //   script.src = element;
-      //   script.setAttribute('type', 'text/javascript');
-      //   script.async = false;
-      //   // script.defer = 'defer';
-
-      //   document.body.appendChild(script);
-      // });
-      // setTimeout(() => {
-      //   $.getScript('/++api++/++resource++msfd/js/msfd_search.js');
-      // }, 200);
+      loadScripts()
+        .then(() => {
+          // console.log('All scripts loaded');
+          // $('.msfd-search-wrapper select').select2();
+        })
+        .catch((err) => console.error('Script load error', err));
     }
   }, [loading]);
+
+  // useEffect(() => {
+  //   window.$ = $;
+  //   window.jQuery = $;
+  //   global.jQuery = $;
+
+  //   const scripts = [
+  //     'https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js',
+  //     '/++api++/++resource++msfd/js/jquery-ui.js',
+  //     '/++api++/++resource++msfd/js/tabs.js',
+  //     '/++api++/++resource++msfd/js/msfd_search.js',
+  //     '/++api++/++resource++msfd/bs3/js/bootstrap.min.js',
+  //   ];
+
+  //   if (!loading) {
+  //     $.getScript(scripts[0], () => {
+  //       $.getScript(scripts[1], () => {
+  //         $.getScript(scripts[2], () => {
+  //           $.getScript(scripts[3], () => {
+  //             $.getScript(scripts[4]);
+  //           });
+  //         });
+  //       });
+  //     });
+
+  //     // scripts.forEach((element) => {
+  //     //   // $.getScript(element);
+  //     //   const script = document.createElement('script');
+  //     //   script.src = element;
+  //     //   script.setAttribute('type', 'text/javascript');
+  //     //   script.async = false;
+  //     //   // script.defer = 'defer';
+
+  //     //   document.body.appendChild(script);
+  //     // });
+  //     // setTimeout(() => {
+  //     //   $.getScript('/++api++/++resource++msfd/js/msfd_search.js');
+  //     // }, 200);
+  //   }
+  // }, [loading]);
 
   return (
     <>
