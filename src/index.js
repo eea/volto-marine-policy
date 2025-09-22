@@ -98,6 +98,13 @@ const applyConfig = (config) => {
   if (__SERVER__) {
     const installExpressMiddleware = require('./express-middleware').default;
     config = installExpressMiddleware(config);
+
+    const devsource = __DEVELOPMENT__
+      ? ` http://localhost:${parseInt(process.env.PORT || '3000') + 1}`
+      : '';
+    config.settings.serverConfig.csp = {
+      'script-src': `'self' {nonce}${devsource}`,
+    };
   }
 
   config.widgets.widget.text_align = TextAlignWidget;
