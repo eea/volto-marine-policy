@@ -63,13 +63,13 @@ const MsfdDataExplorerBlockView = (props) => {
 
     if (!loading) {
       loadScripts()
-        .then(() => {
-          // console.log('All scripts loaded');
-          // $('.msfd-search-wrapper select').select2();
-        })
-        .catch((err) => console.error('Script load error', err));
+        // .then(() => {
+        //   console.log('All scripts loaded');
+        //   // $('.msfd-search-wrapper select').select2();
+        // })
+        // .catch((err) => console.error('Script load error', err));
     }
-  }, [loading]);
+  }, [loading, loadScripts]);
 
   // useEffect(() => {
   //   window.$ = $;
