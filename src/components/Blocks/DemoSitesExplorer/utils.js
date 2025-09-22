@@ -1,5 +1,3 @@
-import { openlayers as ol } from '@eeacms/volto-openlayers-map';
-
 export const objectivesCustomOrder = [
   'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity',
   'Objective 2: Prevent and eliminate pollution of our oceans, seas and waters',
@@ -41,7 +39,7 @@ export function isValidURL(string) {
   }
 }
 
-export function centerAndResetMapZoom(map) {
+export function centerAndResetMapZoom({ map, ol }) {
   map.getView().animate({
     zoom: 3.4,
     duration: 1000,
@@ -56,14 +54,14 @@ export function scrollToElement(elementId) {
   });
 }
 
-export function getExtentOfFeatures(features) {
+export function getExtentOfFeatures({ features, ol }) {
   const points = features.map((f) => f.getGeometry().flatCoordinates);
   const point = new ol.geom.MultiPoint(points);
   return point.getExtent();
 }
 
-export function zoomMapToFeatures(map, features, threshold = 500) {
-  const extent = getExtentOfFeatures(features);
+export function zoomMapToFeatures({ map, features, ol, threshold = 500 }) {
+  const extent = getExtentOfFeatures({ map, features, ol });
 
   // let extentBuffer = (extent[3] - extent[1] + extent[2] - extent[0]) / 4;
   // extentBuffer = extentBuffer < threshold ? threshold : extentBuffer;
@@ -89,8 +87,8 @@ export function zoomMapToFeatures(map, features, threshold = 500) {
   }
 }
 
-export function getFeatures(cases) {
-  const Feature = ol.ol.Feature;
+export function getFeatures({ cases, ol }) {
+  const Feature = ol.Feature; // eslint-disable-line no-unused-vars
   const colors = {
     'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity':
       '#007b6c',
@@ -115,7 +113,7 @@ export function getFeatures(cases) {
     const {
       geometry: { coordinates },
     } = c;
-    const point = new Feature(
+    const point = new ol.ol.Feature(
       new ol.geom.Point(ol.proj.fromLonLat(coordinates)),
     );
     point.setId(index);

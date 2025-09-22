@@ -1,6 +1,6 @@
 {
   "name": "@eeacms/volto-marine-policy",
-  "version": "2.0.17",
+  "version": "2.0.28",
   "description": "@eeacms/volto-marine-policy: Volto add-on",
   "main": "src/index.js",
   "author": "European Environment Agency: IDM2 A-Team",
@@ -24,7 +24,8 @@
     "@eeacms/volto-eea-website-theme",
     "@eeacms/volto-globalsearch",
     "@eeacms/volto-metadata-block",
-    "@eeacms/volto-workflow-progress"
+    "@eeacms/volto-workflow-progress",
+    "@plone-collective/volto-authomatic"
   ],
   "resolutions": {
     "react-countup/countup.js": "2.5.0",
@@ -39,9 +40,10 @@
     "@eeacms/volto-globalsearch": "2.1.2",
     "@eeacms/volto-metadata-block": "*",
     "@eeacms/volto-openlayers-map": "1.0.1",
-    "@eeacms/volto-searchlib": "2.1.8",
+    "@eeacms/volto-searchlib": "2.1.10",
     "@eeacms/volto-tabs-block": "*",
     "@eeacms/volto-workflow-progress": "*",
+    "@plone-collective/volto-authomatic": "2.0.1",
     "axios": "0.30.0",
     "d3-array": "^2.12.1",
     "jquery": "3.6.0",

@@ -1,20 +1,15 @@
 import React from 'react';
 import { useMapContext } from '@eeacms/volto-openlayers-map/api';
-import { openlayers as ol } from '@eeacms/volto-openlayers-map';
+import { withOpenLayers } from '@eeacms/volto-openlayers-map';
 import FeatureDisplay from './FeatureDisplay';
 import { usePrevious } from '@plone/volto/helpers/Utils/usePrevious';
 
-export default function InfoOverlay({
-  selectedFeature,
-  onFeatureSelect,
-  layerId,
-  // hideFilters,
-}) {
+function InfoOverlay({ selectedFeature, onFeatureSelect, layerId, ol }) {
   const { map } = useMapContext();
-  const [tooltip, setTooltipRef] = React.useState();
-  const [showTooltip, setShowTooltip] = React.useState();
-
+  const [tooltip, setTooltipRef] = React.useState(null);
+  const overlayRef = React.useRef();
   const prevLayerId = usePrevious(layerId);
+  const [showTooltip, setShowTooltip] = React.useState(false);
 
   React.useEffect(() => {
     if (prevLayerId && layerId !== prevLayerId) {
@@ -23,10 +18,10 @@ export default function InfoOverlay({
   }, [layerId, prevLayerId]);
 
   React.useEffect(() => {
-    if (!(map && tooltip)) return;
+    if (!(map && tooltip && ol.Overlay)) return;
 
-    const overlay = new ol.Overlay({
-      element: document.getElementById('popup-overlay'),
+    overlayRef.current = new ol.Overlay({
+      element: tooltip,
       positioning: 'bottom-left',
       offset: [0, 0],
       stopEvent: false,
@@ -35,7 +30,7 @@ export default function InfoOverlay({
       //     duration: 250,
       // },
     });
-    map.addOverlay(overlay);
+    map.addOverlay(overlayRef.current);
 
     function handler(evt) {
       const { pixel, target } = evt;
@@ -44,15 +39,13 @@ export default function InfoOverlay({
 
       if (features.length) {
         const coordinate = evt.coordinate;
-        overlay.setPosition(coordinate);
+        overlayRef.current.setPosition(coordinate);
         setShowTooltip(true);
       } else {
-        // const coordinate = evt.coordinate
-        // overlay.setPosition(coordinate);
         // handle a click in an overlay popup
         if (evt.originalEvent.target.tagName === 'A') return;
+        overlayRef.current.setPosition(undefined);
         setShowTooltip(false);
-        // popupOverlay.style.display = 'none';
         onFeatureSelect(null);
       }
     }
@@ -61,9 +54,11 @@ export default function InfoOverlay({
 
     return () => {
       map.un('click', handler);
-      map.removeOverlay(overlay);
+      if (overlayRef.current) {
+        map.removeOverlay(overlayRef.current);
+      }
     };
-  }, [map, tooltip, onFeatureSelect]); //
+  }, [map, tooltip, onFeatureSelect, ol.Overlay]);
 
   const [isClient, setIsClient] = React.useState(false);
   React.useEffect(() => setIsClient(true), []);
@@ -82,3 +77,5 @@ export default function InfoOverlay({
     </div>
   ) : null;
 }
+
+export default withOpenLayers(InfoOverlay);

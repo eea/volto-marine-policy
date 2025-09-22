@@ -259,6 +259,7 @@ const ObjectivesChart = ({
         <ul>
           {Object.entries(objectives).map(([item, count], index) => (
             <li
+              key={item?.id || index}
               className={cx(
                 index === highlightedIndex ? 'active' : '',
                 customColors[index].replace('#', 'C'),

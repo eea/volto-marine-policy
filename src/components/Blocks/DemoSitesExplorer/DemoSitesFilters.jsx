@@ -1,6 +1,30 @@
 import React from 'react';
 
 import { clearFilters } from './utils';
+import { objectivesCustomOrder } from './utils';
+
+const objectivesTargets = {
+  'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity':
+    [
+      'Contribute to relevant marine nature restoration targets including degraded seabed habitats and coastal ecosystems',
+      "Protect at least 30% of the EU's seas and integrate ecological corridors, as part of a true Trans-European Nature Network",
+      "Strictly protect at least 10% of the EU's seas",
+      'Restore at least 25,000 km of free/flowing rivers',
+    ],
+  'Objective 2: Prevent and eliminate pollution of our oceans, seas and waters':
+    [
+      'Reduce nutrient losses by 50%',
+      'Reduce the use and risk of chemical pesticides by 50%',
+      'Reduce plastic litter at sea by 50%',
+      'Reduce by 30% microplastics released into the environment',
+    ],
+  'Objective 3: Make the sustainable blue economy carbon-neutral and circular':
+    [
+      'Achieve net zero maritime emissions',
+      'Promote circular, low-carbon multi-purpose use of marine and water space',
+      'Develop zero-carbon and low-impact aquaculture',
+    ],
+};
 
 const normalizeSearchInput = (searchInput) => {
   let normInput = searchInput
@@ -13,6 +37,25 @@ const normalizeSearchInput = (searchInput) => {
   return '\\b' + normInput + '\\b';
 };
 
+const filterTargetsByObjective = (filters, filterName, highlightedIndex) => {
+  if (filterName !== 'target_filter') return filters;
+  if (highlightedIndex < 0 || highlightedIndex > 2) return filters;
+
+  let selectedObjective = objectivesCustomOrder[highlightedIndex];
+  let allowedTargets = objectivesTargets[selectedObjective] || [];
+
+  // Filter the targets based on the allowed ones
+  if (filters['target_filter']) {
+    filters['target_filter'] = Object.fromEntries(
+      Object.entries(filters['target_filter']).filter(([key]) =>
+        allowedTargets.includes(key),
+      ),
+    );
+  }
+
+  return filters;
+};
+
 export function DemoSitesFilter(props) {
   const {
     filterTitle,
@@ -20,11 +63,15 @@ export function DemoSitesFilter(props) {
     activeFilters,
     setActiveFilters,
     filterName,
-    // map,
+    highlightedIndex,
   } = props;
 
   const customOrder = props?.customOrder || [];
-  const entries = Object.entries(filters?.[filterName] || {});
+  const entries = Object.entries(
+    filterTargetsByObjective(filters, filterName, highlightedIndex)?.[
+      filterName
+    ] || {},
+  );
   let sortedEntries = [];
 
   if (customOrder.length > 0) {
@@ -112,7 +159,13 @@ export function DemoSitesFilter(props) {
 }
 
 export function DemoSitesFilters(props) {
-  const { filters, activeFilters, hideFilters, setActiveFilters, map } = props;
+  const {
+    filters,
+    activeFilters,
+    hideFilters,
+    setActiveFilters,
+    highlightedIndex,
+  } = props;
 
   React.useEffect(() => {
     window.addEventListener('click', (event) => {
@@ -148,7 +201,7 @@ export function DemoSitesFilters(props) {
           filters={filters}
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
-          map={map}
+          highlightedIndex={highlightedIndex}
         />
       ) : (
         ''
@@ -160,7 +213,7 @@ export function DemoSitesFilters(props) {
           filters={filters}
           activeFilters={activeFilters}
           setActiveFilters={setActiveFilters}
-          map={map}
+          highlightedIndex={highlightedIndex}
         />
       ) : (
         ''
@@ -171,7 +224,7 @@ export function DemoSitesFilters(props) {
         filters={filters}
         activeFilters={activeFilters}
         setActiveFilters={setActiveFilters}
-        map={map}
+        highlightedIndex={highlightedIndex}
       />
       <DemoSitesFilter
         filterTitle="Country"
@@ -179,7 +232,7 @@ export function DemoSitesFilters(props) {
         filters={filters}
         activeFilters={activeFilters}
         setActiveFilters={setActiveFilters}
-        map={map}
+        highlightedIndex={highlightedIndex}
       />
     </>
   );
@@ -326,7 +379,7 @@ export function ActiveFilters(props) {
               {activeFilters.objective_filter.map((filterCode) => {
                 const filterLabel = filters.objective_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -352,7 +405,7 @@ export function ActiveFilters(props) {
               {activeFilters.target_filter.map((filterCode) => {
                 const filterLabel = filters.target_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -377,7 +430,7 @@ export function ActiveFilters(props) {
               {activeFilters.indicator_filter.map((filterCode) => {
                 const filterLabel = filters.indicator_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -402,7 +455,7 @@ export function ActiveFilters(props) {
               {activeFilters.project_filter.map((filterCode) => {
                 const filterLabel = filters.project_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
@@ -427,7 +480,7 @@ export function ActiveFilters(props) {
               {activeFilters.country_filter.map((filterCode) => {
                 const filterLabel = filters.country_filter[filterCode];
                 return (
-                  <div className="ui basic label filter-value">
+                  <div key={filterCode} className="ui basic label filter-value">
                     <span>{filterLabel}</span>
                     <i
                       tabIndex="0"
