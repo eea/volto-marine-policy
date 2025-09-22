@@ -63,16 +63,6 @@ const messages = defineMessages({
 });
 
 const applyConfig = (config) => {
-  // CSP Header
-  if (__SERVER__) {
-    const devsource = __DEVELOPMENT__
-      ? ` http://localhost:${parseInt(process.env.PORT || '3000') + 1}`
-      : '';
-    config.settings.serverConfig.csp = {
-      'script-src': `'self' {nonce}${devsource}`,
-    };
-  }
-
   config.views.layoutViews = {
     ...config.views.layoutViews,
     // document_view: HeroSectionView,
@@ -109,6 +99,7 @@ const applyConfig = (config) => {
     const installExpressMiddleware = require('./express-middleware').default;
     config = installExpressMiddleware(config);
 
+    // CSP Header
     const devsource = __DEVELOPMENT__
       ? ` http://localhost:${parseInt(process.env.PORT || '3000') + 1}`
       : '';
