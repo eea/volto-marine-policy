@@ -21,6 +21,8 @@ import {
   // zoomMapToFeatures,
 } from './utils';
 
+import TileArcGISRest from 'ol/source/TileArcGISRest';
+
 const styleCache = {};
 const MapContextGateway = ({ setMap }) => {
   const { map } = useMapContext();
@@ -42,6 +44,7 @@ function DemoSitesMap(props) {
     setMap,
     highlightedIndex,
     setHighlightedIndex,
+    enableMarineMO,
     ol,
   } = props;
   const features = getFeatures({ cases: items, ol });
@@ -135,6 +138,10 @@ function DemoSitesMap(props) {
   const MapWithSelection = React.useMemo(() => Map, []);
   // console.log('render');
 
+  const arcgisSource = new TileArcGISRest({
+    url: 'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer',
+  });
+
   return features.length > 0 ? (
     <div id="ol-map-container">
       <MapWithSelection
@@ -188,6 +195,7 @@ function DemoSitesMap(props) {
             // selectedCase={selectedCase}
           />
           <Layer.Tile source={tileWMSSources[0]} zIndex={0} />
+          {enableMarineMO && <Layer.Tile source={arcgisSource} zIndex={0} />}
           <Layer.Vector
             style={clusterStyle}
             source={clusterSource}
