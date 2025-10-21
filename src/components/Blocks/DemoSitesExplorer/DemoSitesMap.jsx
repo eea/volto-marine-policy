@@ -42,11 +42,18 @@ function DemoSitesMap(props) {
     setMap,
     highlightedIndex,
     setHighlightedIndex,
+    enableMarineMO,
     ol,
   } = props;
   const features = getFeatures({ cases: items, ol });
   const [resetMapButtonClass, setResetMapButtonClass] =
     React.useState('inactive');
+
+  const arcgisSource = React.useMemo(() => {
+    return new ol.source.TileArcGISRest({
+      url: 'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer',
+    });
+  }, [ol.source.TileArcGISRest]);
 
   const [tileWMSSources] = React.useState([
     new ol.source.TileWMS({
@@ -55,6 +62,7 @@ function DemoSitesMap(props) {
         // LAYERS: 'OSMBlossomComposite', OSMCartoComposite, OSMPositronComposite
         LAYERS: 'OSMPositronComposite',
         TILED: true,
+        DPI: 192,
       },
       serverType: 'geoserver',
       transition: 0,
@@ -143,7 +151,7 @@ function DemoSitesMap(props) {
           showFullExtent: true,
           zoom: 3.4,
         }}
-        pixelRatio={1}
+        // pixelRatio={window.devicePixelRatio || 1}
         // controls={ol.control.defaults({ attribution: false })}
       >
         <Controls attribution={false} />
@@ -188,6 +196,7 @@ function DemoSitesMap(props) {
             // selectedCase={selectedCase}
           />
           <Layer.Tile source={tileWMSSources[0]} zIndex={0} />
+          {enableMarineMO && <Layer.Tile source={arcgisSource} zIndex={0} />}
           <Layer.Vector
             style={clusterStyle}
             source={clusterSource}

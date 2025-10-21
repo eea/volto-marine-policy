@@ -165,6 +165,7 @@ export function DemoSitesFilters(props) {
     hideFilters,
     setActiveFilters,
     highlightedIndex,
+    enableMarineMO,
   } = props;
 
   React.useEffect(() => {
@@ -179,21 +180,8 @@ export function DemoSitesFilters(props) {
     });
   }, []);
 
-  return (
+  return !enableMarineMO ? (
     <>
-      {/* {!hideFilters ? (
-        <DemoSitesFilter
-          filterTitle="Objective/Enabler"
-          filterName="objective_filter"
-          filters={filters}
-          activeFilters={activeFilters}
-          setActiveFilters={setActiveFilters}
-          map={map}
-          customOrder={objectivesCustomOrder}
-        />
-      ) : (
-        ''
-      )} */}
       {!hideFilters ? (
         <DemoSitesFilter
           filterTitle="Target"
@@ -235,7 +223,7 @@ export function DemoSitesFilters(props) {
         highlightedIndex={highlightedIndex}
       />
     </>
-  );
+  ) : null;
 }
 
 export function SearchBox(props) {

@@ -19,8 +19,11 @@ export default function DemoSitesExplorerView(props) {
     : '/marine/@@demo-sites-map.arcgis.json';
   let cases = useCases(addAppURL(cases_url));
   const [selectedCase, onSelectedCase] = React.useState(null);
-
+  const { enableMarineMO } = props.data;
+  // console.log('enableMarineMO', enableMarineMO);
   const { properties } = props;
+  // if the map is rendered on the indicator page we hide the Target and
+  // the Indicator filters, and hide the chart on the right side
   const hideFilters = properties['@type'] === 'indicator_mo' ? true : false;
   const indicatorOnly = hideFilters ? properties['title'] : null;
 
@@ -36,7 +39,7 @@ export default function DemoSitesExplorerView(props) {
   const [filters, setFilters] = React.useState([]);
   const [map, setMap] = React.useState();
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
-  const columnsLength = hideFilters ? 12 : 8;
+  const columnsLength = hideFilters || enableMarineMO ? 12 : 8;
 
   React.useEffect(() => {
     const _filters = getFilters(activeItems, indicatorOnly);
@@ -53,10 +56,15 @@ export default function DemoSitesExplorerView(props) {
   ]);
 
   React.useEffect(() => {
-    let activeItems = filterCases(cases, activeFilters, indicatorOnly);
+    let activeItems = filterCases(
+      cases,
+      activeFilters,
+      indicatorOnly,
+      enableMarineMO,
+    );
 
     setActiveItems(activeItems);
-  }, [activeFilters, cases, indicatorOnly]);
+  }, [activeFilters, cases, indicatorOnly, enableMarineMO]);
 
   if (__SERVER__) return '';
 
@@ -78,6 +86,7 @@ export default function DemoSitesExplorerView(props) {
           hideFilters={hideFilters}
           setActiveFilters={setActiveFilters}
           highlightedIndex={highlightedIndex}
+          enableMarineMO={enableMarineMO}
         />
       </Grid.Row>
       <Grid.Row>
@@ -99,9 +108,10 @@ export default function DemoSitesExplorerView(props) {
                 setMap={setMap}
                 highlightedIndex={highlightedIndex}
                 setHighlightedIndex={setHighlightedIndex}
+                enableMarineMO={enableMarineMO}
               />
             </Grid.Column>
-            {!hideFilters ? (
+            {!(hideFilters || enableMarineMO) ? (
               <Grid.Column
                 mobile={4}
                 tablet={4}
