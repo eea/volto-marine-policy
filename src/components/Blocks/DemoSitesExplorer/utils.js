@@ -144,7 +144,12 @@ export function getFeatures({ cases, ol }) {
   });
 }
 
-export function filterCases(cases, activeFilters, indicatorOnly) {
+export function filterCases(
+  cases,
+  activeFilters,
+  indicatorOnly,
+  enableMarineMO,
+) {
   const data = cases.filter((_case) => {
     let flag_objective = false;
     let flag_target = false;
@@ -158,6 +163,15 @@ export function filterCases(cases, activeFilters, indicatorOnly) {
         return item['title'].toString();
       });
       if (indicators?.includes(indicatorOnly)) flag_indicatorOnly = true;
+    } else if (enableMarineMO) {
+      let indicators = _case.properties.indicators?.map((item) => {
+        return item['title'].toString();
+      });
+      if (
+        indicators?.includes('Marine protected areas') ||
+        indicators?.includes('Marine strictly protected areas')
+      )
+        flag_indicatorOnly = true;
     } else {
       flag_indicatorOnly = true;
     }

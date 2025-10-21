@@ -44,7 +44,6 @@ export default function DemoSitesExplorerView(props) {
   React.useEffect(() => {
     const _filters = getFilters(activeItems, indicatorOnly);
     setFilters(_filters);
-    // console.log('filters', _filters);
   }, [
     activeItems,
     activeFilters.objective_filter,
@@ -57,10 +56,15 @@ export default function DemoSitesExplorerView(props) {
   ]);
 
   React.useEffect(() => {
-    let activeItems = filterCases(cases, activeFilters, indicatorOnly);
+    let activeItems = filterCases(
+      cases,
+      activeFilters,
+      indicatorOnly,
+      enableMarineMO,
+    );
 
     setActiveItems(activeItems);
-  }, [activeFilters, cases, indicatorOnly]);
+  }, [activeFilters, cases, indicatorOnly, enableMarineMO]);
 
   if (__SERVER__) return '';
 

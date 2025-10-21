@@ -21,8 +21,6 @@ import {
   // zoomMapToFeatures,
 } from './utils';
 
-import TileArcGISRest from 'ol/source/TileArcGISRest';
-
 const styleCache = {};
 const MapContextGateway = ({ setMap }) => {
   const { map } = useMapContext();
@@ -51,6 +49,12 @@ function DemoSitesMap(props) {
   const [resetMapButtonClass, setResetMapButtonClass] =
     React.useState('inactive');
 
+  const arcgisSource = React.useMemo(() => {
+    return new ol.source.TileArcGISRest({
+      url: "https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer",
+    });
+  }, []);
+
   const [tileWMSSources] = React.useState([
     new ol.source.TileWMS({
       url: 'https://gisco-services.ec.europa.eu/maps/service',
@@ -58,6 +62,7 @@ function DemoSitesMap(props) {
         // LAYERS: 'OSMBlossomComposite', OSMCartoComposite, OSMPositronComposite
         LAYERS: 'OSMPositronComposite',
         TILED: true,
+        DPI: 192,
       },
       serverType: 'geoserver',
       transition: 0,
@@ -138,10 +143,6 @@ function DemoSitesMap(props) {
   const MapWithSelection = React.useMemo(() => Map, []);
   // console.log('render');
 
-  const arcgisSource = new TileArcGISRest({
-    url: 'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer',
-  });
-
   return features.length > 0 ? (
     <div id="ol-map-container">
       <MapWithSelection
@@ -150,7 +151,7 @@ function DemoSitesMap(props) {
           showFullExtent: true,
           zoom: 3.4,
         }}
-        pixelRatio={1}
+        // pixelRatio={window.devicePixelRatio || 1}
         // controls={ol.control.defaults({ attribution: false })}
       >
         <Controls attribution={false} />
