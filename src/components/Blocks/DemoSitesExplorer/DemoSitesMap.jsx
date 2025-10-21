@@ -53,7 +53,7 @@ function DemoSitesMap(props) {
     return new ol.source.TileArcGISRest({
       url: 'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer',
     });
-  }, []);
+  }, [ol.source.TileArcGISRest]);
 
   const [tileWMSSources] = React.useState([
     new ol.source.TileWMS({
