@@ -51,7 +51,7 @@ function DemoSitesMap(props) {
 
   const arcgisSource = React.useMemo(() => {
     return new ol.source.TileArcGISRest({
-      url: "https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer",
+      url: 'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer',
     });
   }, []);
 
