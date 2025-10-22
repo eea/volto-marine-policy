@@ -136,8 +136,8 @@ function DemoSitesMap(props) {
   }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass, ol]);
 
   const clusterStyle = React.useMemo(
-    () => selectedClusterStyle({ selectedCase, ol }),
-    [selectedCase, ol],
+    () => selectedClusterStyle({ selectedCase, ol, enableMarineMO }),
+    [selectedCase, ol, enableMarineMO],
   );
 
   const MapWithSelection = React.useMemo(() => Map, []);
@@ -209,7 +209,7 @@ function DemoSitesMap(props) {
   ) : null;
 }
 
-const selectedClusterStyle = ({ selectedFeature, ol }) => {
+const selectedClusterStyle = ({ selectedFeature, ol, enableMarineMO }) => {
   function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
     let clusterStyle = styleCache[size];
@@ -237,25 +237,38 @@ const selectedClusterStyle = ({ selectedFeature, ol }) => {
     }
     // set size === 1 to enable clusterization
     if (size) {
-      // let color = feature.values_.features[0].values_['color'];
-      let color = '#0179cf';
-      let width = feature.values_.features[0].values_['width'];
-      let radius = feature.values_.features[0].values_['radius'];
-      // console.log(color)
-      // let color = '#0083E0'; // #0083E0 #50B0A4
+      if (enableMarineMO) {
+        return new ol.style.Style({
+          image: new ol.style.Icon({
+            anchor: [0.5, 1],
+            // size: [52, 52],
+            // offset: [52, 0],
+            // opacity: 1,
+            scale: 0.8,
+            src: '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/tiny',
+          }),
+        });
+      } else {
+        // let color = feature.values_.features[0].values_['color'];
+        let color = '#0179cf';
+        let width = feature.values_.features[0].values_['width'];
+        let radius = feature.values_.features[0].values_['radius'];
+        // console.log(color)
+        // let color = '#0083E0'; // #0083E0 #50B0A4
 
-      return new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: radius,
-          fill: new ol.style.Fill({
-            color: '#fff',
+        return new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: radius,
+            fill: new ol.style.Fill({
+              color: '#fff',
+            }),
+            stroke: new ol.style.Stroke({
+              color: color,
+              width: width,
+            }),
           }),
-          stroke: new ol.style.Stroke({
-            color: color,
-            width: width,
-          }),
-        }),
-      });
+        });
+      }
     } else {
       return clusterStyle;
     }
