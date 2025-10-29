@@ -62,7 +62,6 @@ function DemoSitesMap(props) {
         // LAYERS: 'OSMBlossomComposite', OSMCartoComposite, OSMPositronComposite
         LAYERS: 'OSMPositronComposite',
         TILED: true,
-        DPI: 192,
       },
       serverType: 'geoserver',
       transition: 0,
@@ -151,6 +150,7 @@ function DemoSitesMap(props) {
           showFullExtent: true,
           zoom: 3.4,
         }}
+        pixelRatio={1}
         // pixelRatio={window.devicePixelRatio || 1}
         // controls={ol.control.defaults({ attribution: false })}
       >
