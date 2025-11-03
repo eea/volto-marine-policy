@@ -140,13 +140,21 @@ export default function DemoSitesExplorerView(props) {
                     {/* <div className="legend-row legend-subtitle">Legend</div> */}
                     <div className="legend-row">
                       <div className="circle">
-                        <div className="dot-demosite"></div>
+                        {/* <div className="dot-demosite"></div> */}
+                        <img
+                          src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/small"
+                          alt=""
+                        />
                       </div>
                       <div>Demo site</div>
                     </div>
                     <div className="legend-row">
                       <div className="circle">
-                        <div className="dot-region"></div>
+                        {/* <div className="dot-region"></div> */}
+                        <img
+                          src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region.png/@@images/image/small"
+                          alt=""
+                        />
                       </div>
                       <div>Associated region</div>
                     </div>

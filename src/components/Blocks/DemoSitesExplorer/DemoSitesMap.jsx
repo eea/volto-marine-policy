@@ -250,22 +250,34 @@ const selectedClusterStyle = ({ selectedFeature, ol, enableMarineMO }) => {
         });
       } else {
         // let color = feature.values_.features[0].values_['color'];
-        let color = '#0179cf';
-        let width = feature.values_.features[0].values_['width'];
-        let radius = feature.values_.features[0].values_['radius'];
-        // console.log(color)
-        // let color = '#0083E0'; // #0083E0 #50B0A4
+        // type_is_region
+        // let color = '#0179cf';
+        // let width = feature.values_.features[0].values_['width'];
+        // let radius = feature.values_.features[0].values_['radius'];
+
+        // return new ol.style.Style({
+        //   image: new ol.style.Circle({
+        //     radius: radius,
+        //     fill: new ol.style.Fill({
+        //       color: '#fff',
+        //     }),
+        //     stroke: new ol.style.Stroke({
+        //       color: color,
+        //       width: width,
+        //     }),
+        //   }),
+        // });
+        let iconUrl =
+          feature.values_.features[0].values_['type_is_region'] ===
+          'Associated region'
+            ? '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region.png/@@images/image/icon'
+            : '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/icon';
 
         return new ol.style.Style({
-          image: new ol.style.Circle({
-            radius: radius,
-            fill: new ol.style.Fill({
-              color: '#fff',
-            }),
-            stroke: new ol.style.Stroke({
-              color: color,
-              width: width,
-            }),
+          image: new ol.style.Icon({
+            anchor: [0.5, 1],
+            scale: 0.8,
+            src: iconUrl,
           }),
         });
       }
