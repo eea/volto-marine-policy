@@ -267,9 +267,11 @@ const selectedClusterStyle = ({ selectedFeature, ol, enableMarineMO }) => {
         //     }),
         //   }),
         // });
-        let iconUrl = feature.values_.features[0].values_['type_is_region'] === 'Associated region'
-          ? '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region.png/@@images/image/icon'
-          : '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/icon';
+        let iconUrl =
+          feature.values_.features[0].values_['type_is_region'] ===
+          'Associated region'
+            ? '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region.png/@@images/image/icon'
+            : '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/icon';
 
         return new ol.style.Style({
           image: new ol.style.Icon({
