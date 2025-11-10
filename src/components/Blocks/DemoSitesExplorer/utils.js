@@ -144,12 +144,7 @@ export function getFeatures({ cases, ol }) {
   });
 }
 
-export function filterCases(
-  cases,
-  activeFilters,
-  indicatorOnly,
-  enableMarineMO,
-) {
+export function filterCases(cases, activeFilters, indicatorOnly, mapVariation) {
   const data = cases.filter((_case) => {
     let flag_objective = false;
     let flag_target = false;
@@ -163,21 +158,20 @@ export function filterCases(
         return item['title'].toString();
       });
       if (indicators?.includes(indicatorOnly)) flag_indicatorOnly = true;
-    } else if (enableMarineMO) {
-      let indicators = _case.properties.indicators?.map((item) => {
-        return item['title'].toString();
-      });
-      if (
-        indicators?.includes('Marine protected areas') ||
-        indicators?.includes('Marine strictly protected areas')
-      )
-        flag_indicatorOnly = true;
     } else {
       flag_indicatorOnly = true;
     }
 
     // debugger;
-    if (!activeFilters.objective_filter.length) {
+    if ('blueParksObj1' === mapVariation) {
+      let objective = _case.properties.objective;
+      if (
+        objective.includes(
+          'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity',
+        )
+      )
+        flag_objective = true;
+    } else if (!activeFilters.objective_filter.length) {
       flag_objective = true;
     } else {
       let objective = _case.properties.objective;
@@ -209,7 +203,16 @@ export function filterCases(
       });
     }
 
-    if (!activeFilters.project_filter.length) {
+    // BioProtect, BLUE CONNECT, BLUE4ALL, EFFECTIVE
+    if (['blueParks'].includes(mapVariation)) {
+      let project = _case.properties.project;
+      if (
+        ['BioProtect', 'BLUE CONNECT', 'BLUE4ALL', 'EFFECTIVE'].includes(
+          project,
+        )
+      )
+        flag_project = true;
+    } else if (!activeFilters.project_filter.length) {
       flag_project = true;
     } else {
       let project = _case.properties.project;

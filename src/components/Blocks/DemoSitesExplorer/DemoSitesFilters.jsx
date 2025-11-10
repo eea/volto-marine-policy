@@ -165,7 +165,7 @@ export function DemoSitesFilters(props) {
     hideFilters,
     setActiveFilters,
     highlightedIndex,
-    enableMarineMO,
+    mapVariation,
   } = props;
 
   React.useEffect(() => {
@@ -180,7 +180,7 @@ export function DemoSitesFilters(props) {
     });
   }, []);
 
-  return !enableMarineMO ? (
+  return !['blueParks', 'blueParksObj1'].includes(mapVariation) ? (
     <>
       {!hideFilters ? (
         <DemoSitesFilter
