@@ -17,7 +17,10 @@ const DemoSitesExplorerSchema = {
       choices: [
         ['standard', 'Standard map with filters and chart'],
         ['blueParks', 'Marine protected areas map with Blue Parks projects'],
-        ['blueParksObj1', 'Marine protected areas map with Objective 1 and Blue Parks projects'],
+        [
+          'blueParksObj1',
+          'Marine protected areas map with Objective 1 and Blue Parks projects',
+        ],
       ],
       default: 'standard',
     },

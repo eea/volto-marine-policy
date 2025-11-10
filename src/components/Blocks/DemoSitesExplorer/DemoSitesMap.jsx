@@ -288,7 +288,6 @@ const selectedClusterStyle = ({ selectedFeature, ol, mapVariation }) => {
           ? `/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region${iconType}.png/@@images/image/${iconSize}`
           : `/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point${iconType}.png/@@images/image/${iconSize}`;
 
-
       return new ol.style.Style({
         image: new ol.style.Icon({
           anchor: [0.5, 1],
