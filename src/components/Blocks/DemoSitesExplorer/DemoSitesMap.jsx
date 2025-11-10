@@ -42,7 +42,7 @@ function DemoSitesMap(props) {
     setMap,
     highlightedIndex,
     setHighlightedIndex,
-    enableMarineMO,
+    mapVariation,
     ol,
   } = props;
   const features = getFeatures({ cases: items, ol });
@@ -135,8 +135,8 @@ function DemoSitesMap(props) {
   }, [map, selectedCase, resetMapButtonClass, setResetMapButtonClass, ol]);
 
   const clusterStyle = React.useMemo(
-    () => selectedClusterStyle({ selectedCase, ol, enableMarineMO }),
-    [selectedCase, ol, enableMarineMO],
+    () => selectedClusterStyle({ selectedCase, ol, mapVariation }),
+    [selectedCase, ol, mapVariation],
   );
 
   const MapWithSelection = React.useMemo(() => Map, []);
@@ -196,7 +196,9 @@ function DemoSitesMap(props) {
             // selectedCase={selectedCase}
           />
           <Layer.Tile source={tileWMSSources[0]} zIndex={0} />
-          {enableMarineMO && <Layer.Tile source={arcgisSource} zIndex={0} />}
+          {['blueParks', 'blueParksObj1'].includes(mapVariation) && (
+            <Layer.Tile source={arcgisSource} zIndex={0} />
+          )}
           <Layer.Vector
             style={clusterStyle}
             source={clusterSource}
@@ -209,7 +211,7 @@ function DemoSitesMap(props) {
   ) : null;
 }
 
-const selectedClusterStyle = ({ selectedFeature, ol, enableMarineMO }) => {
+const selectedClusterStyle = ({ selectedFeature, ol, mapVariation }) => {
   function _clusterStyle(feature, selectedFeature) {
     const size = feature.get('features').length;
     let clusterStyle = styleCache[size];
@@ -235,52 +237,64 @@ const selectedClusterStyle = ({ selectedFeature, ol, enableMarineMO }) => {
       });
       styleCache[size] = clusterStyle;
     }
-    // set size === 1 to enable clusterization
-    if (size) {
-      if (enableMarineMO) {
+    // use condition size === 1 to enable clusterization
+    if (true) {
+      let iconType = '-light';
+      let iconSize = 'icon';
+
+      if ('blueParks' === mapVariation) {
         return new ol.style.Style({
           image: new ol.style.Icon({
             anchor: [0.5, 1],
-            // size: [52, 52],
-            // offset: [52, 0],
-            // opacity: 1,
             scale: 0.8,
             src: '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/tiny',
           }),
         });
-      } else {
-        // let color = feature.values_.features[0].values_['color'];
-        // type_is_region
-        // let color = '#0179cf';
-        // let width = feature.values_.features[0].values_['width'];
-        // let radius = feature.values_.features[0].values_['radius'];
+      } else if ('blueParksObj1' === mapVariation) {
+        iconType = '-light';
+        iconSize = 'tiny';
 
-        // return new ol.style.Style({
-        //   image: new ol.style.Circle({
-        //     radius: radius,
-        //     fill: new ol.style.Fill({
-        //       color: '#fff',
-        //     }),
-        //     stroke: new ol.style.Stroke({
-        //       color: color,
-        //       width: width,
-        //     }),
-        //   }),
-        // });
-        let iconUrl =
-          feature.values_.features[0].values_['type_is_region'] ===
-          'Associated region'
-            ? '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region.png/@@images/image/icon'
-            : '/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/icon';
-
-        return new ol.style.Style({
-          image: new ol.style.Icon({
-            anchor: [0.5, 1],
-            scale: 0.8,
-            src: iconUrl,
-          }),
-        });
+        if (
+          ['BioProtect', 'BLUE CONNECT', 'BLUE4ALL', 'EFFECTIVE'].includes(
+            feature.values_.features[0].values_['project'],
+          )
+        ) {
+          iconType = '';
+          iconSize = 'tiny';
+        }
       }
+      // let color = feature.values_.features[0].values_['color'];
+      // type_is_region
+      // let color = '#0179cf';
+      // let width = feature.values_.features[0].values_['width'];
+      // let radius = feature.values_.features[0].values_['radius'];
+
+      // return new ol.style.Style({
+      //   image: new ol.style.Circle({
+      //     radius: radius,
+      //     fill: new ol.style.Fill({
+      //       color: '#fff',
+      //     }),
+      //     stroke: new ol.style.Stroke({
+      //       color: color,
+      //       width: width,
+      //     }),
+      //   }),
+      // });
+
+      let iconUrl =
+        feature.values_.features[0].values_['type_is_region'] ===
+        'Associated region'
+          ? `/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region${iconType}.png/@@images/image/${iconSize}`
+          : `/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point${iconType}.png/@@images/image/${iconSize}`;
+
+      return new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 1],
+          scale: 0.8,
+          src: iconUrl,
+        }),
+      });
     } else {
       return clusterStyle;
     }

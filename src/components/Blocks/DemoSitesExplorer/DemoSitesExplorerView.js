@@ -19,8 +19,7 @@ export default function DemoSitesExplorerView(props) {
     : '/marine/@@demo-sites-map.arcgis.json';
   let cases = useCases(addAppURL(cases_url));
   const [selectedCase, onSelectedCase] = React.useState(null);
-  const { enableMarineMO } = props.data;
-  // console.log('enableMarineMO', enableMarineMO);
+  const { mapVariation } = props.data;
   const { properties } = props;
   // if the map is rendered on the indicator page we hide the Target and
   // the Indicator filters, and hide the chart on the right side
@@ -39,7 +38,10 @@ export default function DemoSitesExplorerView(props) {
   const [filters, setFilters] = React.useState([]);
   const [map, setMap] = React.useState();
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
-  const columnsLength = hideFilters || enableMarineMO ? 12 : 8;
+  const columnsLength =
+    hideFilters || ['blueParks', 'blueParksObj1'].includes(mapVariation)
+      ? 12
+      : 8;
 
   React.useEffect(() => {
     const _filters = getFilters(activeItems, indicatorOnly);
@@ -60,11 +62,11 @@ export default function DemoSitesExplorerView(props) {
       cases,
       activeFilters,
       indicatorOnly,
-      enableMarineMO,
+      mapVariation,
     );
 
     setActiveItems(activeItems);
-  }, [activeFilters, cases, indicatorOnly, enableMarineMO]);
+  }, [activeFilters, cases, indicatorOnly, mapVariation]);
 
   if (__SERVER__) return '';
 
@@ -86,7 +88,7 @@ export default function DemoSitesExplorerView(props) {
           hideFilters={hideFilters}
           setActiveFilters={setActiveFilters}
           highlightedIndex={highlightedIndex}
-          enableMarineMO={enableMarineMO}
+          mapVariation={mapVariation}
         />
       </Grid.Row>
       <Grid.Row>
@@ -108,10 +110,13 @@ export default function DemoSitesExplorerView(props) {
                 setMap={setMap}
                 highlightedIndex={highlightedIndex}
                 setHighlightedIndex={setHighlightedIndex}
-                enableMarineMO={enableMarineMO}
+                mapVariation={mapVariation}
               />
             </Grid.Column>
-            {!(hideFilters || enableMarineMO) ? (
+            {!(
+              hideFilters ||
+              ['blueParks', 'blueParksObj1'].includes(mapVariation)
+            ) ? (
               <Grid.Column
                 mobile={4}
                 tablet={4}
@@ -142,7 +147,7 @@ export default function DemoSitesExplorerView(props) {
                       <div className="circle">
                         {/* <div className="dot-demosite"></div> */}
                         <img
-                          src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point.png/@@images/image/small"
+                          src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point-light.png/@@images/image/small"
                           alt=""
                         />
                       </div>
@@ -152,7 +157,7 @@ export default function DemoSitesExplorerView(props) {
                       <div className="circle">
                         {/* <div className="dot-region"></div> */}
                         <img
-                          src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region.png/@@images/image/small"
+                          src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region-light.png/@@images/image/small"
                           alt=""
                         />
                       </div>
