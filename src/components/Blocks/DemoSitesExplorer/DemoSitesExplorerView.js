@@ -16,7 +16,7 @@ export default function DemoSitesExplorerView(props) {
   const [initialized, setInitialized] = React.useState(false); // set to true after the chart animation is finished
   const cases_url = config.settings.prefixPath
     ? '/@@demo-sites-map.arcgis.json'
-    : '/@@demo-sites-map.arcgis.json';
+    : '/marine/@@demo-sites-map.arcgis.json';
   let cases = useCases(addAppURL(cases_url));
   const [selectedCase, onSelectedCase] = React.useState(null);
   const { mapVariation } = props.data;
