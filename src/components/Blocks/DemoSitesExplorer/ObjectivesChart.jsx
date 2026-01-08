@@ -163,10 +163,10 @@ const ObjectivesChart = ({
       chartRef.current.style.cursor = 'default'; // Reset cursor
     }
   };
-
   const labels = Object.keys(objectives);
   const values = Object.values(objectives);
-  const totalCount = values.reduce((acc, curr) => acc + curr, 0);
+  const totalCount = items ? items.length : 0;
+  // const totalCount = values.reduce((acc, curr) => acc + curr, 0);
   const customColors = ['#007b6c', '#fdaf20', '#004b7f', '#f9eb8a', '#9e83b6']; // Adjust colors as needed
   const grayColor = '#d3d3d3';
   //   const pull = labels.map((_, i) => (i === highlightedIndex ? 0.1 : 0));
