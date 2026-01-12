@@ -1,3 +1,11 @@
+export const BLUEPARKProjects = [
+  'BioProtect',
+  'BLUE CONNECT',
+  'BLUE4ALL',
+  'EFFECTIVE',
+  'SEAMPHONI',
+];
+
 export const objectivesCustomOrder = [
   'Objective 1: Protect and restore marine and freshwater ecosystems and biodiversity',
   'Objective 2: Prevent and eliminate pollution of our oceans, seas and waters',
@@ -206,12 +214,7 @@ export function filterCases(cases, activeFilters, indicatorOnly, mapVariation) {
     // BioProtect, BLUE CONNECT, BLUE4ALL, EFFECTIVE
     if (['blueParks'].includes(mapVariation)) {
       let project = _case.properties.project;
-      if (
-        ['BioProtect', 'BLUE CONNECT', 'BLUE4ALL', 'EFFECTIVE'].includes(
-          project,
-        )
-      )
-        flag_project = true;
+      if (BLUEPARKProjects.includes(project)) flag_project = true;
     } else if (!activeFilters.project_filter.length) {
       flag_project = true;
     } else {
