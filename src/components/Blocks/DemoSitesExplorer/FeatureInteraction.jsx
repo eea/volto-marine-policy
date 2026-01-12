@@ -53,7 +53,7 @@ function FeatureInteraction({ onFeatureSelect, ol }) {
 
       features.forEach((feature) => {
         const subfeatures = feature.values_.features;
-        if (subfeatures.length === 1) {
+        if (subfeatures.length >= 1) {
           const selectedFeature = subfeatures[0].values_;
           // if (hideFilters) {
           //   const url = window.location.origin + selectedFeature.path;

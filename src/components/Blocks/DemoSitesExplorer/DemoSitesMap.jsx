@@ -15,6 +15,7 @@ import InfoOverlay from './InfoOverlay';
 import FeatureInteraction from './FeatureInteraction';
 
 import {
+  BLUEPARKProjects,
   centerAndResetMapZoom,
   clearFilters,
   getFeatures,
@@ -255,7 +256,7 @@ const selectedClusterStyle = ({ selectedFeature, ol, mapVariation }) => {
         iconSize = 'tiny';
 
         if (
-          ['BioProtect', 'BLUE CONNECT', 'BLUE4ALL', 'EFFECTIVE'].includes(
+          BLUEPARKProjects.includes(
             feature.values_.features[0].values_['project'],
           )
         ) {
