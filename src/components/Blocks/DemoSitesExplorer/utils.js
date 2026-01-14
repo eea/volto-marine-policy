@@ -1,5 +1,5 @@
 export const BLUEPARKProjects = [
-  'BioProtect',
+  'OCEAN CITIZEN',
   'BLUE CONNECT',
   'BLUE4ALL',
   'EFFECTIVE',
