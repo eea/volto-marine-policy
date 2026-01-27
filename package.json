@@ -40,7 +40,7 @@
     "@eeacms/volto-globalsearch": "3.0.0",
     "@eeacms/volto-metadata-block": "*",
     "@eeacms/volto-openlayers-map": "1.0.1",
-    "@eeacms/volto-searchlib": "3.0.1",
+    "@eeacms/volto-searchlib": "3.0.2",
     "@eeacms/volto-tabs-block": "*",
     "@eeacms/volto-workflow-progress": "*",
     "@plone-collective/volto-authomatic": "2.0.1",
