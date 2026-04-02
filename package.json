@@ -31,7 +31,8 @@
     "react-countup/countup.js": "2.5.0",
     "d3-array": "^2.12.1",
     "@eeacms/countup": "^2.0.6",
-    "@elastic/search-ui": "1.21.2"
+    "@elastic/search-ui": "1.21.2",
+    "@eeacms/volto-group-block": "^9.0.0"
   },
   "dependencies": {
     "@eeacms/volto-eea-design-system": "*",
