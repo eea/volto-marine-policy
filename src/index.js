@@ -95,6 +95,9 @@ const applyConfig = (config) => {
     workflowProgressPath,
   };
 
+  // we won't need the listing for Folders
+  delete config.views.layoutViews.listing_view;
+  
   if (__SERVER__) {
     const installExpressMiddleware = require('./express-middleware').default;
     config = installExpressMiddleware(config);
