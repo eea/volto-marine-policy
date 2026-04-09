@@ -1,5 +1,5 @@
 import config from '@plone/volto/registry';
-import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
+import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

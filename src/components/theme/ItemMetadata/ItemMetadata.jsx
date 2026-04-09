@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@plone/volto/components';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
 import { Table, Button } from 'semantic-ui-react';
 import { MapPreview } from '@eeacms/volto-marine-policy/components';
 import { getPath } from '@eeacms/volto-marine-policy/utils';

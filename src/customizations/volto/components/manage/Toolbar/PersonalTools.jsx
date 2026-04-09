@@ -8,14 +8,12 @@ import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import cx from 'classnames';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
-import { Icon, UniversalLink } from '@plone/volto/components';
-import { getUser } from '@plone/volto/actions';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
+import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
+import { getUser } from '@plone/volto/actions/users/users';
 import { Pluggable } from '@plone/volto/components/manage/Pluggable';
-import {
-  flattenToAppURL,
-  getBaseUrl,
-  userHasRoles,
-} from '@plone/volto/helpers';
+import { flattenToAppURL, getBaseUrl } from '@plone/volto/helpers/Url/Url';
+import { userHasRoles } from '@plone/volto/helpers/User/User';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 

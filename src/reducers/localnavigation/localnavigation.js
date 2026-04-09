@@ -4,7 +4,7 @@
  */
 
 import { map } from 'lodash';
-import { flattenToAppURL } from '@plone/volto/helpers';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 
 import { GET_NAVIGATION } from '@plone/volto/constants/ActionTypes';
 

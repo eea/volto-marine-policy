@@ -7,8 +7,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useLocation } from 'react-router';
-import { getBaseUrl, hasApiExpander } from '@plone/volto/helpers';
-import { getBreadcrumbs } from '@plone/volto/actions';
+import { getBaseUrl, hasApiExpander } from '@plone/volto/helpers/Url/Url';
+import { getBreadcrumbs } from '@plone/volto/actions/breadcrumbs/breadcrumbs';
 
 import EEABreadcrumbs from '@eeacms/volto-eea-design-system/ui/Breadcrumbs/Breadcrumbs';
 

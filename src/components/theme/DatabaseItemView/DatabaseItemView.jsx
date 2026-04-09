@@ -1,4 +1,4 @@
-import { BodyClass } from '@plone/volto/helpers';
+import BodyClass from '@plone/volto/helpers/BodyClass/BodyClass';
 import {
   ItemMetadataSnippet,
   ItemMetadata,

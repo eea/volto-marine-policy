@@ -4,8 +4,9 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { defineMessages, useIntl } from 'react-intl';
 import { Button } from 'semantic-ui-react';
-import { BodyClass, isCmsUi } from '@plone/volto/helpers';
-import { Icon } from '@plone/volto/components';
+import BodyClass from '@plone/volto/helpers/BodyClass/BodyClass';
+import { isCmsUi } from '@plone/volto/helpers/Url/Url';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
 import printerSVG from '@plone/volto/icons/printer.svg';
 
 import './css/printpage.less';
