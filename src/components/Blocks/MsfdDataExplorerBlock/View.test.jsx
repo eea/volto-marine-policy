@@ -1,6 +1,6 @@
 import { render, waitFor, screen } from '@testing-library/react';
 import axios from 'axios';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import MsfdDataExplorerBlockView from './View';
 

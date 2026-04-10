@@ -14,6 +14,7 @@ import { getUser } from '@plone/volto/actions/users/users';
 import { Pluggable } from '@plone/volto/components/manage/Pluggable';
 import { flattenToAppURL, getBaseUrl } from '@plone/volto/helpers/Url/Url';
 import { userHasRoles } from '@plone/volto/helpers/User/User';
+import Image from '@plone/volto/components/theme/Image/Image';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -131,7 +132,7 @@ class PersonalTools extends Component {
         </header>
         <div className={cx('avatar', { default: !this.props.user.portrait })}>
           {this.props.user.portrait ? (
-            <img
+            <Image
               src={flattenToAppURL(this.props.user.portrait)}
               alt={this.props.intl.formatMessage(messages.userAvatar)}
             />
