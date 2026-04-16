@@ -17,7 +17,7 @@ import {
   getBlocksLayoutFieldname,
   hasBlocksData,
 } from '@plone/volto/helpers/Blocks/Blocks';
-import getBaseUrl from '@plone/volto/helpers/Url/Url';
+import { getBaseUrl } from '@plone/volto/helpers/Url/Url';
 
 const messages = defineMessages({
   unknownBlock: {

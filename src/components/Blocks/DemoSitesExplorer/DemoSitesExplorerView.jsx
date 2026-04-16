@@ -3,7 +3,7 @@ import { Grid } from 'semantic-ui-react'; // Dropdown,
 import { addAppURL } from '@plone/volto/helpers/Url/Url';
 import config from '@plone/volto/registry';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
-import Image from '@plone/volto/components/theme/Image';
+import Image from '@plone/volto/components/theme/Image/Image';
 
 import DemoSitesMap from './DemoSitesMap';
 import { ActiveFilters, DemoSitesFilters } from './DemoSitesFilters';
