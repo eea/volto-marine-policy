@@ -11,7 +11,8 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { doesNodeContainClick } from 'semantic-ui-react/dist/commonjs/lib';
 import { withCookies } from 'react-cookie';
-import { filter, find } from 'lodash';
+import find from 'lodash/find';
+import filter from 'lodash/filter';
 import cx from 'classnames';
 import config from '@plone/volto/registry';
 
@@ -21,19 +22,16 @@ import Types from '@plone/volto/components/manage/Toolbar/Types';
 import PersonalInformation from '@plone/volto/components/manage/Preferences/PersonalInformation';
 import PersonalPreferences from '@plone/volto/components/manage/Preferences/PersonalPreferences';
 import StandardWrapper from '@plone/volto/components/manage/Toolbar/StandardWrapper';
-import {
-  getTypes,
-  listActions,
-  setExpandedToolbar,
-  unlockContent,
-} from '@plone/volto/actions';
-import { Icon, UniversalLink } from '@plone/volto/components';
-import {
-  BodyClass,
-  getBaseUrl,
-  getCookieOptions,
-  hasApiExpander,
-} from '@plone/volto/helpers';
+import { getTypes } from '@plone/volto/actions/types/types';
+import { listActions } from '@plone/volto/actions/actions/actions';
+import { setExpandedToolbar } from '@plone/volto/actions/toolbar/toolbar';
+import { unlockContent } from '@plone/volto/actions/content/content';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
+import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
+import BodyClass from '@plone/volto/helpers/BodyClass/BodyClass';
+import { getBaseUrl } from '@plone/volto/helpers/Url/Url';
+import { hasApiExpander } from '@plone/volto/helpers/Utils/Utils';
+import { getCookieOptions } from '@plone/volto/helpers/Cookies/cookies';
 import { Pluggable } from '@plone/volto/components/manage/Pluggable';
 
 import penSVG from '@plone/volto/icons/pen.svg';

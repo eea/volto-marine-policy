@@ -1,8 +1,9 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react'; // Dropdown,
-import { addAppURL } from '@plone/volto/helpers';
+import { addAppURL } from '@plone/volto/helpers/Url/Url';
 import config from '@plone/volto/registry';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
+import Image from '@plone/volto/components/theme/Image/Image';
 
 import DemoSitesMap from './DemoSitesMap';
 import { ActiveFilters, DemoSitesFilters } from './DemoSitesFilters';
@@ -146,7 +147,7 @@ export default function DemoSitesExplorerView(props) {
                     <div className="legend-row">
                       <div className="circle">
                         {/* <div className="dot-demosite"></div> */}
-                        <img
+                        <Image
                           src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-point-light.png/@@images/image/small"
                           alt=""
                         />
@@ -156,7 +157,7 @@ export default function DemoSitesExplorerView(props) {
                     <div className="legend-row">
                       <div className="circle">
                         {/* <div className="dot-region"></div> */}
-                        <img
+                        <Image
                           src="/marine/europe-seas/eu-mission-restore-our-oceans-and-water/icon-region-light.png/@@images/image/small"
                           alt=""
                         />

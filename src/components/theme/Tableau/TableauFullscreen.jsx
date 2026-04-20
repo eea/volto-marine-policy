@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button } from 'semantic-ui-react';
-import { Icon } from '@plone/volto/components';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
 import { useHistory, useLocation } from 'react-router-dom';
 import fullscreenSVG from '@plone/volto/icons/fullscreen.svg';
 

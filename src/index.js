@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-filename-extension */
 import {
   // HeroSectionView,
   // FullwidthView,
@@ -28,7 +29,7 @@ import { LinkElement } from '@plone/volto-slate/editor/plugins/AdvancedLink/rend
 import { withLink } from '@plone/volto-slate/editor/plugins/AdvancedLink/extensions';
 import { linkDeserializer } from '@plone/volto-slate/editor/plugins/AdvancedLink/deserialize';
 import LinkEditSchema from '@plone/volto-slate/editor/plugins/AdvancedLink/schema';
-import { getBlocks } from '@plone/volto/helpers';
+import { getBlocks } from '@plone/volto/helpers/Blocks/Blocks';
 import { defineMessages } from 'react-intl'; // , defineMessages
 import installDemoSitesExplorer from './components/Blocks/DemoSitesExplorer';
 import marineLogo from '@eeacms/volto-marine-policy/../theme/assets/images/Header/wise-marine-logo.svg';

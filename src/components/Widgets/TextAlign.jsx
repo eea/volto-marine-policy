@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
-import { FormFieldWrapper, Icon } from '@plone/volto/components';
+import FormFieldWrapper from '@plone/volto/components/manage/Widgets/FormFieldWrapper';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
 
 import alignLeftSVG from '@plone/volto/icons/align-left.svg';
 import alignRightSVG from '@plone/volto/icons/align-right.svg';

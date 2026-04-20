@@ -17,7 +17,7 @@ import HeaderSearchPopUp from '@eeacms/volto-marine-policy/customizations/@eeacm
 import HeaderMenuPopUp from '@eeacms/volto-marine-policy/customizations/@eeacms/volto-eea-design-system/ui/Header/HeaderMenuPopUp';
 import PropTypes from 'prop-types';
 
-import { isInternalURL } from '@plone/volto/helpers';
+import { isInternalURL } from '@plone/volto/helpers/Url/Url';
 import config from '@plone/volto/registry';
 
 Header.propTypes = {

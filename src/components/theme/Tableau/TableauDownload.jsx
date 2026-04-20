@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popup, Button, Modal } from 'semantic-ui-react';
-import { Icon } from '@plone/volto/components';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
 import downloadSVG from '@plone/volto/icons/download.svg';
 
 const TableauDownload = (props) => {
