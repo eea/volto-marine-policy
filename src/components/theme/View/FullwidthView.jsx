@@ -7,14 +7,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages, injectIntl } from 'react-intl';
 import { Container } from 'semantic-ui-react';
-import { map } from 'lodash';
+import map from 'lodash/map';
+import BodyClass from '@plone/volto/helpers/BodyClass/BodyClass';
 import {
-  BodyClass,
   getBlocksFieldname,
   getBlocksLayoutFieldname,
   hasBlocksData,
-  getBaseUrl,
-} from '@plone/volto/helpers';
+} from '@plone/volto/helpers/Blocks/Blocks';
+import { getBaseUrl } from '@plone/volto/helpers/Url/Url';
 import config from '@plone/volto/registry';
 
 const messages = defineMessages({

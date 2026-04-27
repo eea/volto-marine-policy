@@ -1,5 +1,5 @@
 import config from '@plone/volto/registry';
-import { flattenToAppURL } from '@plone/volto/helpers';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 
 export const getPath = (url) =>
   url.startsWith('http') ? new URL(url).pathname : url;

@@ -3,8 +3,8 @@
  * @module reducers/navigation/navigation
  */
 
-import { map } from 'lodash';
-import { flattenToAppURL } from '@plone/volto/helpers';
+import map from 'lodash/map';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 
 import { GET_NAVIGATION } from '@plone/volto/constants/ActionTypes';
 

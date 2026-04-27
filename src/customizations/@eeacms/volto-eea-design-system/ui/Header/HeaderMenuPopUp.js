@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-filename-extension */
+
 import React, { useEffect, useState } from 'react';
 import {
   Accordion,
@@ -8,7 +10,7 @@ import {
   Transition,
 } from 'semantic-ui-react';
 
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { useClickOutside } from '@eeacms/volto-eea-design-system/helpers';
 

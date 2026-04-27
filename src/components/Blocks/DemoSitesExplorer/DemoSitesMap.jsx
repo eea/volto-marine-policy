@@ -172,13 +172,8 @@ function DemoSitesMap(props) {
               onSelectedCase(null);
               clearFilters(setActiveFilters);
               setHighlightedIndex(5);
-              if (hideFilters) {
-                // zoomMapToFeatures(map, getFeatures(activeItems));
-                centerAndResetMapZoom({ map, ol });
-              } else {
-                centerAndResetMapZoom({ map, ol });
-                // zoomMapToFeatures(map, getFeatures(activeItems));
-              }
+              // zoomMapToFeatures(map, getFeatures(activeItems));
+              centerAndResetMapZoom({ map, ol });
               map.getInteractions().array_[9].getFeatures().clear();
             }}
           >
