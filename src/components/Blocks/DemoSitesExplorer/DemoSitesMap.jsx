@@ -82,7 +82,7 @@ function DemoSitesMap(props) {
   );
 
   React.useEffect(() => {
-    if (!map) return null;
+    if (!map) return;
 
     if (activeItems) {
       pointsSource.clear();
@@ -93,7 +93,7 @@ function DemoSitesMap(props) {
   }, [map, activeItems, pointsSource, hideFilters, ol]);
 
   React.useEffect(() => {
-    if (!map) return null;
+    if (!map) return;
 
     const moveendListener = (e) => {
       // console.log('map.getView()', map.getView());

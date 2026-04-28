@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Portal } from 'react-portal';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -22,6 +22,11 @@ const PrintPage = (props) => {
   const { pathname } = props;
   const intl = useIntl();
   const cmsView = isCmsUi(pathname);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const printPage = () => {
     document.getElementById('main').classList.add('print');
@@ -34,8 +39,8 @@ const PrintPage = (props) => {
 
   return (
     <>
-      {!cmsView && (
-        <Portal node={__CLIENT__ && document.querySelector('.content-area')}>
+      {!cmsView && isMounted && (
+        <Portal node={document.querySelector('.content-area')}>
           <BodyClass className="has-print-button" />
           <div className="ui container">
             <div className="print-button">
