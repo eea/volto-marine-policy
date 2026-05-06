@@ -33,6 +33,7 @@
     "@elastic/search-ui": "1.21.2"
   },
   "dependencies": {
+    "@eeacms/volto-block-style": "9.0.1",
     "@eeacms/volto-eea-design-system": "*",
     "@eeacms/volto-eea-website-theme": "*",
     "@eeacms/volto-embed": "*",
@@ -40,7 +41,6 @@
     "@eeacms/volto-metadata-block": "*",
     "@eeacms/volto-openlayers-map": "2.0.0",
     "@eeacms/volto-workflow-progress": "*",
-    "@eeacms/volto-block-style": "9.0.1",
     "axios": "0.30.0",
     "d3-array": "^2.12.1",
     "jquery": "3.6.0",

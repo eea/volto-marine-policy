@@ -66,7 +66,7 @@ module.exports = {
   },
   ...(process.env.JEST_USE_SETUP === 'ON' && {
     setupFilesAfterEnv: [
-      '<rootDir>/node_modules/@eeacms/volto-eea-website-policy/jest.setup.js',
+      '<rootDir>/node_modules/@eeacms/volto-marine-policy/jest.setup.js',
     ],
   }),
 };
