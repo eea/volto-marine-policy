@@ -399,7 +399,7 @@ const applyConfig = (config) => {
     'italic',
     ...(config.settings.slate.toolbarButtons || []),
   ];
-  
+
   // EEA customizations
   config.settings.eea.websiteTitle = 'Wise - Marine';
   config.settings.eea = {
