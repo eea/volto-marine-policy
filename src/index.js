@@ -395,7 +395,11 @@ const applyConfig = (config) => {
       label: 'UWWT red empty box',
     },
   ];
-
+  config.settings.slate.toolbarButtons = [
+    'italic',
+    ...(config.settings.slate.toolbarButtons || []),
+  ];
+  
   // EEA customizations
   config.settings.eea.websiteTitle = 'Wise - Marine';
   config.settings.eea = {
