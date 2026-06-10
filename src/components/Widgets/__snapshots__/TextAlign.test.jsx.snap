@@ -143,6 +143,10 @@ exports[`renders a text align component 1`] = `
             </button>
           </div>
         </div>
+        <div
+          aria-atomic="true"
+          aria-live="polite"
+        />
       </div>
     </div>
   </div>
