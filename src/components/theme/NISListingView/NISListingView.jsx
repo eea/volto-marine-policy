@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
 import { Button, Select, Dimmer, Loader } from 'semantic-ui-react';
+import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
 
 function normalizeQueryOperators(query) {
   return query.map((q) => {
@@ -46,17 +47,31 @@ async function getCurrentSearchItems() {
 
   // call Plone
   try {
-    const response = await fetch('/marine/++api++/@querystring-search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${window.env.apiPath}/++api++/@querystring-search`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       },
-      body: JSON.stringify(payload),
-    });
+    );
     return response;
   } catch (err) {
     // console.error('Querystring search failed:', err);
   }
+}
+
+function formatAssignedTo(assignedTo) {
+  if (!assignedTo) return '';
+  // Fix Python-style unicode escape sequences (\UXXXXXXXX -> actual char)
+  let result = assignedTo.replace(/\\U([0-9A-Fa-f]{8})/g, (_, hex) =>
+    String.fromCodePoint(parseInt(hex, 16)),
+  );
+  // Strip the "(userid)" suffix to show only the display name
+  result = result.replace(/\s*\([^)]+\)\s*$/, '').trim();
+  return result;
 }
 
 const NISListingView = ({ items, isEditMode }) => {
@@ -94,7 +109,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const onBulkAssign = async (ids, assignee) => {
     setIsLoading(true);
     await fetch(
-      `${window.location.origin}/marine/++api++/@bulk-assign${window.location.search}`,
+      `${window.env.apiPath}/++api++/@bulk-assign${window.location.search}`,
       {
         method: 'POST',
         headers: {
@@ -116,7 +131,7 @@ const NISListingView = ({ items, isEditMode }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       const res = await fetch(
-        `${window.location.origin}/marine/++api++/@vocabularies/nis_experts_vocabulary`,
+        `${window.env.apiPath}/++api++/@vocabularies/nis_experts_vocabulary`,
         {
           headers: {
             Accept: 'application/json',
@@ -129,7 +144,7 @@ const NISListingView = ({ items, isEditMode }) => {
         setUsers(
           data.items.map((u) => ({
             key: u.token,
-            text: u.title,
+            text: formatAssignedTo(u.title),
             value: u.token,
           })),
         );
@@ -194,12 +209,12 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>{item.nis_scientificname_accepted}</td>
               <td>{item.nis_region}</td>
               <td>{item.nis_subregion}</td>
-              <td>{item.nis_country && item.nis_country.join(', ')}</td>
+              <td>{item.nis_country}</td>
               <td>{item.nis_status}</td>
               <td>{item.nis_group}</td>
               <td>
                 <div className="assigned-to-container">
-                  <div>{item.nis_assigned_to}</div>
+                  <div>{formatAssignedTo(item.nis_assigned_to)}</div>
                   {canEditPage && (
                     <Checkbox
                       checked={selectedItems.includes(item['@id'])}
@@ -211,22 +226,18 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>
                 <div className="workflow-actions">
                   <div className="action-buttons">
-                    <a
+                    <UniversalLink
                       className="ui button secondary mini"
                       href={`${item['@id']}`}
-                      target="_blank"
-                      rel="noopener"
                     >
                       View
-                    </a>
-                    <a
+                    </UniversalLink>
+                    <UniversalLink
                       className="ui button primary mini"
                       href={`${item['@id']}/edit`}
-                      target="_blank"
-                      rel="noopener"
                     >
                       Edit
-                    </a>
+                    </UniversalLink>
                   </div>
                   <div className="workflow-progress">
                     <ProgressWorkflow
