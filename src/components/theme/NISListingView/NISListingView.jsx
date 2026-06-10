@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
 import { Button, Select, Dimmer, Loader } from 'semantic-ui-react';
+import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
 
 function normalizeQueryOperators(query) {
   return query.map((q) => {
@@ -208,7 +209,7 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>{item.nis_scientificname_accepted}</td>
               <td>{item.nis_region}</td>
               <td>{item.nis_subregion}</td>
-              <td>{item.nis_country && item.nis_country.join(', ')}</td>
+              <td>{item.nis_country}</td>
               <td>{item.nis_status}</td>
               <td>{item.nis_group}</td>
               <td>
@@ -225,22 +226,18 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>
                 <div className="workflow-actions">
                   <div className="action-buttons">
-                    <a
+                    <UniversalLink
                       className="ui button secondary mini"
                       href={`${item['@id']}`}
-                      target="_blank"
-                      rel="noopener"
                     >
                       View
-                    </a>
-                    <a
+                    </UniversalLink>
+                    <UniversalLink
                       className="ui button primary mini"
                       href={`${item['@id']}/edit`}
-                      target="_blank"
-                      rel="noopener"
                     >
                       Edit
-                    </a>
+                    </UniversalLink>
                   </div>
                   <div className="workflow-progress">
                     <ProgressWorkflow
