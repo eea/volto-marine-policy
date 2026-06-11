@@ -67,6 +67,13 @@ describe('NISListingView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ items: [] }),
+        ok: true,
+      }),
+    );
+
     delete window.location;
     window.location = {
       href: 'http://localhost:3000/marine/test-path',
