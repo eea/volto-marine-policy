@@ -78,6 +78,8 @@ const NISListingView = ({ items, isEditMode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemsTotal, setItemsTotal] = useState(0);
+  const [duplicateIds, setDuplicateIds] = useState(null);
+  const [duplicateGroups, setDuplicateGroups] = useState([]);
 
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
@@ -154,6 +156,19 @@ const NISListingView = ({ items, isEditMode }) => {
   };
 
   useEffect(() => {
+    const parsed = qs.parse(window.location.search);
+    if (parsed['check-duplicates']) {
+      const containerPath = window.location.pathname.replace('/marine', '');
+      fetch(`${window.env.apiPath}${containerPath}/@check-nis-duplicates`)
+        .then((res) => res.json())
+        .then((data) => {
+          setDuplicateIds(new Set(data.duplicate_ids));
+          setDuplicateGroups(data.groups || []);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchUsers = async () => {
       const res = await fetch(
         `${window.env.apiPath}/++api++/@vocabularies/nis_experts_vocabulary`,
@@ -208,7 +223,43 @@ const NISListingView = ({ items, isEditMode }) => {
               <i className="ri-file-download-line"></i>
               Download search results
             </a>
+            <Button
+              className="primary"
+              size="small"
+              onClick={() => {
+                const parsed = qs.parse(window.location.search);
+                parsed['check-duplicates'] = '1';
+                window.location.search = qs.stringify(parsed);
+              }}
+            >
+              Check duplicates
+            </Button>
           </div>
+        </div>
+      )}
+      {duplicateIds && (
+        <div
+          style={{
+            background: '#fff3cd',
+            border: '1px solid #ffc107',
+            padding: '10px 15px',
+            marginBottom: '15px',
+            borderRadius: '4px',
+          }}
+        >
+          Showing {items.filter((i) => duplicateIds.has(i['@id'])).length}{' '}
+          duplicate records across {duplicateGroups.length} groups
+          <a
+            href={(() => {
+              const p = qs.parse(window.location.search);
+              delete p['check-duplicates'];
+              const q = qs.stringify(p);
+              return `${window.location.pathname}${q ? '?' + q : ''}`;
+            })()}
+            style={{ marginLeft: '10px', fontSize: '0.9em' }}
+          >
+            Clear
+          </a>
         </div>
       )}
       <table className="ui table">
@@ -222,12 +273,16 @@ const NISListingView = ({ items, isEditMode }) => {
             <th>Country</th>
             <th>Status</th>
             <th>Group</th>
+            <th>Year</th>
             <th>Assigned to</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item, index) => (
+          {(duplicateIds
+            ? items.filter((item) => duplicateIds.has(item['@id']))
+            : items
+          ).map((item, index) => (
             <tr key={item['@id']}>
               <td>{item.nis_species_name_original}</td>
               <td>{item.nis_species_name_accepted}</td>
@@ -237,6 +292,7 @@ const NISListingView = ({ items, isEditMode }) => {
               <td>{item.nis_country}</td>
               <td>{item.nis_status}</td>
               <td>{item.nis_group}</td>
+              <td>{item.nis_year}</td>
               <td>
                 <div className="assigned-to-container">
                   <div>{formatAssignedTo(item.nis_assigned_to)}</div>
