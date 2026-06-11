@@ -78,6 +78,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemsTotal, setItemsTotal] = useState(0);
+
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
   const actions = useSelector((state) => state.actions.actions);
@@ -126,6 +127,30 @@ const NISListingView = ({ items, isEditMode }) => {
     );
 
     window.location.reload();
+  };
+
+  const handleCopy = async (item) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(
+        `${window.env.apiPath}${item['@id']}/@copy-nis-record`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          credentials: 'include',
+        },
+      );
+      if (res.ok) {
+        window.location.reload();
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Copy failed:', err);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -229,15 +254,27 @@ const NISListingView = ({ items, isEditMode }) => {
                     <UniversalLink
                       className="ui button secondary mini"
                       href={`${item['@id']}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       View
                     </UniversalLink>
                     <UniversalLink
                       className="ui button primary mini"
                       href={`${item['@id']}/edit`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       Edit
                     </UniversalLink>
+                    {canEditPage && (
+                      <Button
+                        className="tertiary mini"
+                        onClick={() => handleCopy(item)}
+                      >
+                        Copy
+                      </Button>
+                    )}
                   </div>
                   <div className="workflow-progress">
                     <ProgressWorkflow
