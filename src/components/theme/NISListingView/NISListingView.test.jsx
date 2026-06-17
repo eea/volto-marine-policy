@@ -308,10 +308,38 @@ describe('NISListingView', () => {
       });
     }
 
+    function makeGroup(itemNumber) {
+      const itemId = `/marine/item-${itemNumber}`;
+      const itemData = {
+        '@id': itemId,
+        review_state: 'draft',
+        nis_species_name_original: `Species ${itemNumber}`,
+        nis_species_name_accepted: `Species ${itemNumber} accepted`,
+        nis_scientificname_accepted: `Scientificus acceptus ${itemNumber}`,
+        nis_region: 'Europe',
+        nis_subregion: 'Western Europe',
+        nis_country: 'France',
+        nis_status: 'Established',
+        nis_group: 'Fish',
+        nis_year: 2020 + itemNumber,
+        nis_assigned_to: `User ${itemNumber} (user${itemNumber})`,
+      };
+      return {
+        species_name_original: `Species ${itemNumber}`,
+        species_name_accepted: `Species ${itemNumber} accepted`,
+        scientificname_accepted: `Scientificus acceptus ${itemNumber}`,
+        region: 'Europe',
+        subregion: 'Western Europe',
+        country: 'France',
+        year: 2020 + itemNumber,
+        items: [itemData],
+      };
+    }
+
     it('shows the duplicate info banner when check-duplicates param is set', async () => {
       mockDuplicateFetch(
         ['/marine/item-1', '/marine/item-3'],
-        [{ id: 1 }, { id: 2 }],
+        [makeGroup(1), makeGroup(3)],
       );
       renderComponent();
       await waitFor(() => {
@@ -324,7 +352,7 @@ describe('NISListingView', () => {
     it('filters table to show only duplicate items', async () => {
       mockDuplicateFetch(
         ['/marine/item-1', '/marine/item-3'],
-        [{ id: 1 }, { id: 2 }],
+        [makeGroup(1), makeGroup(3)],
       );
       const items = buildItems(5);
       renderComponent({ items });
