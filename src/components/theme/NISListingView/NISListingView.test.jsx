@@ -243,6 +243,7 @@ describe('NISListingView', () => {
       await waitFor(() => {
         expect(screen.getByText('Assign search results')).toBeInTheDocument();
       });
+      expect(screen.getByText('Add NIS record')).toBeInTheDocument();
       expect(screen.getByText('Download search results')).toBeInTheDocument();
       expect(screen.getByText('Check duplicates')).toBeInTheDocument();
     });

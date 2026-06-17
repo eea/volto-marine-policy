@@ -335,6 +335,14 @@ const NISListingView = ({ items, isEditMode }) => {
       )}
       {canEditPage && (
         <div className="download-button-wrapper">
+          <UniversalLink
+            className="ui button primary download-as-xls"
+            href={`${window.location.pathname}/add?type=non_indigenous_species`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i className="ri-add-line"></i>Add NIS record
+          </UniversalLink>
           <Button
             className="primary"
             size="small"
