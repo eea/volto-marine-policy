@@ -129,7 +129,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const onBulkAssign = async (ids, assignee) => {
     setIsLoading(true);
     await fetch(
-      `${window.env.apiPath}/++api++/@bulk-assign${window.location.search}`,
+      `${window.env.apiPath}/++api++${window.location.pathname.replace('/marine', '')}/@bulk-assign${window.location.search}`,
       {
         method: 'POST',
         headers: {
@@ -199,7 +199,7 @@ const NISListingView = ({ items, isEditMode }) => {
     const parsed = qs.parse(window.location.search);
     if (parsed['check-duplicates']) {
       setDuplicatesLoading(true);
-      fetch(`${window.env.apiPath}/++api++/@check-nis-duplicates`, {
+      fetch(`${window.env.apiPath}/++api++${window.location.pathname.replace('/marine', '')}/@check-nis-duplicates`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
