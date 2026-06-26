@@ -199,15 +199,18 @@ const NISListingView = ({ items, isEditMode }) => {
     const parsed = qs.parse(window.location.search);
     if (parsed['check-duplicates']) {
       setDuplicatesLoading(true);
-      fetch(`${window.env.apiPath}/++api++${window.location.pathname.replace('/marine', '')}/@check-nis-duplicates`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+      fetch(
+        `${window.env.apiPath}/++api++${window.location.pathname.replace('/marine', '')}/@check-nis-duplicates`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ search: window.location.search }),
         },
-        credentials: 'include',
-        body: JSON.stringify({ search: window.location.search }),
-      })
+      )
         .then((res) => res.json())
         .then((data) => {
           setDuplicateIds(new Set(data.duplicate_ids.map(normalizeItemPath)));
