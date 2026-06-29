@@ -114,7 +114,6 @@ describe('NISListingView', () => {
         ok: true,
       });
     });
-
   });
 
   describe('table rendering', () => {
