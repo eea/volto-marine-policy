@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
 import { Button, Select, Dimmer, Loader } from 'semantic-ui-react';
 import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
+import jwtDecode from 'jwt-decode';
 
 function normalizeQueryOperators(query) {
   return query.map((q) => {
@@ -89,6 +90,12 @@ function formatAssignedTo(assignedTo) {
   return result;
 }
 
+function isAssignedToMe(item, currentUserId) {
+  if (!currentUserId || !item.nis_assigned_to) return false;
+  const match = item.nis_assigned_to.match(/\(([^)]+)\)\s*$/);
+  return match ? match[1] === currentUserId : false;
+}
+
 const NISListingView = ({ items, isEditMode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -102,6 +109,8 @@ const NISListingView = ({ items, isEditMode }) => {
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
   const actions = useSelector((state) => state.actions.actions);
+  const token = useSelector((state) => state.userSession.token);
+  const currentUserId = token ? jwtDecode(token).sub : '';
   const canEditPage = actions?.object?.some((action) => action.id === 'edit');
 
   const toggleSelection = (id) => {
@@ -320,15 +329,17 @@ const NISListingView = ({ items, isEditMode }) => {
                   >
                     View
                   </UniversalLink>
-                  <UniversalLink
-                    className="ui button primary mini"
-                    href={`${item['@id']}/edit`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Edit
-                  </UniversalLink>
-                  {canEditPage && (
+                  {isAssignedToMe(item, currentUserId) && (
+                    <UniversalLink
+                      className="ui button primary mini"
+                      href={`${item['@id']}/edit`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Edit
+                    </UniversalLink>
+                  )}
+                  {isAssignedToMe(item, currentUserId) && (
                     <Button
                       className="tertiary mini"
                       onClick={() => handleCopy(item)}
@@ -336,7 +347,7 @@ const NISListingView = ({ items, isEditMode }) => {
                       Copy
                     </Button>
                   )}
-                  {canEditPage && (
+                  {isAssignedToMe(item, currentUserId) && (
                     <Button
                       className="negative mini"
                       onClick={() => handleRemove(item)}
@@ -534,15 +545,17 @@ const NISListingView = ({ items, isEditMode }) => {
                       >
                         View
                       </UniversalLink>
-                      <UniversalLink
-                        className="ui button primary mini"
-                        href={`${item['@id']}/edit`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Edit
-                      </UniversalLink>
-                      {canEditPage && (
+                      {isAssignedToMe(item, currentUserId) && (
+                        <UniversalLink
+                          className="ui button primary mini"
+                          href={`${item['@id']}/edit`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Edit
+                        </UniversalLink>
+                      )}
+                      {isAssignedToMe(item, currentUserId) && (
                         <Button
                           className="tertiary mini"
                           onClick={() => handleCopy(item)}
@@ -550,7 +563,7 @@ const NISListingView = ({ items, isEditMode }) => {
                           Copy
                         </Button>
                       )}
-                      {canEditPage && (
+                      {isAssignedToMe(item, currentUserId) && (
                         <Button
                           className="negative mini"
                           onClick={() => handleRemove(item)}
