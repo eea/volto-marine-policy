@@ -96,6 +96,7 @@ const NISListingView = ({ items, isEditMode }) => {
   const [duplicateIds, setDuplicateIds] = useState(null);
   const [duplicateGroups, setDuplicateGroups] = useState([]);
   const [duplicatesLoading, setDuplicatesLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [locationTick, setLocationTick] = useState(0);
 
   const [users, setUsers] = useState([]);
@@ -149,6 +150,7 @@ const NISListingView = ({ items, isEditMode }) => {
   };
 
   const handleCopy = async (item) => {
+    setErrorMessage(null);
     setIsLoading(true);
     try {
       const res = await fetch(
@@ -167,11 +169,41 @@ const NISListingView = ({ items, isEditMode }) => {
       );
       if (res.ok) {
         window.location.reload();
+      } else {
+        setErrorMessage('Something went wrong. The copy was not successful.');
+        setIsLoading(false);
       }
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Copy failed:', err);
+      setErrorMessage('Something went wrong. The copy was not successful.');
       setIsLoading(false);
+    }
+  };
+
+  const handleRemove = async (item) => {
+    if (!window.confirm('Are you sure you want to remove this item?')) {
+      return;
+    }
+    setErrorMessage(null);
+    try {
+      const res = await fetch(
+        `${window.env.apiPath}/++api++${item['@id'].replace(/^\/marine/, '')}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { Accept: 'application/json' },
+        },
+      );
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        setErrorMessage('Something went wrong. The item could not be removed.');
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Remove failed:', err);
+      setErrorMessage('Something went wrong. The item could not be removed.');
     }
   };
 
@@ -304,6 +336,14 @@ const NISListingView = ({ items, isEditMode }) => {
                       Copy
                     </Button>
                   )}
+                  {canEditPage && (
+                    <Button
+                      className="negative mini"
+                      onClick={() => handleRemove(item)}
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </div>
                 <div className="workflow-progress">
                   <ProgressWorkflow
@@ -354,36 +394,49 @@ const NISListingView = ({ items, isEditMode }) => {
           <Button
             className="primary"
             size="small"
+            onClick={() => {
+              const parsed = qs.parse(window.location.search);
+              parsed['check-duplicates'] = '1';
+              window.location.search = qs.stringify(parsed);
+            }}
+          >
+            <i className="ri-file-copy-line"></i>
+            Check duplicates
+          </Button>
+          <Button
+            className="primary"
+            size="small"
             onClick={handleBulkAssignAll}
           >
             <i className="ri-user-add-line"></i>Assign search results
           </Button>
-          <div>
-            <a
-              href={`/marine/++api++${window.location.pathname.replace(
-                '/marine',
-                '',
-              )}/nis-export${window.location.search}`}
-              title="Download"
-              target="_blank"
-              rel="noopener"
-              className="ui button primary download-as-xls"
-            >
-              <i className="ri-file-download-line"></i>
-              Download search results
-            </a>
-            <Button
-              className="primary"
-              size="small"
-              onClick={() => {
-                const parsed = qs.parse(window.location.search);
-                parsed['check-duplicates'] = '1';
-                window.location.search = qs.stringify(parsed);
-              }}
-            >
-              Check duplicates
-            </Button>
-          </div>
+          <a
+            href={`/marine/++api++${window.location.pathname.replace(
+              '/marine',
+              '',
+            )}/nis-export${window.location.search}`}
+            title="Download"
+            target="_blank"
+            rel="noopener"
+            className="ui button primary download-as-xls"
+          >
+            <i className="ri-file-download-line"></i>
+            Download search results
+          </a>
+        </div>
+      )}
+      {errorMessage && (
+        <div
+          style={{
+            background: '#f8d7da',
+            border: '1px solid #f5c6cb',
+            color: '#721c24',
+            padding: '10px 15px',
+            marginBottom: '15px',
+            borderRadius: '4px',
+          }}
+        >
+          {errorMessage}
         </div>
       )}
       {duplicateIds && (
@@ -495,6 +548,14 @@ const NISListingView = ({ items, isEditMode }) => {
                           onClick={() => handleCopy(item)}
                         >
                           Copy
+                        </Button>
+                      )}
+                      {canEditPage && (
+                        <Button
+                          className="negative mini"
+                          onClick={() => handleRemove(item)}
+                        >
+                          Remove
                         </Button>
                       )}
                     </div>
