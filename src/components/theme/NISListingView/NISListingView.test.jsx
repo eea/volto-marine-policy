@@ -5,12 +5,9 @@ import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import NISListingView from './NISListingView';
 
-const mockUseSelector = jest.fn();
-
 jest.mock('react-redux', () => ({
   __esModule: true,
   ...jest.requireActual('react-redux'),
-  useSelector: (selector) => mockUseSelector(selector),
 }));
 
 jest.mock(
@@ -52,9 +49,16 @@ function buildItems(count = 3) {
 }
 
 function renderComponent(props = {}) {
-  const { items = buildItems(), ...rest } = props;
+  const {
+    items = buildItems(),
+    actions = { object: [{ id: 'edit' }] },
+    token = null,
+    ...rest
+  } = props;
   const store = mockStore({
     intl: { locale: 'en', messages: {} },
+    actions: { actions },
+    userSession: { token },
   });
   return render(
     <Provider store={store}>
@@ -111,9 +115,6 @@ describe('NISListingView', () => {
       });
     });
 
-    mockUseSelector.mockReturnValue({
-      object: [{ id: 'edit' }],
-    });
   });
 
   describe('table rendering', () => {
@@ -236,9 +237,6 @@ describe('NISListingView', () => {
 
   describe('admin controls — canEditPage', () => {
     it('shows assign, download, and check-duplicates buttons when user can edit', async () => {
-      mockUseSelector.mockReturnValue({
-        object: [{ id: 'edit' }],
-      });
       renderComponent();
       await waitFor(() => {
         expect(screen.getByText('Assign search results')).toBeInTheDocument();
@@ -249,10 +247,7 @@ describe('NISListingView', () => {
     });
 
     it('hides admin controls when user cannot edit', async () => {
-      mockUseSelector.mockReturnValue({
-        object: [],
-      });
-      renderComponent();
+      renderComponent({ actions: { object: [] } });
       await waitFor(() => {
         expect(screen.getByText('Species name original')).toBeInTheDocument();
       });
@@ -266,10 +261,7 @@ describe('NISListingView', () => {
     });
 
     it('hides checkboxes and Copy button when user cannot edit', async () => {
-      mockUseSelector.mockReturnValue({
-        object: [],
-      });
-      renderComponent();
+      renderComponent({ actions: { object: [] } });
       await waitFor(() => {
         expect(screen.getByText('Species 1')).toBeInTheDocument();
       });
