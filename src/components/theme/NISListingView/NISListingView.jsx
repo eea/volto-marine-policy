@@ -191,6 +191,7 @@ const NISListingView = ({ items, isEditMode }) => {
   };
 
   const handleRemove = async (item) => {
+    // eslint-disable-next-line no-alert
     if (!window.confirm('Are you sure you want to remove this item?')) {
       return;
     }
