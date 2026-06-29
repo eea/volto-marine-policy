@@ -139,7 +139,10 @@ const NISListingView = ({ items, isEditMode }) => {
   const onBulkAssign = async (ids, assignee) => {
     setIsLoading(true);
     await fetch(
-      `${window.env.apiPath}/++api++${window.location.pathname.replace('/marine', '')}/@bulk-assign${window.location.search}`,
+      `${window.env.apiPath}/++api++${window.location.pathname.replace(
+        '/marine',
+        '',
+      )}/@bulk-assign${window.location.search}`,
       {
         method: 'POST',
         headers: {
@@ -242,7 +245,10 @@ const NISListingView = ({ items, isEditMode }) => {
     if (parsed['check-duplicates']) {
       setDuplicatesLoading(true);
       fetch(
-        `${window.env.apiPath}/++api++${window.location.pathname.replace('/marine', '')}/@check-nis-duplicates`,
+        `${window.env.apiPath}/++api++${window.location.pathname.replace(
+          '/marine',
+          '',
+        )}/@check-nis-duplicates`,
         {
           method: 'POST',
           headers: {
@@ -384,7 +390,14 @@ const NISListingView = ({ items, isEditMode }) => {
       }
     });
     return rows;
-  }, [duplicateIds, duplicateGroups, items, canEditPage, selectedItems]);
+  }, [
+    duplicateIds,
+    duplicateGroups,
+    items,
+    canEditPage,
+    selectedItems,
+    currentUserId,
+  ]);
 
   return (
     <>
