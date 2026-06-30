@@ -5,12 +5,9 @@ import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import NISListingView from './NISListingView';
 
-const mockUseSelector = jest.fn();
-
 jest.mock('react-redux', () => ({
   __esModule: true,
   ...jest.requireActual('react-redux'),
-  useSelector: (selector) => mockUseSelector(selector),
 }));
 
 jest.mock(
@@ -52,9 +49,16 @@ function buildItems(count = 3) {
 }
 
 function renderComponent(props = {}) {
-  const { items = buildItems(), ...rest } = props;
+  const {
+    items = buildItems(),
+    actions = { object: [{ id: 'edit' }] },
+    token = null,
+    ...rest
+  } = props;
   const store = mockStore({
     intl: { locale: 'en', messages: {} },
+    actions: { actions },
+    userSession: { token },
   });
   return render(
     <Provider store={store}>
@@ -109,10 +113,6 @@ describe('NISListingView', () => {
         json: () => Promise.resolve({}),
         ok: true,
       });
-    });
-
-    mockUseSelector.mockReturnValue({
-      object: [{ id: 'edit' }],
     });
   });
 
@@ -236,22 +236,17 @@ describe('NISListingView', () => {
 
   describe('admin controls — canEditPage', () => {
     it('shows assign, download, and check-duplicates buttons when user can edit', async () => {
-      mockUseSelector.mockReturnValue({
-        object: [{ id: 'edit' }],
-      });
       renderComponent();
       await waitFor(() => {
         expect(screen.getByText('Assign search results')).toBeInTheDocument();
       });
+      expect(screen.getByText('Add NIS record')).toBeInTheDocument();
       expect(screen.getByText('Download search results')).toBeInTheDocument();
       expect(screen.getByText('Check duplicates')).toBeInTheDocument();
     });
 
     it('hides admin controls when user cannot edit', async () => {
-      mockUseSelector.mockReturnValue({
-        object: [],
-      });
-      renderComponent();
+      renderComponent({ actions: { object: [] } });
       await waitFor(() => {
         expect(screen.getByText('Species name original')).toBeInTheDocument();
       });
@@ -265,10 +260,7 @@ describe('NISListingView', () => {
     });
 
     it('hides checkboxes and Copy button when user cannot edit', async () => {
-      mockUseSelector.mockReturnValue({
-        object: [],
-      });
-      renderComponent();
+      renderComponent({ actions: { object: [] } });
       await waitFor(() => {
         expect(screen.getByText('Species 1')).toBeInTheDocument();
       });
@@ -308,10 +300,38 @@ describe('NISListingView', () => {
       });
     }
 
+    function makeGroup(itemNumber) {
+      const itemId = `/marine/item-${itemNumber}`;
+      const itemData = {
+        '@id': itemId,
+        review_state: 'draft',
+        nis_species_name_original: `Species ${itemNumber}`,
+        nis_species_name_accepted: `Species ${itemNumber} accepted`,
+        nis_scientificname_accepted: `Scientificus acceptus ${itemNumber}`,
+        nis_region: 'Europe',
+        nis_subregion: 'Western Europe',
+        nis_country: 'France',
+        nis_status: 'Established',
+        nis_group: 'Fish',
+        nis_year: 2020 + itemNumber,
+        nis_assigned_to: `User ${itemNumber} (user${itemNumber})`,
+      };
+      return {
+        species_name_original: `Species ${itemNumber}`,
+        species_name_accepted: `Species ${itemNumber} accepted`,
+        scientificname_accepted: `Scientificus acceptus ${itemNumber}`,
+        region: 'Europe',
+        subregion: 'Western Europe',
+        country: 'France',
+        year: 2020 + itemNumber,
+        items: [itemData],
+      };
+    }
+
     it('shows the duplicate info banner when check-duplicates param is set', async () => {
       mockDuplicateFetch(
         ['/marine/item-1', '/marine/item-3'],
-        [{ id: 1 }, { id: 2 }],
+        [makeGroup(1), makeGroup(3)],
       );
       renderComponent();
       await waitFor(() => {
@@ -324,7 +344,7 @@ describe('NISListingView', () => {
     it('filters table to show only duplicate items', async () => {
       mockDuplicateFetch(
         ['/marine/item-1', '/marine/item-3'],
-        [{ id: 1 }, { id: 2 }],
+        [makeGroup(1), makeGroup(3)],
       );
       const items = buildItems(5);
       renderComponent({ items });

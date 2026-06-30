@@ -3,11 +3,12 @@ import ProgressWorkflow from '@eeacms/volto-marine-policy/components/theme/Progr
 import qs from 'query-string';
 import PropTypes from 'prop-types';
 import './style.less';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'semantic-ui-react';
 import { Button, Select, Dimmer, Loader } from 'semantic-ui-react';
 import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
+import jwtDecode from 'jwt-decode';
 
 function normalizeQueryOperators(query) {
   return query.map((q) => {
@@ -63,6 +64,21 @@ async function getCurrentSearchItems() {
   }
 }
 
+function normalizeItemPath(itemId) {
+  if (!itemId) return '';
+  let path = itemId.replace(/^https?:\/\/[^/]+/, '');
+  try {
+    const apiURL = new URL(window.env.apiPath);
+    const prefix = apiURL.pathname;
+    if (prefix && prefix !== '/' && path.startsWith(prefix)) {
+      path = path.slice(prefix.length) || '/';
+    }
+  } catch (e) {
+    // apiPath might be relative; ignore
+  }
+  return path;
+}
+
 function formatAssignedTo(assignedTo) {
   if (!assignedTo) return '';
   // Fix Python-style unicode escape sequences (\UXXXXXXXX -> actual char)
@@ -74,16 +90,27 @@ function formatAssignedTo(assignedTo) {
   return result;
 }
 
+function isAssignedToMe(item, currentUserId) {
+  if (!currentUserId || !item.nis_assigned_to) return false;
+  const match = item.nis_assigned_to.match(/\(([^)]+)\)\s*$/);
+  return match ? match[1] === currentUserId : false;
+}
+
 const NISListingView = ({ items, isEditMode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemsTotal, setItemsTotal] = useState(0);
   const [duplicateIds, setDuplicateIds] = useState(null);
   const [duplicateGroups, setDuplicateGroups] = useState([]);
+  const [duplicatesLoading, setDuplicatesLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [locationTick, setLocationTick] = useState(0);
 
   const [users, setUsers] = useState([]);
   const [assignee, setAssignee] = useState(null);
   const actions = useSelector((state) => state.actions.actions);
+  const token = useSelector((state) => state.userSession.token);
+  const currentUserId = token ? jwtDecode(token).sub : '';
   const canEditPage = actions?.object?.some((action) => action.id === 'edit');
 
   const toggleSelection = (id) => {
@@ -112,7 +139,10 @@ const NISListingView = ({ items, isEditMode }) => {
   const onBulkAssign = async (ids, assignee) => {
     setIsLoading(true);
     await fetch(
-      `${window.env.apiPath}/++api++/@bulk-assign${window.location.search}`,
+      `${window.env.apiPath}/++api++${window.location.pathname.replace(
+        '/marine',
+        '',
+      )}/@bulk-assign${window.location.search}`,
       {
         method: 'POST',
         headers: {
@@ -132,10 +162,14 @@ const NISListingView = ({ items, isEditMode }) => {
   };
 
   const handleCopy = async (item) => {
+    setErrorMessage(null);
     setIsLoading(true);
     try {
       const res = await fetch(
-        `${window.env.apiPath}${item['@id']}/@copy-nis-record`,
+        `${window.env.apiPath}/++api++${item['@id'].replace(
+          /^\/marine/,
+          '',
+        )}/@copy-nis-record`,
         {
           method: 'POST',
           headers: {
@@ -147,26 +181,96 @@ const NISListingView = ({ items, isEditMode }) => {
       );
       if (res.ok) {
         window.location.reload();
+      } else {
+        setErrorMessage('Something went wrong. The copy was not successful.');
+        setIsLoading(false);
       }
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Copy failed:', err);
+      setErrorMessage('Something went wrong. The copy was not successful.');
       setIsLoading(false);
     }
   };
 
+  const handleRemove = async (item) => {
+    // eslint-disable-next-line no-alert
+    if (!window.confirm('Are you sure you want to remove this item?')) {
+      return;
+    }
+    setErrorMessage(null);
+    try {
+      const res = await fetch(
+        `${window.env.apiPath}/++api++${item['@id'].replace(/^\/marine/, '')}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { Accept: 'application/json' },
+        },
+      );
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        setErrorMessage('Something went wrong. The item could not be removed.');
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Remove failed:', err);
+      setErrorMessage('Something went wrong. The item could not be removed.');
+    }
+  };
+
+  useEffect(() => {
+    const trigger = () => setLocationTick((t) => t + 1);
+    window.addEventListener('popstate', trigger);
+    const origPush = window.history.pushState;
+    const origReplace = window.history.replaceState;
+    window.history.pushState = function (...a) {
+      origPush.apply(this, a);
+      trigger();
+    };
+    window.history.replaceState = function (...a) {
+      origReplace.apply(this, a);
+      trigger();
+    };
+    return () => {
+      window.removeEventListener('popstate', trigger);
+      window.history.pushState = origPush;
+      window.history.replaceState = origReplace;
+    };
+  }, []);
+
   useEffect(() => {
     const parsed = qs.parse(window.location.search);
     if (parsed['check-duplicates']) {
-      const containerPath = window.location.pathname.replace('/marine', '');
-      fetch(`${window.env.apiPath}${containerPath}/@check-nis-duplicates`)
+      setDuplicatesLoading(true);
+      fetch(
+        `${window.env.apiPath}/++api++${window.location.pathname.replace(
+          '/marine',
+          '',
+        )}/@check-nis-duplicates`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ search: window.location.search }),
+        },
+      )
         .then((res) => res.json())
         .then((data) => {
-          setDuplicateIds(new Set(data.duplicate_ids));
+          setDuplicateIds(new Set(data.duplicate_ids.map(normalizeItemPath)));
           setDuplicateGroups(data.groups || []);
-        });
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error('Check duplicates failed:', err);
+        })
+        .finally(() => setDuplicatesLoading(false));
     }
-  }, []);
+  }, [locationTick]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -193,6 +297,108 @@ const NISListingView = ({ items, isEditMode }) => {
     fetchUsers();
   }, []);
 
+  const duplicateTableRows = useMemo(() => {
+    if (!duplicateIds) return items;
+
+    const rows = [];
+    duplicateGroups.forEach((group, gIdx) => {
+      (group.items || []).forEach((item) => {
+        rows.push(
+          <tr key={item['@id']}>
+            <td>{item.nis_species_name_original}</td>
+            <td>{item.nis_species_name_accepted}</td>
+            <td>{item.nis_scientificname_accepted}</td>
+            <td>{item.nis_region}</td>
+            <td>{item.nis_subregion}</td>
+            <td>{item.nis_country}</td>
+            <td>{item.nis_status}</td>
+            <td>{item.nis_group}</td>
+            <td>{item.nis_year}</td>
+            <td>
+              <div className="assigned-to-container">
+                <div>{formatAssignedTo(item.nis_assigned_to)}</div>
+                {canEditPage && (
+                  <Checkbox
+                    checked={selectedItems.includes(item['@id'])}
+                    onChange={() => toggleSelection(item['@id'])}
+                  />
+                )}
+              </div>
+            </td>
+            <td>
+              <div className="workflow-actions">
+                <div className="action-buttons">
+                  <UniversalLink
+                    className="ui button secondary mini"
+                    href={item['@id']}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View
+                  </UniversalLink>
+                  {isAssignedToMe(item, currentUserId) && (
+                    <UniversalLink
+                      className="ui button primary mini"
+                      href={`${item['@id']}/edit`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Edit
+                    </UniversalLink>
+                  )}
+                  {isAssignedToMe(item, currentUserId) && (
+                    <Button
+                      className="tertiary mini"
+                      onClick={() => handleCopy(item)}
+                    >
+                      Copy
+                    </Button>
+                  )}
+                  {isAssignedToMe(item, currentUserId) && (
+                    <Button
+                      className="negative mini"
+                      onClick={() => handleRemove(item)}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+                <div className="workflow-progress">
+                  <ProgressWorkflow
+                    content={item}
+                    pathname={item['@id']}
+                    token={123}
+                  />
+                </div>
+              </div>
+            </td>
+          </tr>,
+        );
+      });
+      if (gIdx < duplicateGroups.length - 1) {
+        rows.push(
+          <tr key={`sep-${gIdx}`}>
+            <td
+              colSpan="11"
+              style={{
+                borderBottom: '2px solid #999',
+                padding: 0,
+              }}
+            />
+          </tr>,
+        );
+      }
+    });
+    return rows;
+  }, [
+    duplicateIds,
+    duplicateGroups,
+    items,
+    canEditPage,
+    selectedItems,
+    currentUserId,
+  ]);
+
   return (
     <>
       {isLoading && (
@@ -200,8 +406,28 @@ const NISListingView = ({ items, isEditMode }) => {
           <Loader>Assigning...</Loader>
         </Dimmer>
       )}
-      {canEditPage && (
+      {canEditPage && !duplicateIds && (
         <div className="download-button-wrapper">
+          <UniversalLink
+            className="ui button primary download-as-xls"
+            href={`${window.location.pathname}/add?type=non_indigenous_species`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i className="ri-add-line"></i>Add NIS record
+          </UniversalLink>
+          <Button
+            className="primary"
+            size="small"
+            onClick={() => {
+              const parsed = qs.parse(window.location.search);
+              parsed['check-duplicates'] = '1';
+              window.location.search = qs.stringify(parsed);
+            }}
+          >
+            <i className="ri-file-copy-line"></i>
+            Check duplicates
+          </Button>
           <Button
             className="primary"
             size="small"
@@ -209,32 +435,33 @@ const NISListingView = ({ items, isEditMode }) => {
           >
             <i className="ri-user-add-line"></i>Assign search results
           </Button>
-          <div>
-            <a
-              href={`/marine/++api++${window.location.pathname.replace(
-                '/marine',
-                '',
-              )}/nis-export${window.location.search}`}
-              title="Download"
-              target="_blank"
-              rel="noopener"
-              className="ui button primary download-as-xls"
-            >
-              <i className="ri-file-download-line"></i>
-              Download search results
-            </a>
-            <Button
-              className="primary"
-              size="small"
-              onClick={() => {
-                const parsed = qs.parse(window.location.search);
-                parsed['check-duplicates'] = '1';
-                window.location.search = qs.stringify(parsed);
-              }}
-            >
-              Check duplicates
-            </Button>
-          </div>
+          <a
+            href={`/marine/++api++${window.location.pathname.replace(
+              '/marine',
+              '',
+            )}/nis-export${window.location.search}`}
+            title="Download"
+            target="_blank"
+            rel="noopener"
+            className="ui button primary download-as-xls"
+          >
+            <i className="ri-file-download-line"></i>
+            Download search results
+          </a>
+        </div>
+      )}
+      {errorMessage && (
+        <div
+          style={{
+            background: '#f8d7da',
+            border: '1px solid #f5c6cb',
+            color: '#721c24',
+            padding: '10px 15px',
+            marginBottom: '15px',
+            borderRadius: '4px',
+          }}
+        >
+          {errorMessage}
         </div>
       )}
       {duplicateIds && (
@@ -247,7 +474,11 @@ const NISListingView = ({ items, isEditMode }) => {
             borderRadius: '4px',
           }}
         >
-          Showing {items.filter((i) => duplicateIds.has(i['@id'])).length}{' '}
+          Showing{' '}
+          {duplicateGroups.reduce(
+            (sum, g) => sum + (g.items ? g.items.length : 0),
+            0,
+          )}{' '}
           duplicate records across {duplicateGroups.length} groups
           <a
             href={(() => {
@@ -261,6 +492,13 @@ const NISListingView = ({ items, isEditMode }) => {
             Clear
           </a>
         </div>
+      )}
+      {duplicateIds && (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `.listing-pagination,.pagination-wrapper,nav[aria-label="Pagination Navigation"],.ui.pagination{display:none!important}`,
+          }}
+        />
       )}
       <table className="ui table">
         <thead>
@@ -279,70 +517,87 @@ const NISListingView = ({ items, isEditMode }) => {
           </tr>
         </thead>
         <tbody>
-          {(duplicateIds
-            ? items.filter((item) => duplicateIds.has(item['@id']))
-            : items
-          ).map((item, index) => (
-            <tr key={item['@id']}>
-              <td>{item.nis_species_name_original}</td>
-              <td>{item.nis_species_name_accepted}</td>
-              <td>{item.nis_scientificname_accepted}</td>
-              <td>{item.nis_region}</td>
-              <td>{item.nis_subregion}</td>
-              <td>{item.nis_country}</td>
-              <td>{item.nis_status}</td>
-              <td>{item.nis_group}</td>
-              <td>{item.nis_year}</td>
-              <td>
-                <div className="assigned-to-container">
-                  <div>{formatAssignedTo(item.nis_assigned_to)}</div>
-                  {canEditPage && (
-                    <Checkbox
-                      checked={selectedItems.includes(item['@id'])}
-                      onChange={() => toggleSelection(item['@id'])}
-                    />
-                  )}
-                </div>
-              </td>
-              <td>
-                <div className="workflow-actions">
-                  <div className="action-buttons">
-                    <UniversalLink
-                      className="ui button secondary mini"
-                      href={`${item['@id']}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View
-                    </UniversalLink>
-                    <UniversalLink
-                      className="ui button primary mini"
-                      href={`${item['@id']}/edit`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Edit
-                    </UniversalLink>
-                    {canEditPage && (
-                      <Button
-                        className="tertiary mini"
-                        onClick={() => handleCopy(item)}
-                      >
-                        Copy
-                      </Button>
-                    )}
-                  </div>
-                  <div className="workflow-progress">
-                    <ProgressWorkflow
-                      content={item}
-                      pathname={item['@id']}
-                      token={123}
-                    />
-                  </div>
-                </div>
+          {duplicateIds ? (
+            duplicateTableRows
+          ) : duplicatesLoading ? (
+            <tr>
+              <td colSpan="11" style={{ textAlign: 'center', padding: '20px' }}>
+                <Loader active inline />
               </td>
             </tr>
-          ))}
+          ) : (
+            items.map((item) => (
+              <tr key={item['@id']}>
+                <td>{item.nis_species_name_original}</td>
+                <td>{item.nis_species_name_accepted}</td>
+                <td>{item.nis_scientificname_accepted}</td>
+                <td>{item.nis_region}</td>
+                <td>{item.nis_subregion}</td>
+                <td>{item.nis_country}</td>
+                <td>{item.nis_status}</td>
+                <td>{item.nis_group}</td>
+                <td>{item.nis_year}</td>
+                <td>
+                  <div className="assigned-to-container">
+                    <div>{formatAssignedTo(item.nis_assigned_to)}</div>
+                    {canEditPage && (
+                      <Checkbox
+                        checked={selectedItems.includes(item['@id'])}
+                        onChange={() => toggleSelection(item['@id'])}
+                      />
+                    )}
+                  </div>
+                </td>
+                <td>
+                  <div className="workflow-actions">
+                    <div className="action-buttons">
+                      <UniversalLink
+                        className="ui button secondary mini"
+                        href={`${item['@id']}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View
+                      </UniversalLink>
+                      {isAssignedToMe(item, currentUserId) && (
+                        <UniversalLink
+                          className="ui button primary mini"
+                          href={`${item['@id']}/edit`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Edit
+                        </UniversalLink>
+                      )}
+                      {isAssignedToMe(item, currentUserId) && (
+                        <Button
+                          className="tertiary mini"
+                          onClick={() => handleCopy(item)}
+                        >
+                          Copy
+                        </Button>
+                      )}
+                      {isAssignedToMe(item, currentUserId) && (
+                        <Button
+                          className="negative mini"
+                          onClick={() => handleRemove(item)}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                    <div className="workflow-progress">
+                      <ProgressWorkflow
+                        content={item}
+                        pathname={item['@id']}
+                        token={123}
+                      />
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       {selectedItems.length > 0 && (
