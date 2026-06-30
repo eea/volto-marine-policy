@@ -406,7 +406,7 @@ const NISListingView = ({ items, isEditMode }) => {
           <Loader>Assigning...</Loader>
         </Dimmer>
       )}
-      {canEditPage && (
+      {canEditPage && !duplicateIds && (
         <div className="download-button-wrapper">
           <UniversalLink
             className="ui button primary download-as-xls"
