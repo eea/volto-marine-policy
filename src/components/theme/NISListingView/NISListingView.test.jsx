@@ -52,7 +52,7 @@ function renderComponent(props = {}) {
   const {
     items = buildItems(),
     actions = { object: [{ id: 'edit' }] },
-    token = null,
+    token = null, //betterleaks:allow
     ...rest
   } = props;
   const store = mockStore({
