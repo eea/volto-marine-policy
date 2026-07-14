@@ -59,7 +59,7 @@ export function getVocabulary({
  */
 export function getVocabularyTokenTitle({
   vocabNameOrURL,
-  token = null,
+  token = null, //betterleaks:allow
   tokens = null,
   subrequest,
 }) {
