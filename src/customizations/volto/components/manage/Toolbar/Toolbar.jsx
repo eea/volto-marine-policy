@@ -171,7 +171,7 @@ class Toolbar extends Component {
    */
   static defaultProps = {
     actions: null,
-    token: null,
+    token: null, //betterleaks:allow
     userId: null,
     content: null,
     hideDefaultViewButtons: false,
