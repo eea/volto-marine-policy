@@ -17,6 +17,7 @@ import { breadcrumb, localnavigation, workflowProgressPath } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
 import NISStatusWidget from './components/Widgets/NISStatusWidget';
+import NISScientificNameWidget from './components/Widgets/NISScientificNameWidget';
 import './slate-styles.less';
 import './less/toc-title-sizes.less';
 
@@ -115,6 +116,7 @@ const applyConfig = (config) => {
 
   config.widgets.widget.text_align = TextAlignWidget;
   config.widgets.id.nis_status = NISStatusWidget;
+  config.widgets.id.nis_scientificname_accepted = NISScientificNameWidget;
   // check if it breaks the 'theme' field in volto-tabs-block in the 'horizontal carousel' layout
   // We have a 'theme' field in the wise catalogue metadata (CatalogueMetadata)
   config.widgets.id.indicator_theme = TokenWidget;
