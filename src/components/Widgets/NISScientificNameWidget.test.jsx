@@ -86,8 +86,10 @@ describe('NISScientificNameWidget', () => {
     const input = getInput(container);
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: 'Acrochaetium' } });
-    const option = await screen.findByText('Acrochaetium catenulatum');
-    fireEvent.click(option);
+    await screen.findByText('Acrochaetium catenulatum');
+    // The menu re-renders when the vocabulary arrives asynchronously, so
+    // re-query the live DOM to click the attached option node.
+    fireEvent.click(screen.getByText('Acrochaetium catenulatum'));
     await waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(
         FIELD_ID,
@@ -101,8 +103,9 @@ describe('NISScientificNameWidget', () => {
     const input = getInput(container);
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: 'Brand new species' } });
-    const createOption = await screen.findByText('Use "Brand new species"');
-    fireEvent.click(createOption);
+    await screen.findByText('Use "Brand new species"');
+    // Same async re-render concern as above: click the live node.
+    fireEvent.click(screen.getByText('Use "Brand new species"'));
     await waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(FIELD_ID, 'Brand new species');
     });
