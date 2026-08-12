@@ -9,6 +9,7 @@ import {
   NISMetadataSectionTableView,
 } from './components';
 import { addTableField } from '@eeacms/volto-metadata-block/components/manage/Blocks/MetadataSection/variations';
+import TitleDefaultTemplate from '@eeacms/volto-eea-website-theme/components/manage/Blocks/Title/variations/Default';
 // import installAppExtras from './components/theme/AppExtras';
 // import HomePageView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageView';
 // import HomePageInverseView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageInverseView';
@@ -173,6 +174,35 @@ const applyConfig = (config) => {
         title: 'NIS Table',
         view: NISMetadataSectionTableView,
         schemaEnhancer: addTableField,
+      },
+    ],
+  };
+
+  // Title (Page header) block: 'Default with creator' variation showing the
+  // creator of the page in the header metadata row
+  config.blocks.blocksConfig.title = {
+    ...config.blocks.blocksConfig.title,
+    variations: [
+      ...(config.blocks.blocksConfig.title.variations || []),
+      {
+        id: 'default_with_creator',
+        title: 'Default with creator',
+        view: TitleDefaultTemplate,
+        isDefault: false,
+        schemaEnhancer: ({ schema }) => {
+          const fields = schema.fieldsets[0].fields;
+          const index = fields.indexOf('hideModificationDate');
+          schema.fieldsets[0].fields = [
+            ...fields.slice(0, index + 1),
+            'hideCreator',
+            ...fields.slice(index + 1),
+          ];
+          schema.properties.hideCreator = {
+            title: 'Hide creator',
+            type: 'boolean',
+          };
+          return schema;
+        },
       },
     ],
   };
