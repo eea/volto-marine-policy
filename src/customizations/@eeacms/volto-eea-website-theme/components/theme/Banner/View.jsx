@@ -145,10 +145,19 @@ const View = (props) => {
     if (props.variation?.id !== 'default_with_creator' || hideCreator) {
       return null;
     }
-    const creators = metadata.creators_fullname?.length
+    const fullnames = Array.isArray(metadata.creators_fullname)
       ? metadata.creators_fullname
-      : metadata.creators;
-    return creators?.length ? creators.join(', ') : null;
+      : [];
+    const ids = Array.isArray(metadata.creators) ? metadata.creators : [];
+    // Per-creator fallback: use the fullname when available, else the user id
+    const creators = fullnames.length
+      ? fullnames.map((name, index) =>
+          typeof name === 'string' && name.trim()
+            ? name.trim()
+            : ids[index] || name,
+        )
+      : ids;
+    return creators.filter((name) => name).join(', ');
   }, [metadata, props.variation, hideCreator]);
 
   return (
