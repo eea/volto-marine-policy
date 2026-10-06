@@ -14,6 +14,10 @@ export const buildExplorerQuery = ({
   view,
   selections,
   page,
+  pageSize,
+  sort,
+  dir,
+  all,
 }) => {
   const params = { article, cycle, view };
 
@@ -23,14 +27,23 @@ export const buildExplorerQuery = ({
     }
   });
 
-  if (view === 'data' && page) {
-    params.page = page;
+  if (view === 'data') {
+    if (page) params.page = page;
+    if (pageSize) params.pageSize = pageSize;
+    if (sort) params.sort = sort;
+    if (dir) params.dir = dir;
+    if (all) params.all = 1;
   }
 
   // `arrayFormat: 'comma'` produces a single comma separated value per facet
-  // (region_subregions=ANS,BAL), which the backend also accepts. This avoids
-  // relying on however the server handles repeated query params.
-  return qs.stringify(params, { arrayFormat: 'comma' });
+  // (region_subregions=ANS,BAL, area=0,500000), which the backend also
+  // accepts. This avoids relying on however the server handles repeated query
+  // params.
+  return qs.stringify(params, {
+    arrayFormat: 'comma',
+    skipNull: true,
+    skipEmptyString: true,
+  });
 };
 
 export const fetchExplorer = (params) => {

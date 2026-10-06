@@ -1,50 +1,18 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react';
-import { useHistory, useLocation } from 'react-router-dom';
-
-import { ARTICLE4_CYCLES } from '../constants';
-import { readUrlState, writeUrlState } from '../urlState';
 import LegacyView from '../LegacyView';
 import Article4Cycle2024 from './Article4Cycle2024';
 
-// Article 4 wrapper: renders the reporting cycle selector and routes the
-// selected cycle to the React renderer or to the legacy explorer.
+// Article 4 dispatcher: the 2024-2030 cycle uses the new React explorer, the
+// older cycles fall back to the legacy server rendered explorer. The reporting
+// cycle is selected in the block view's sidebar and passed down as a prop.
 const MsfdDataExplorerArticle4 = (props) => {
-  const { editable } = props;
-  const history = useHistory();
-  const location = useLocation();
+  const cycle = props.cycle || '2024';
 
-  const [cycle, setCycle] = React.useState(
-    () => readUrlState(location.search).cycle || '2024',
-  );
+  if (cycle === '2024') {
+    return <Article4Cycle2024 {...props} />;
+  }
 
-  React.useEffect(() => {
-    if (editable) return;
-
-    writeUrlState(history, location, { cycle });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cycle, editable]);
-
-  return (
-    <div className="msfd-explorer-v2-article4">
-      <div className="controls cycle-selector">
-        <label htmlFor="msfd-cycle-select">Reporting cycle</label>
-        <Dropdown
-          id="msfd-cycle-select"
-          selection
-          options={ARTICLE4_CYCLES}
-          value={cycle}
-          onChange={(event, data) => setCycle(data.value)}
-        />
-      </div>
-
-      {cycle === '2024' ? (
-        <Article4Cycle2024 {...props} />
-      ) : (
-        <LegacyView {...props} />
-      )}
-    </div>
-  );
+  return <LegacyView {...props} />;
 };
 
 export default MsfdDataExplorerArticle4;

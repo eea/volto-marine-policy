@@ -1,18 +1,28 @@
 import React from 'react';
-import { Button, Loader, Message } from 'semantic-ui-react';
+import { Icon, Loader, Message } from 'semantic-ui-react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { fetchExplorer } from '../api';
 import { readUrlState, writeUrlState } from '../urlState';
-import FacetPanel from '../components/FacetPanel';
+import { DEFAULT_PAGE_SIZE } from '../constants';
+import FilterPanel from '../components/FilterPanel';
 import ExplorerTable from '../components/ExplorerTable';
 import Pagination from '../components/Pagination';
+import { downloadCsv } from '../csv';
 
 const ARTICLE = '4';
 const CYCLE = '2024';
+const FETCH_DEBOUNCE = 200;
 
+// Main content of the Article 4 (2024-2030) explorer: the Filters panel and the
+// Results table. The sidebar (reporting cycle, MSFD articles) is rendered by
+// the block view, so this renderer only owns the filter/result state.
+//
+// Filters apply immediately: any facet change updates `selections`, which
+// refetches both the option counts and the results (debounced). There is no
+// explicit Apply step.
 const MsfdDataExplorerArticle4Cycle2024 = (props) => {
-  const { editable } = props;
+  const { editable, sidebar } = props;
   const history = useHistory();
   const location = useLocation();
 
@@ -22,195 +32,271 @@ const MsfdDataExplorerArticle4Cycle2024 = (props) => {
     initialRef.current = readUrlState(location.search);
   }
 
-  // `draft` is what the checkboxes show, `applied` is what the table shows.
-  const [draft, setDraft] = React.useState(initialRef.current.selections);
-  const [applied, setApplied] = React.useState(initialRef.current.selections);
+  const [selections, setSelections] = React.useState(
+    initialRef.current.selections,
+  );
   const [page, setPage] = React.useState(initialRef.current.page || 0);
+  const [sort, setSort] = React.useState(null);
+  const [dir, setDir] = React.useState('asc');
 
   const [filters, setFilters] = React.useState([]);
   const [data, setData] = React.useState({
     columns: [],
     rows: [],
     pagination: null,
-    meta: {},
   });
-  const [loadingFilters, setLoadingFilters] = React.useState(true);
   const [loadingData, setLoadingData] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [downloading, setDownloading] = React.useState(false);
 
-  const draftKey = JSON.stringify(draft);
-  const appliedKey = JSON.stringify(applied);
+  const selectionsKey = JSON.stringify(selections);
+
+  // Every facet change refetches both the option lists and the results. The
+  // page is reset so a narrower selection does not leave the user past the last
+  // page.
+  const updateSelections = React.useCallback((updater) => {
+    setSelections(updater);
+    setPage(0);
+  }, []);
 
   // Cross filtering: refresh the option lists and their counts whenever the
-  // draft selection changes.
+  // selection changes. Debounced so typing in a search field does not fire a
+  // request per keystroke.
   React.useEffect(() => {
     let cancelled = false;
-    setLoadingFilters(true);
 
-    fetchExplorer({
-      article: ARTICLE,
-      cycle: CYCLE,
-      view: 'filters',
-      selections: JSON.parse(draftKey),
-    })
-      .then((response) => {
-        if (!cancelled) setFilters(response.filters || []);
+    const timer = setTimeout(() => {
+      fetchExplorer({
+        article: ARTICLE,
+        cycle: CYCLE,
+        view: 'filters',
+        selections: JSON.parse(selectionsKey),
       })
-      .catch(() => {
-        if (!cancelled) setFilters([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingFilters(false);
-      });
+        .then((response) => {
+          if (!cancelled) setFilters(response.filters || []);
+        })
+        .catch(() => {
+          if (!cancelled) setFilters([]);
+        });
+    }, FETCH_DEBOUNCE);
 
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
-  }, [draftKey]);
+  }, [selectionsKey]);
 
-  // Data is only fetched on Apply or when paging.
+  // Results follow the selection, the page and the sort order.
   React.useEffect(() => {
     let cancelled = false;
-    setLoadingData(true);
-    setError(null);
+
+    const timer = setTimeout(() => {
+      setLoadingData(true);
+      setError(null);
+
+      fetchExplorer({
+        article: ARTICLE,
+        cycle: CYCLE,
+        view: 'data',
+        selections: JSON.parse(selectionsKey),
+        page,
+        pageSize: DEFAULT_PAGE_SIZE,
+        sort,
+        dir,
+      })
+        .then((response) => {
+          if (!cancelled) setData(response);
+        })
+        .catch((err) => {
+          if (cancelled) return;
+
+          if (err && err.response && err.response.status === 503) {
+            setError(
+              'The MSFD database is not available, please try again later.',
+            );
+          } else {
+            setError('Something went wrong.');
+          }
+        })
+        .finally(() => {
+          if (!cancelled) setLoadingData(false);
+        });
+    }, FETCH_DEBOUNCE);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [selectionsKey, page, sort, dir]);
+
+  // Keep the shareable URL in sync with the selection and page. The article and
+  // cycle are owned by the block view.
+  React.useEffect(() => {
+    if (editable) return;
+
+    writeUrlState(history, location, {
+      selections: JSON.parse(selectionsKey),
+      page,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectionsKey, page, editable]);
+
+  const handleReplace = React.useCallback(
+    (name, values) => {
+      updateSelections((previous) => ({ ...previous, [name]: values }));
+    },
+    [updateSelections],
+  );
+
+  const handleToggle = React.useCallback(
+    (name, value) => {
+      updateSelections((previous) => {
+        const values = new Set(previous[name] || []);
+
+        if (values.has(value)) values.delete(value);
+        else values.add(value);
+
+        return { ...previous, [name]: Array.from(values) };
+      });
+    },
+    [updateSelections],
+  );
+
+  const handleClearFacet = React.useCallback(
+    (name) => {
+      updateSelections((previous) => ({ ...previous, [name]: [] }));
+    },
+    [updateSelections],
+  );
+
+  const handleSelectAll = React.useCallback(
+    (name, values) => {
+      updateSelections((previous) => ({ ...previous, [name]: values }));
+    },
+    [updateSelections],
+  );
+
+  const handleInvert = React.useCallback(
+    (name, values) => {
+      updateSelections((previous) => {
+        const selected = new Set(previous[name] || []);
+
+        return {
+          ...previous,
+          [name]: values.filter((value) => !selected.has(value)),
+        };
+      });
+    },
+    [updateSelections],
+  );
+
+  const handleReset = React.useCallback(
+    () => updateSelections({}),
+    [updateSelections],
+  );
+
+  const handleSort = (key) => {
+    if (sort === key) {
+      setDir((value) => (value === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSort(key);
+      setDir('asc');
+    }
+
+    setPage(0);
+  };
+
+  const handleDownload = () => {
+    setDownloading(true);
 
     fetchExplorer({
       article: ARTICLE,
       cycle: CYCLE,
       view: 'data',
-      selections: JSON.parse(appliedKey),
-      page,
+      selections: JSON.parse(selectionsKey),
+      sort,
+      dir,
+      all: true,
     })
       .then((response) => {
-        if (!cancelled) setData(response);
+        downloadCsv(
+          response.columns,
+          response.rows,
+          'article-4-marine-units.csv',
+        );
       })
-      .catch((err) => {
-        if (cancelled) return;
-
-        if (err && err.response && err.response.status === 503) {
-          setError(
-            'The MSFD database is not available, please try again later.',
-          );
-        } else {
-          setError('Something went wrong.');
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingData(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [appliedKey, page]);
-
-  // Keep the shareable URL in sync with the applied state.
-  React.useEffect(() => {
-    if (editable) return;
-
-    writeUrlState(history, location, {
-      article: ARTICLE,
-      selections: JSON.parse(appliedKey),
-      page,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appliedKey, page, editable]);
-
-  const handleToggle = React.useCallback((name, value) => {
-    setDraft((previous) => {
-      const values = new Set(previous[name] || []);
-
-      if (values.has(value)) values.delete(value);
-      else values.add(value);
-
-      return { ...previous, [name]: Array.from(values) };
-    });
-  }, []);
-
-  const handleSelect = React.useCallback((name, values) => {
-    setDraft((previous) => ({ ...previous, [name]: values || [] }));
-  }, []);
-
-  const handleApply = () => {
-    setApplied(draft);
-    setPage(0);
+      .finally(() => setDownloading(false));
   };
 
-  if (error && !loadingData) {
-    return <Message negative>{error}</Message>;
-  }
-
   const hasRows = data.rows && data.rows.length;
+  const total = data.pagination ? data.pagination.total : null;
 
   return (
-    <div className="msfd-explorer-v2-cycle">
-      <div className="controls">
-        <div className="msfd-facets">
-          {filters.map((facet) => (
-            <FacetPanel
-              key={facet.name}
-              facet={facet}
-              onToggle={handleToggle}
-              onSelect={handleSelect}
-            />
-          ))}
-        </div>
+    <div className="msfd-explorer-content">
+      <div className="msfd-explorer-top">
+        <FilterPanel
+          filters={filters}
+          draft={selections}
+          onToggle={handleToggle}
+          onReplace={handleReplace}
+          onSelectAll={handleSelectAll}
+          onClearFacet={handleClearFacet}
+          onInvert={handleInvert}
+          onReset={handleReset}
+        />
 
-        <Button
-          primary
-          className="apply-filters"
-          disabled={loadingFilters}
-          onClick={handleApply}
-        >
-          Apply filters
-        </Button>
+        {sidebar}
       </div>
 
-      {loadingData ? (
-        <Loader active inline="centered">
-          Loading
-        </Loader>
-      ) : (
-        <div className="item-subform subform">
-          <Pagination
-            pagination={data.pagination}
-            onPage={setPage}
-            position="top"
-          />
+      <section className="msfd-panel msfd-results">
+        <div className="msfd-panel-header msfd-results-header">
+          <h2 className="msfd-panel-title">
+            {total != null
+              ? `${total} Marine Reporting Units found`
+              : 'Marine Reporting Units'}
+          </h2>
 
-          {hasRows ? (
+          <button
+            type="button"
+            className="msfd-download"
+            disabled={downloading || !hasRows}
+            onClick={handleDownload}
+          >
+            <Icon name="download" />
+            Download results
+          </button>
+        </div>
+
+        <div className="msfd-results-body">
+          {error && !loadingData ? (
+            <Message negative>{error}</Message>
+          ) : loadingData ? (
+            <Loader active inline="centered">
+              Loading
+            </Loader>
+          ) : hasRows ? (
             <>
-              <div id="item-title-wrapper">
-                <h3 id="article-id">
-                  <span className="article-id-country">
-                    {data.meta ? data.meta.country : ''}
-                  </span>
-                  <span className="article-id-article">
-                    {(data.meta && data.meta.recordTitle) ||
-                      'Article 4 (Marine Units)'}
-                  </span>
-                </h3>
-                <div className="reported-date">
-                  <b>Reported on </b>
-                  <span>{data.meta ? data.meta.reportedDate : ''}</span>
-                </div>
-              </div>
-
-              <div id="form-data-primary">
-                <ExplorerTable columns={data.columns} rows={data.rows} />
-              </div>
+              <ExplorerTable
+                columns={data.columns}
+                rows={data.rows}
+                sort={sort}
+                dir={dir}
+                onSort={handleSort}
+                onView={() => {
+                  // TODO: wire the per MRU detail view once a route exists.
+                }}
+              />
+              <Pagination
+                pagination={data.pagination}
+                onPage={setPage}
+                position="bottom"
+              />
             </>
           ) : (
-            <h4>No data reported</h4>
+            <p className="msfd-no-data">No data reported</p>
           )}
-
-          <Pagination
-            pagination={data.pagination}
-            onPage={setPage}
-            position="bottom"
-          />
         </div>
-      )}
+      </section>
     </div>
   );
 };
