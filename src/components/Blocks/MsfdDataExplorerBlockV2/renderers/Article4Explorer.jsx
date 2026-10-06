@@ -280,6 +280,8 @@ const Article4Explorer = (props) => {
               <ExplorerTable
                 columns={data.columns}
                 rows={data.rows}
+                groups={data.groups}
+                groupBy={data.groupBy}
                 sort={sort}
                 dir={dir}
                 onSort={handleSort}

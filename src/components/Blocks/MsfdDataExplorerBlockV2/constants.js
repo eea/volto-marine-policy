@@ -19,8 +19,8 @@ export const ARTICLE_SLUGS = Object.keys(ARTICLE_IDS).reduce((acc, slug) => {
   return acc;
 }, {});
 
-// Reporting cycles of Article 4. Only `2024` has a React renderer; the others
-// fall back to the legacy server rendered explorer.
+// Reporting cycles of Article 4. All three cycles have a React renderer: the
+// 2012 one is grouped by country (see ExplorerTable).
 export const ARTICLE4_CYCLES = [
   { value: '2024', text: '2024 - 2030' },
   { value: '2018', text: '2018 - 2024' },

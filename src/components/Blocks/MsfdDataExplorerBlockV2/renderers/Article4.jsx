@@ -1,15 +1,22 @@
 import React from 'react';
 import LegacyView from '../LegacyView';
-import Article4Cycle2024 from './Article4Cycle2024';
+import Article4Explorer from './Article4Explorer';
 
-// Article 4 dispatcher: the 2024-2030 cycle uses the new React explorer, the
-// older cycles fall back to the legacy server rendered explorer. The reporting
-// cycle is selected in the block view's sidebar and passed down as a prop.
+// Reporting cycles that have a dedicated backend provider and share the new
+// React explorer. Older cycles fall back to the legacy server rendered
+// explorer. The reporting cycle is selected in the block view's sidebar and
+// passed down as a prop. The 2012 cycle has its own provider too: its results
+// are rendered grouped by country (see ExplorerTable).
+const SUPPORTED_CYCLES = ['2012', '2018', '2024'];
+
+// Article 4 dispatcher.
 const MsfdDataExplorerArticle4 = (props) => {
   const cycle = props.cycle || '2024';
 
-  if (cycle === '2024') {
-    return <Article4Cycle2024 {...props} />;
+  if (SUPPORTED_CYCLES.includes(cycle)) {
+    // `key` remounts the explorer when the cycle changes, so the URL-derived
+    // initial state and the filter selections do not leak between cycles.
+    return <Article4Explorer key={cycle} {...props} cycle={cycle} />;
   }
 
   return <LegacyView {...props} />;
