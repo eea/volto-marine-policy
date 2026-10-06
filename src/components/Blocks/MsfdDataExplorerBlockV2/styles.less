@@ -20,9 +20,9 @@
   // -- layout ----------------------------------------------------------
   .msfd-explorer-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    gap: 24px;
     align-items: start;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) 300px;
 
     @media (max-width: 991px) {
       grid-template-columns: minmax(0, 1fr);
@@ -43,9 +43,9 @@
   // table sits in its own full width wrapper below (see .msfd-results).
   .msfd-explorer-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    gap: 24px;
     align-items: start;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) 300px;
 
     @media (max-width: 991px) {
       grid-template-columns: minmax(0, 1fr);
@@ -63,19 +63,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
     padding: 12px 16px;
     border-bottom: 1px solid @msfd-border-soft;
+    gap: 12px;
   }
 
   .msfd-panel-title {
     display: flex;
     align-items: center;
-    gap: 8px;
     margin: 0;
     color: @msfd-blue-dark;
     font-size: 16px;
     font-weight: 600;
+    gap: 8px;
 
     i.icon {
       margin: 0;
@@ -86,13 +86,13 @@
   .msfd-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     padding: 0;
     border: none;
     background: transparent;
     color: @msfd-blue-link;
-    font-size: 13px;
     cursor: pointer;
+    font-size: 13px;
+    gap: 6px;
 
     i.icon {
       margin: 0;
@@ -107,9 +107,9 @@
   // -- filters ---------------------------------------------------------
   .msfd-filters-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px 20px;
     padding: 16px;
+    gap: 16px 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     @media (max-width: 767px) {
       grid-template-columns: minmax(0, 1fr);
@@ -136,15 +136,15 @@
   .msfd-multiselect-trigger {
     position: relative;
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4px;
     min-height: 38px;
+    flex-wrap: wrap;
+    align-items: center;
     padding: 4px 30px 4px 8px;
     border: 1px solid @msfd-border;
     border-radius: 4px;
     background: @msfd-surface;
     cursor: pointer;
+    gap: 4px;
     outline: none;
 
     > i.icon {
@@ -177,14 +177,14 @@
 
   .msfd-chip {
     display: inline-flex;
-    align-items: center;
-    gap: 2px;
     max-width: 100%;
+    align-items: center;
     padding: 2px 4px 2px 8px;
     border-radius: 12px;
     background: @msfd-chip-bg;
     color: @msfd-blue-dark;
     font-size: 12px;
+    gap: 2px;
   }
 
   .msfd-chip-text {
@@ -195,10 +195,10 @@
 
   .msfd-chip-remove {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 16px;
     height: 16px;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     border: none;
     border-radius: 50%;
@@ -218,9 +218,9 @@
 
   .msfd-multiselect-panel {
     position: absolute;
+    z-index: 30;
     top: calc(100% + 4px);
     left: 0;
-    z-index: 30;
     width: 300px;
     max-width: 90vw;
     padding: 10px;
@@ -234,10 +234,10 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
     padding-bottom: 8px;
-    margin-bottom: 8px;
     border-bottom: 1px solid @msfd-border-soft;
+    margin-bottom: 8px;
+    gap: 12px;
   }
 
   .msfd-inline-action {
@@ -245,8 +245,8 @@
     border: none;
     background: transparent;
     color: @msfd-blue-link;
-    font-size: 12px;
     cursor: pointer;
+    font-size: 12px;
 
     &:hover {
       color: @msfd-blue-dark;
@@ -261,10 +261,10 @@
 
   .msfd-multiselect-options {
     max-height: 220px;
-    margin: 0;
     padding: 0;
-    overflow-y: auto;
+    margin: 0;
     list-style: none;
+    overflow-y: auto;
   }
 
   .msfd-multiselect-option {
@@ -282,15 +282,15 @@
   .msfd-multiselect-option-row {
     display: flex;
     align-items: center;
-    gap: 8px;
     padding: 4px 6px;
     margin: 0;
     cursor: pointer;
+    gap: 8px;
 
     input[type='checkbox'] {
-      flex: none;
       width: 15px;
       height: 15px;
+      flex: none;
       margin: 0;
       accent-color: @msfd-blue-dark;
       cursor: pointer;
@@ -298,9 +298,9 @@
   }
 
   .msfd-multiselect-option-text {
-    flex: 1;
-    min-width: 0;
     overflow: hidden;
+    min-width: 0;
+    flex: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -322,8 +322,8 @@
     border: none;
     background: transparent;
     color: @msfd-blue-link;
-    font-size: 13px;
     cursor: pointer;
+    font-size: 13px;
 
     &:hover {
       color: @msfd-blue-dark;
@@ -353,9 +353,9 @@
     border-radius: 4px;
     background: @msfd-surface;
     color: @msfd-text;
+    cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    cursor: pointer;
 
     &:hover {
       border-color: @msfd-blue;
@@ -401,11 +401,11 @@
     width: 100%;
     height: 22px;
     margin: 0;
-    background: none;
-    pointer-events: none;
-    outline: none;
     -webkit-appearance: none;
     appearance: none;
+    background: none;
+    outline: none;
+    pointer-events: none;
   }
 
   .msfd-range-input-low {
@@ -421,12 +421,12 @@
     height: 16px;
     border: 2px solid @msfd-blue;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-    pointer-events: auto;
-    cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    pointer-events: auto;
   }
 
   .msfd-range-input::-moz-range-thumb {
@@ -436,8 +436,8 @@
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-    pointer-events: auto;
     cursor: pointer;
+    pointer-events: auto;
   }
 
   .msfd-range-input::-moz-range-track {
@@ -446,8 +446,8 @@
 
   .msfd-range-values {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .msfd-range-value {
@@ -480,15 +480,15 @@
     .msfd-download {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       padding: 6px 12px;
       border: 1px solid @msfd-border;
       border-radius: 4px;
       background: @msfd-surface;
       color: @msfd-blue-dark;
+      cursor: pointer;
       font-size: 13px;
       font-weight: 600;
-      cursor: pointer;
+      gap: 6px;
 
       i.icon {
         margin: 0;
@@ -528,8 +528,8 @@
     th,
     td {
       padding: 10px 12px;
-      text-align: left;
       border-bottom: 1px solid @msfd-border-soft;
+      text-align: left;
       white-space: nowrap;
     }
 
@@ -556,14 +556,14 @@
   .msfd-table-sort {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     padding: 0;
     border: none;
     background: transparent;
     color: inherit;
+    cursor: pointer;
     font: inherit;
     font-weight: 600;
-    cursor: pointer;
+    gap: 6px;
 
     i.icon {
       margin: 0;
@@ -588,13 +588,13 @@
   .msfd-view {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
     padding: 0;
     border: none;
     background: transparent;
     color: @msfd-blue-link;
-    font-size: 13px;
     cursor: pointer;
+    font-size: 13px;
+    gap: 5px;
 
     i.icon {
       margin: 0;
@@ -616,8 +616,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
     padding: 12px 16px;
+    gap: 12px;
 
     &-top {
       border-bottom: 1px solid @msfd-border-soft;
@@ -642,17 +642,17 @@
 
   .msfd-page {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-width: 30px;
     height: 30px;
+    align-items: center;
+    justify-content: center;
     padding: 0 8px;
     border: 1px solid @msfd-border;
     border-radius: 4px;
     background: @msfd-surface;
     color: @msfd-blue-dark;
-    font-size: 13px;
     cursor: pointer;
+    font-size: 13px;
 
     i.icon {
       margin: 0;
@@ -714,8 +714,8 @@
   }
 
   .msfd-articles-list {
-    margin: 0;
     padding: 0;
+    margin: 0;
     list-style: none;
   }
 
@@ -730,20 +730,20 @@
 
   .msfd-articles-link {
     display: flex;
-    align-items: center;
-    gap: 8px;
     width: 100%;
+    align-items: center;
     padding: 9px 10px;
     border: none;
     background: transparent;
     color: @msfd-text;
-    font-size: 13px;
-    text-align: left;
     cursor: pointer;
+    font-size: 13px;
+    gap: 8px;
+    text-align: left;
 
     i.icon {
-      flex: none;
       width: 12px;
+      flex: none;
       margin: 0;
       color: @msfd-muted;
       font-size: 11px;
@@ -760,9 +760,9 @@
   }
 
   .msfd-articles-label {
-    flex: 1;
-    min-width: 0;
     overflow: hidden;
+    min-width: 0;
+    flex: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
