@@ -7,20 +7,20 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: 1rem;
     margin-bottom: 1em;
+    gap: 1rem;
   }
 
   .cycle-selector {
+    max-width: 250px;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.2rem;
-    max-width: 250px;
 
     label {
+      margin-bottom: 5px;
       font-size: 14px;
       font-weight: 500;
-      margin-bottom: 5px;
     }
   }
 
@@ -32,13 +32,13 @@
 
   .msfd-facet {
     position: relative;
-    margin: 0;
     min-width: 220px;
+    margin: 0;
 
     .facet-label {
+      margin-bottom: 0.4em;
       font-size: 1em;
       font-weight: 500;
-      margin-bottom: 0.4em;
     }
 
     .facet-options {
@@ -62,8 +62,8 @@
 
   .apply-filters {
     padding: 0.5rem 1rem !important;
-    font-size: 12px;
     border: none;
+    font-size: 12px;
   }
 
   .item-subform {
@@ -80,9 +80,9 @@
     border-collapse: collapse;
 
     th {
+      border-bottom: 1px solid #0079cf;
       font-weight: 600;
       text-align: left;
-      border-bottom: 1px solid #0079cf;
 
       &:not(:last-child) {
         border-right: 1px solid #0079cf;
@@ -144,9 +144,9 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 1rem;
     margin-top: 0.8em;
     margin-left: auto;
+    gap: 1rem;
 
     &.prev-next-row-top {
       margin-top: 0;
@@ -167,11 +167,11 @@
 
   .form-buttons-next,
   .form-buttons-prev {
-    background-color: #004b7f;
-    color: white;
+    padding: 2px 10px !important;
     border: none;
     border-radius: 0;
-    padding: 2px 10px !important;
+    background-color: #004b7f;
+    color: white;
 
     &:hover {
       background-color: #0071b3;
