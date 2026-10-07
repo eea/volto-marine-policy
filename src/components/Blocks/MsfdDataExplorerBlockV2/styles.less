@@ -155,12 +155,43 @@
 
   .msfd-filters-grid {
     display: grid;
+    align-items: stretch;
+    padding-top: 0;
     padding: 16px;
-    gap: 16px 20px;
+    // Column gap is 0: the space between columns comes from the fields'
+    // horizontal padding, so a full-height divider can sit at each field edge.
+    // gap: 16px 0;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    .msfd-field {
+      display: grid;
+      align-content: center;
+      padding-bottom: 1rem;
+      padding-right: 1rem;
+      padding-left: 1rem;
+      border-right: 1px solid #bec7cf;
+
+      // No divider and no outer padding on the first column...
+      &:nth-child(3n + 1) {
+        padding-left: 0;
+      }
+
+      // ...and on the right edge of the last column.
+      &:nth-child(3n),
+      &:last-child {
+        padding-right: 0;
+        border-right: none;
+      }
+    }
 
     @media (max-width: 767px) {
       grid-template-columns: minmax(0, 1fr);
+
+      .msfd-field {
+        padding-right: 0;
+        padding-left: 0;
+        border-right: none;
+      }
     }
   }
 
@@ -613,7 +644,7 @@
     border: 1px solid @msfd-border;
   }
 
-  .msfd-group + .msfd-group {
+  .msfd-group+.msfd-group {
     margin-top: 24px;
   }
 
