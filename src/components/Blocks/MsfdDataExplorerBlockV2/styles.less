@@ -84,6 +84,21 @@
     }
   }
 
+  .msfd-panel-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .msfd-refreshing {
+    display: inline-flex;
+    color: @msfd-muted;
+
+    i.icon {
+      margin: 0;
+    }
+  }
+
   .msfd-link {
     display: inline-flex;
     align-items: center;
@@ -105,9 +120,38 @@
     }
   }
 
+  // -- panel loading ---------------------------------------------------
+  .msfd-panel-body {
+    position: relative;
+  }
+
+  .msfd-panel-loading {
+    display: flex;
+    min-height: 120px;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+
+    &.is-overlay {
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      min-height: 100%;
+      background: rgba(255, 255, 255, 0.72);
+      pointer-events: none;
+    }
+
+    .ui.loader {
+      margin: 0;
+    }
+  }
+
   // -- filters ---------------------------------------------------------
   .msfd-filters {
     background: @msfd-blue-light-gray;
+    display: grid;
+    grid-auto-flow: row;
+    align-items: start;
   }
 
   .msfd-filters-grid {
@@ -152,7 +196,7 @@
     gap: 4px;
     outline: none;
 
-    > i.icon {
+    >i.icon {
       position: absolute;
       top: 50%;
       right: 10px;
@@ -736,6 +780,139 @@
   .msfd-page-gap {
     padding: 0 2px;
     color: @msfd-muted;
+  }
+
+  // -- summary & insights ----------------------------------------------
+  .msfd-summary-body {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .msfd-summary-toggle {
+    i.icon {
+      font-size: 11px;
+    }
+  }
+
+  .msfd-summary-cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    @media (max-width: 991px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-summary-card {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    gap: 12px;
+  }
+
+  .msfd-summary-card-icon {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: @msfd-chip-bg;
+    color: @msfd-blue;
+
+    i.icon {
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+
+  .msfd-summary-card-content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .msfd-summary-card-label {
+    display: flex;
+    align-items: center;
+    color: @msfd-text;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 6px;
+  }
+
+  .msfd-summary-card-value {
+    color: @msfd-blue-dark;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .msfd-summary-card-details {
+    display: flex;
+    flex-wrap: wrap;
+    color: @msfd-muted;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .msfd-summary-card-sep {
+    color: @msfd-border;
+  }
+
+  .msfd-summary-card-caption {
+    color: @msfd-muted;
+    font-size: 12px;
+  }
+
+  .msfd-summary-hint {
+    color: @msfd-muted;
+    cursor: help;
+
+    i.icon {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+
+  .msfd-summary-charts {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-summary-chart {
+    min-width: 0;
+    padding: 12px 16px 0;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+  }
+
+  .msfd-summary-chart-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 4px;
+    color: @msfd-text;
+    font-size: 14px;
+    font-weight: 600;
+    gap: 6px;
   }
 
   // -- sidebar ---------------------------------------------------------

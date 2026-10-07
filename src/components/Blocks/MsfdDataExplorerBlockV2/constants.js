@@ -60,3 +60,10 @@ export const MSFD_ARTICLES = [
 ];
 
 export const DEFAULT_PAGE_SIZE = 10;
+
+// (article, cycle) combinations that have a backend Summary & insights
+// payload. Only Article 4 / 2024 for now; adding a cycle here is all the
+// frontend needs once the provider implements `build_summary`.
+export const SUMMARY_CYCLES = {
+  4: ['2024'],
+};

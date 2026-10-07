@@ -1,13 +1,15 @@
 import React from 'react';
-import { Icon, Loader, Message } from 'semantic-ui-react';
+import { Icon, Message } from 'semantic-ui-react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { fetchExplorer } from '../api';
 import { readUrlState, writeUrlState } from '../urlState';
-import { DEFAULT_PAGE_SIZE } from '../constants';
+import { DEFAULT_PAGE_SIZE, SUMMARY_CYCLES } from '../constants';
 import FilterPanel from '../components/FilterPanel';
 import ExplorerTable from '../components/ExplorerTable';
 import Pagination from '../components/Pagination';
+import SummaryInsights from '../components/SummaryInsights';
+import PanelLoader from '../components/PanelLoader';
 import { downloadCsv } from '../csv';
 
 const ARTICLE = '4';
@@ -33,6 +35,10 @@ const Article4Explorer = (props) => {
     initialRef.current = readUrlState(location.search);
   }
 
+  const supportsSummary = (SUMMARY_CYCLES[ARTICLE] || []).includes(
+    String(cycle),
+  );
+
   const [selections, setSelections] = React.useState(
     initialRef.current.selections,
   );
@@ -47,8 +53,11 @@ const Article4Explorer = (props) => {
     pagination: null,
   });
   const [loadingData, setLoadingData] = React.useState(true);
+  const [loadingFilters, setLoadingFilters] = React.useState(true);
+  const [loadingSummary, setLoadingSummary] = React.useState(supportsSummary);
   const [error, setError] = React.useState(null);
   const [downloading, setDownloading] = React.useState(false);
+  const [summary, setSummary] = React.useState(null);
 
   const selectionsKey = JSON.stringify(selections);
 
@@ -65,6 +74,7 @@ const Article4Explorer = (props) => {
   // request per keystroke.
   React.useEffect(() => {
     let cancelled = false;
+    setLoadingFilters(true);
 
     const timer = setTimeout(() => {
       fetchExplorer({
@@ -78,6 +88,9 @@ const Article4Explorer = (props) => {
         })
         .catch(() => {
           if (!cancelled) setFilters([]);
+        })
+        .finally(() => {
+          if (!cancelled) setLoadingFilters(false);
         });
     }, FETCH_DEBOUNCE);
 
@@ -87,14 +100,51 @@ const Article4Explorer = (props) => {
     };
   }, [cycle, selectionsKey]);
 
+  // Summary & insights follow the filters only (not paging or sorting). It is
+  // a separate request with its own error handling so an aggregate failure
+  // never touches the results table, and it is only fetched for cycles that
+  // declare one.
+  React.useEffect(() => {
+    if (!supportsSummary) {
+      setSummary(null);
+      setLoadingSummary(false);
+      return undefined;
+    }
+
+    let cancelled = false;
+    setLoadingSummary(true);
+
+    const timer = setTimeout(() => {
+      fetchExplorer({
+        article: ARTICLE,
+        cycle,
+        view: 'summary',
+        selections: JSON.parse(selectionsKey),
+      })
+        .then((response) => {
+          if (!cancelled) setSummary(response.summary || null);
+        })
+        .catch(() => {
+          if (!cancelled) setSummary(null);
+        })
+        .finally(() => {
+          if (!cancelled) setLoadingSummary(false);
+        });
+    }, FETCH_DEBOUNCE);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [cycle, selectionsKey, supportsSummary]);
+
   // Results follow the selection, the page and the sort order.
   React.useEffect(() => {
     let cancelled = false;
+    setLoadingData(true);
+    setError(null);
 
     const timer = setTimeout(() => {
-      setLoadingData(true);
-      setError(null);
-
       fetchExplorer({
         article: ARTICLE,
         cycle,
@@ -238,6 +288,7 @@ const Article4Explorer = (props) => {
         <FilterPanel
           filters={filters}
           draft={selections}
+          loading={loadingFilters}
           onToggle={handleToggle}
           onReplace={handleReplace}
           onSelectAll={handleSelectAll}
@@ -248,6 +299,10 @@ const Article4Explorer = (props) => {
 
         {sidebar}
       </div>
+
+      {supportsSummary ? (
+        <SummaryInsights summary={summary} loading={loadingSummary} />
+      ) : null}
 
       <section className="msfd-panel msfd-results">
         <div className="msfd-panel-header msfd-results-header">
@@ -268,13 +323,9 @@ const Article4Explorer = (props) => {
           </button>
         </div>
 
-        <div className="msfd-results-body">
+        <div className="msfd-results-body msfd-panel-body">
           {error && !loadingData ? (
             <Message negative>{error}</Message>
-          ) : loadingData ? (
-            <Loader active inline="centered">
-              Loading
-            </Loader>
           ) : hasRows ? (
             <>
               <ExplorerTable
@@ -295,9 +346,11 @@ const Article4Explorer = (props) => {
                 position="bottom"
               />
             </>
-          ) : (
+          ) : !loadingData ? (
             <p className="msfd-no-data">No data reported</p>
-          )}
+          ) : null}
+
+          {loadingData && (hasRows ? <PanelLoader overlay /> : <PanelLoader />)}
         </div>
       </section>
     </div>
