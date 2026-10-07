@@ -4,8 +4,14 @@ import { Icon } from 'semantic-ui-react';
 
 import PanelLoader from './PanelLoader';
 
-// Plotly is heavy; load it only when the summary panel actually renders.
-const Plot = loadable(() => import('react-plotly.js'));
+// Plotly is heavy; load it (bar-only build, see ./plotlyBars) only when the
+// summary panel actually renders. It is loaded client-side only: plotly.js
+// reaches for `window`, so rendering/importing it during SSR would block the
+// first paint.
+const Plot = loadable(() => import('./plotlyBars'), {
+  ssr: false,
+  fallback: <div className="msfd-summary-chart-loading" />,
+});
 
 const CHART_COLOR = '#4a7fbf';
 

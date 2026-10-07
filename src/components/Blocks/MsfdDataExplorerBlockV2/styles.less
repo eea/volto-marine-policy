@@ -55,7 +55,6 @@
 
   // -- panels ----------------------------------------------------------
   .msfd-panel {
-    border: 1px solid @msfd-border;
     border-radius: 4px;
     background: @msfd-surface;
   }
@@ -570,9 +569,14 @@
     overflow-x: auto;
   }
 
+  .msfd-group table.msfd-table {
+    border: none;
+  }
+
   table.msfd-table {
     width: 100%;
     border-collapse: collapse;
+    border: 1px solid @msfd-border;
 
     th,
     td {
@@ -583,7 +587,7 @@
     }
 
     th {
-      background: @msfd-blue-light-gray;
+      background: #f2f6f9;
       color: @msfd-text;
       font-size: 13px;
       font-weight: 600;
@@ -602,11 +606,18 @@
     }
   }
 
-  // -- grouped results (2012-2018 cycle) -------------------------------
-  .msfd-group-row td {
-    padding: 0;
+  // -- grouped results (2012 cycle) ------------------------------------
+  .msfd-group {
+    border: 1px solid @msfd-border;
+  }
+
+  .msfd-group+.msfd-group {
+    margin-top: 24px;
+  }
+
+  .msfd-group-row {
     border-bottom: 1px solid @msfd-border;
-    background: #f2f6f9;
+    background: @msfd-blue-light-gray;
   }
 
   .msfd-group-header {
@@ -626,7 +637,7 @@
     font-size: 12px;
   }
 
-  .msfd-group-detail td {
+  .msfd-group-detail {
     padding: 12px 16px;
     border-bottom: 1px solid @msfd-border-soft;
     background: #fbfdfe;
@@ -783,6 +794,10 @@
   }
 
   // -- summary & insights ----------------------------------------------
+  .msfd-summary {
+    background-color: @msfd-blue-light-gray;
+  }
+
   .msfd-summary-body {
     display: flex;
     flex-direction: column;
@@ -903,6 +918,7 @@
     padding: 12px 16px 0;
     border: 1px solid @msfd-border;
     border-radius: 4px;
+    background-color: white;
   }
 
   .msfd-summary-chart-title {
@@ -913,6 +929,11 @@
     font-size: 14px;
     font-weight: 600;
     gap: 6px;
+  }
+
+  // Keeps the panel height stable while the lazy-loaded chart chunk arrives.
+  .msfd-summary-chart-loading {
+    height: 260px;
   }
 
   // -- sidebar ---------------------------------------------------------
@@ -947,10 +968,73 @@
     }
   }
 
-  .msfd-articles-list {
+  .msfd-sidebar-articles {
+    position: relative;
+
+    &.is-open {
+      z-index: 40;
+    }
+  }
+
+  .msfd-sidebar-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
     padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
     margin: 0;
+    gap: 8px;
+    text-align: left;
+
+    i.icon {
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 1rem;
+    }
+
+    &:hover {
+      color: @msfd-blue-dark;
+
+      i.icon {
+        color: @msfd-blue;
+      }
+    }
+  }
+
+  .msfd-articles-current {
+    display: flex;
+    overflow: hidden;
+    margin-top: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #004b7f;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  // Expanded list overlays the content below: it is taken out of flow so the
+  // surrounding grid row does not grow and the results table stays put.
+  .msfd-articles-list {
+    position: absolute;
+    z-index: 50;
+    top: 100%;
+    right: -1px;
+    left: -1px;
+    padding: 8px;
+    border: 1px solid @msfd-border;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background: @msfd-blue-light-gray;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
     list-style: none;
+    margin: 0;
   }
 
   .msfd-articles-item {

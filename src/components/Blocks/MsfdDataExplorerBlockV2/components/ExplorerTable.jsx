@@ -56,10 +56,44 @@ const bucketRows = (rows, groupBy) => {
   return buckets;
 };
 
+// Column header cells, shared by the flat table and each per-group table.
+const renderHeaderCells = (columns, sort, dir, onSort) => (
+  <>
+    {columns.map((column) => (
+      <th
+        key={column.key}
+        className={column.align === 'right' ? 'is-right' : ''}
+      >
+        {column.sortable ? (
+          <button
+            type="button"
+            className="msfd-table-sort"
+            onClick={() => onSort(column.key)}
+          >
+            <span>{column.label}</span>
+            <Icon
+              name={
+                sort === column.key
+                  ? dir === 'desc'
+                    ? 'caret down'
+                    : 'caret up'
+                  : 'sort'
+              }
+            />
+          </button>
+        ) : (
+          <span>{column.label}</span>
+        )}
+      </th>
+    ))}
+    <th className="msfd-table-action-col">Action</th>
+  </>
+);
+
 // Flat results table with sortable column headers and a per row action. When
-// the provider declares a `groupBy` (only the 2012 cycle does) the rows are
-// rendered under a header per group; groups that carry extra detail show it in
-// a panel above their rows.
+// the provider declares a `groupBy` (only the 2012 cycle does) each group gets
+// its own block: the country header row, its detail panel, then the column
+// headers and that group's rows.
 const ExplorerTable = ({
   columns,
   rows,
@@ -73,92 +107,76 @@ const ExplorerTable = ({
   if (!columns || !columns.length) return null;
 
   const isGrouped = Boolean(groupBy && groups && groups.length);
-  const buckets = isGrouped ? bucketRows(rows, groupBy) : null;
-  const totalColumns = columns.length + 1;
 
-  const renderGroup = (group) => {
-    const groupRows = buckets.get(group.key) || [];
-    const fields = (group.meta && group.meta.fields) || [];
-    const nodes = [
-      <tr className="msfd-group-row" key={`group-${group.key}`}>
-        <td colSpan={totalColumns}>
-          <div className="msfd-group-header">
-            <span className="msfd-group-name">{group.label || group.key}</span>
-            <span className="msfd-group-count">
-              {group.count} {group.count === 1 ? 'MRU' : 'MRUs'}
-            </span>
-          </div>
-        </td>
-      </tr>,
-    ];
+  if (isGrouped) {
+    const buckets = bucketRows(rows, groupBy);
 
-    if (fields.length > 0) {
-      nodes.push(
-        <tr className="msfd-group-detail" key={`group-detail-${group.key}`}>
-          <td colSpan={totalColumns}>
-            <dl className="msfd-group-detail-fields">
-              {fields.map((field) => (
-                <React.Fragment key={field.key}>
-                  <dt>{field.label}</dt>
-                  <dd>{field.value}</dd>
-                </React.Fragment>
-              ))}
-            </dl>
-          </td>
-        </tr>,
-      );
-    }
+    return (
+      <div className="msfd-table-groups">
+        {groups.map((group) => {
+          const groupRows = buckets.get(group.key) || [];
+          const fields = (group.meta && group.meta.fields) || [];
 
-    groupRows.forEach((row, index) =>
-      nodes.push(
-        renderDataRow(row, `row-${group.key}-${index}`, columns, onView),
-      ),
+          return (
+            <section className="msfd-group" key={group.key}>
+              <div className="msfd-group-row">
+                <div className="msfd-group-header">
+                  <span className="msfd-group-name">
+                    {group.label || group.key}
+                  </span>
+                  <span className="msfd-group-count">
+                    {group.count} {group.count === 1 ? 'MRU' : 'MRUs'}
+                  </span>
+                </div>
+              </div>
+
+              {fields.length > 0 && (
+                <div className="msfd-group-detail">
+                  <dl className="msfd-group-detail-fields">
+                    {fields.map((field) => (
+                      <React.Fragment key={field.key}>
+                        <dt>{field.label}</dt>
+                        <dd>{field.value}</dd>
+                      </React.Fragment>
+                    ))}
+                  </dl>
+                </div>
+              )}
+
+              <div className="msfd-table-wrapper">
+                <table className="msfd-table">
+                  <thead>
+                    <tr>{renderHeaderCells(columns, sort, dir, onSort)}</tr>
+                  </thead>
+                  <tbody>
+                    {groupRows.map((row, index) =>
+                      renderDataRow(
+                        row,
+                        `row-${group.key}-${index}`,
+                        columns,
+                        onView,
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          );
+        })}
+      </div>
     );
-
-    return nodes;
-  };
+  }
 
   return (
     <div className="msfd-table-wrapper">
       <table className="msfd-table">
         <thead>
-          <tr>
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                className={column.align === 'right' ? 'is-right' : ''}
-              >
-                {column.sortable ? (
-                  <button
-                    type="button"
-                    className="msfd-table-sort"
-                    onClick={() => onSort(column.key)}
-                  >
-                    <span>{column.label}</span>
-                    <Icon
-                      name={
-                        sort === column.key
-                          ? dir === 'desc'
-                            ? 'caret down'
-                            : 'caret up'
-                          : 'sort'
-                      }
-                    />
-                  </button>
-                ) : (
-                  <span>{column.label}</span>
-                )}
-              </th>
-            ))}
-            <th className="msfd-table-action-col">Action</th>
-          </tr>
+          <tr>{renderHeaderCells(columns, sort, dir, onSort)}</tr>
         </thead>
         <tbody>
-          {isGrouped
-            ? groups.flatMap(renderGroup)
-            : (rows || []).map((row, index) =>
-                renderDataRow(row, `row-${index}`, columns, onView),
-              )}
+          {(rows || []).map((row, index) =>
+            renderDataRow(row, `row-${index}`, columns, onView),
+          )}
         </tbody>
       </table>
     </div>
