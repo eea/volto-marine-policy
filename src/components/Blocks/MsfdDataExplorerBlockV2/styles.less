@@ -575,8 +575,8 @@
 
   table.msfd-table {
     width: 100%;
-    border-collapse: collapse;
     border: 1px solid @msfd-border;
+    border-collapse: collapse;
 
     th,
     td {
@@ -611,7 +611,7 @@
     border: 1px solid @msfd-border;
   }
 
-  .msfd-group+.msfd-group {
+  .msfd-group + .msfd-group {
     margin-top: 24px;
   }
 
@@ -983,12 +983,12 @@
     justify-content: space-between;
     padding: 0;
     border: none;
+    margin: 0;
     background: transparent;
     color: @msfd-text;
     cursor: pointer;
     font-size: 15px;
     font-weight: 600;
-    margin: 0;
     gap: 8px;
     text-align: left;
 
@@ -1012,11 +1012,11 @@
     display: flex;
     overflow: hidden;
     margin-top: 1rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     color: #004b7f;
     font-size: 1rem;
     font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   // Expanded list overlays the content below: it is taken out of flow so the
@@ -1029,12 +1029,12 @@
     left: -1px;
     padding: 8px;
     border: 1px solid @msfd-border;
-    border-top: none;
     border-radius: 0 0 4px 4px;
+    border-top: none;
+    margin: 0;
     background: @msfd-blue-light-gray;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
     list-style: none;
-    margin: 0;
   }
 
   .msfd-articles-item {
