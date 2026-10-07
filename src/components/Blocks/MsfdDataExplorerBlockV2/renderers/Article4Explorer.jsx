@@ -57,6 +57,7 @@ const Article4Explorer = (props) => {
   const [loadingSummary, setLoadingSummary] = React.useState(supportsSummary);
   const [error, setError] = React.useState(null);
   const [downloading, setDownloading] = React.useState(false);
+  const [downloadNotice, setDownloadNotice] = React.useState(null);
   const [summary, setSummary] = React.useState(null);
 
   const selectionsKey = JSON.stringify(selections);
@@ -259,6 +260,7 @@ const Article4Explorer = (props) => {
 
   const handleDownload = () => {
     setDownloading(true);
+    setDownloadNotice(null);
 
     fetchExplorer({
       article: ARTICLE,
@@ -274,6 +276,23 @@ const Article4Explorer = (props) => {
           response.columns,
           response.rows,
           `article-4-marine-units-${cycle}.csv`,
+        );
+
+        // `all=1` is capped server-side; tell the user when the file they just
+        // downloaded is only a partial result set.
+        const pagination = response.pagination || {};
+
+        if (pagination.truncated) {
+          setDownloadNotice(
+            `Only the first ${response.rows.length} of ${pagination.total} ` +
+              'matching rows were exported. Narrow the filters to download ' +
+              'the remaining rows.',
+          );
+        }
+      })
+      .catch(() => {
+        setDownloadNotice(
+          'The export could not be generated. Please try again.',
         );
       })
       .finally(() => setDownloading(false));
@@ -324,6 +343,7 @@ const Article4Explorer = (props) => {
         </div>
 
         <div className="msfd-results-body msfd-panel-body">
+          {downloadNotice ? <Message warning>{downloadNotice}</Message> : null}
           {error && !loadingData ? (
             <Message negative>{error}</Message>
           ) : hasRows ? (
