@@ -28,36 +28,58 @@ export const ARTICLE4_CYCLES = [
 ];
 
 // Articles shown in the explorer sidebar (MSFD Articles section). The order and
-// labels mirror the WISE Marine navigation. Only `article_select` values that
-// have a registered React renderer get the new UI; the rest fall back to the
-// legacy explorer.
+// labels mirror the WISE Marine navigation. Each entry has its own page: `page`
+// is the URL segment of that page (e.g. "/path/article-4" for Article 4), and
+// the sidebar navigates between those pages instead of switching in place. The
+// pages are authored separately (each carrying its own block config).
 export const MSFD_ARTICLES = [
-  { slug: 'marine-units', number: '4', label: 'Marine Units' },
-  { slug: 'assessments', number: '8', label: 'Assessment' },
+  {
+    slug: 'marine-units',
+    number: '4',
+    label: 'Marine Units',
+    page: 'article-4',
+  },
+  { slug: 'assessments', number: '8', label: 'Assessment', page: 'article-8' },
   {
     slug: 'determination-of-good-environmental-status',
     number: '9',
     label: 'Good Environmental Status',
+    page: 'article-9',
   },
   {
     slug: 'establishment-of-environmental-targets',
     number: '10',
     label: 'Environmental Targets',
+    page: 'article-10',
   },
   {
     slug: 'monitoring-programmes',
     number: '11',
     label: 'Monitoring Programmes',
+    page: 'article-11',
   },
   {
     slug: 'programmes-of-measures-progress-of-pom',
     number: '13',
     label: 'Programmes of Measures',
+    page: 'article-13',
   },
   // The mockup labels this "Article 15", but the MSFD exceptions are reported
   // under Article 14 (see ARTICLE_IDS / schema.jsx).
-  { slug: 'exceptions', number: '14', label: 'Exceptions' },
+  { slug: 'exceptions', number: '14', label: 'Exceptions', page: 'article-14' },
 ];
+
+// Builds the URL of a sibling article page from the current location: the
+// current page's parent is kept and the article page segment is appended, so
+// the sidebar works under any base path (e.g. /a/b/article-4 -> /a/b/article-7).
+export const articlePageHref = (pathname, page) => {
+  if (!page) return null;
+
+  const clean = (pathname || '').replace(/\/+$/, '');
+  const base = clean.replace(/\/[^/]*$/, '');
+
+  return `${base}/${page}`;
+};
 
 export const DEFAULT_PAGE_SIZE = 10;
 

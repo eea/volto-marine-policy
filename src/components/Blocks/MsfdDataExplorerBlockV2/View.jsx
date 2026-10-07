@@ -10,21 +10,22 @@ import { readUrlState, writeUrlState } from './urlState';
 import './styles.less';
 
 // New data explorer block. The backend is a single generic endpoint; the
-// frontend dispatches to a per-article renderer. Articles without a renderer
-// fall back to the legacy explorer so that both versions stay available.
+// frontend dispatches to a per-article renderer. Each article has its own page
+// and its own block config; the sidebar links to those pages. Articles without
+// a renderer still fall back to the legacy explorer when their page is opened.
 //
 // The layout (sidebar + main content) lives here, so the reporting cycle and
-// the MSFD Articles navigation stay visible while switching articles. Only the
+// the MSFD Articles navigation stay visible on every article page. Only the
 // main content is provided by the per-article renderer.
 const MsfdDataExplorerBlockV2View = (props) => {
-  const { editable, data = {}, block, onChangeBlock } = props;
+  const { editable, data = {} } = props;
   const history = useHistory();
   const location = useLocation();
 
   const urlState = readUrlState(location.search);
   const defaultArticle = data.article_select;
   // In edit mode the block data is the source of truth; in view mode a URL
-  // override lets the sidebar switch articles without editing the block.
+  // override keeps old/shareable numeric links (e.g. ?msfd_article=4) working.
   const articleValue = editable
     ? defaultArticle
     : urlState.article || defaultArticle;
@@ -34,15 +35,6 @@ const MsfdDataExplorerBlockV2View = (props) => {
   if (!article) {
     return editable ? <Message>Select article</Message> : null;
   }
-
-  const handleSelectArticle = (slug) => {
-    if (editable && onChangeBlock && block) {
-      onChangeBlock(block, { ...data, article_select: slug });
-      return;
-    }
-
-    writeUrlState(history, location, { article: slug });
-  };
 
   const handleSelectCycle = (value) => {
     writeUrlState(history, location, { cycle: value });
@@ -54,7 +46,6 @@ const MsfdDataExplorerBlockV2View = (props) => {
     <Sidebar
       article={article}
       cycle={cycle}
-      onSelectArticle={handleSelectArticle}
       onSelectCycle={handleSelectCycle}
     />
   );
