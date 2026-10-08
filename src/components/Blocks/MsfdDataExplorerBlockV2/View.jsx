@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { getRenderer } from './renderers';
 import LegacyView from './LegacyView';
 import Sidebar from './components/Sidebar';
-import { ARTICLE_SLUGS } from './constants';
+import { ARTICLE_SLUGS, getDefaultCycle } from './constants';
 import { readUrlState, writeUrlState } from './urlState';
 import './styles.less';
 
@@ -30,7 +30,9 @@ const MsfdDataExplorerBlockV2View = (props) => {
     ? defaultArticle
     : urlState.article || defaultArticle;
   const article = ARTICLE_SLUGS[articleValue] || articleValue;
-  const cycle = urlState.cycle || '2024';
+  // The default reporting period depends on the article: A4 defaults to 2024,
+  // A7 is always the 2012 reporting exercise.
+  const cycle = urlState.cycle || getDefaultCycle(article);
 
   if (!article) {
     return editable ? <Message>Select article</Message> : null;

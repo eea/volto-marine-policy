@@ -2,12 +2,12 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Dropdown, Icon } from 'semantic-ui-react';
 
-import { ARTICLE4_CYCLES, MSFD_ARTICLES, articlePageHref } from '../constants';
+import { getPeriodConfig, MSFD_ARTICLES, articlePageHref } from '../constants';
 
-// The explorer sidebar: the reporting cycle selector and the MSFD Articles
-// navigation. Each article lives on its own page, so the article list is a set
-// of links to sibling pages (the page is authored separately with its own block
-// config); the cycle only affects Article 4 and stays in the current page.
+// The explorer sidebar: the reporting cycle/period control and the MSFD
+// Articles navigation. Each article lives on its own page, so the article list
+// is a set of links to sibling pages (the page is authored separately with its
+// own block config); the period control is per-article (see PERIOD_CONFIG).
 //
 // The articles list is collapsed by default to keep the sidebar compact. When
 // expanded it is positioned absolutely (see styles.less) so it overlays the
@@ -16,19 +16,24 @@ const Sidebar = ({ article, cycle, onSelectCycle }) => {
   const [articlesOpen, setArticlesOpen] = React.useState(false);
   const location = useLocation();
   const activeArticle = MSFD_ARTICLES.find((item) => item.slug === article);
+  const period = getPeriodConfig(article);
 
   return (
     <aside className="msfd-sidebar">
       <div className="msfd-sidebar-block">
-        <h3 className="msfd-sidebar-heading">Reporting cycle</h3>
-        <Dropdown
-          selection
-          fluid
-          className="msfd-cycle-dropdown"
-          options={ARTICLE4_CYCLES}
-          value={cycle}
-          onChange={(event, data) => onSelectCycle(data.value)}
-        />
+        <h3 className="msfd-sidebar-heading">{period.heading}</h3>
+        {period.static ? (
+          <p className="msfd-period-static">{period.static}</p>
+        ) : (
+          <Dropdown
+            selection
+            fluid
+            className="msfd-cycle-dropdown"
+            options={period.options}
+            value={cycle}
+            onChange={(event, data) => onSelectCycle(data.value)}
+          />
+        )}
       </div>
 
       <nav

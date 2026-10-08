@@ -3,30 +3,113 @@ import { Icon } from 'semantic-ui-react';
 
 // Cell values are `{raw, text, tooltip, empty}` and are rendered as plain React
 // children, never as raw HTML.
-const renderCell = (cell) => {
-  if (!cell) return null;
+const URL_RE = /^https?:\/\/\S+$/i;
 
-  if (cell.empty) return <em className="msfd-empty">No value</em>;
-
-  if (cell.tooltip) {
-    return <span title={cell.tooltip}>{cell.text}</span>;
+const renderCellValue = (cell) => {
+  // Cells whose whole value is a URL become real links (the Article 7 URL
+  // column is the common case), so they are clickable and copyable as links.
+  if (typeof cell.text === 'string' && URL_RE.test(cell.text)) {
+    return (
+      <a
+        className="msfd-link"
+        href={cell.text}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        {cell.text}
+      </a>
+    );
   }
 
   return cell.text;
 };
 
+const renderCell = (cell) => {
+  if (!cell) return null;
+
+  if (cell.empty) return <em className="msfd-empty">No value</em>;
+
+  const value = renderCellValue(cell);
+
+  if (cell.tooltip) {
+    return <span title={cell.tooltip}>{value}</span>;
+  }
+
+  return value;
+};
+
+// Long free-text cells are truncated to a single line; clicking the cell
+// reveals the full value in place (clicking again, or pressing Escape, collapses
+// it). `isExpanded`/`onToggle` are passed in because the expanded state lives on
+// the table, keyed by a stable cell id.
+const renderExpandableCell = (cell, cellKey, expanded, onToggle) => (
+  <button
+    type="button"
+    className={`msfd-cell-expandable${expanded ? ' is-expanded' : ''}`}
+    aria-expanded={expanded}
+    title={expanded ? 'Click to collapse' : 'Click to see the full text'}
+    onClick={() => onToggle(cellKey)}
+    onKeyDown={(event) => {
+      if (event.key === 'Escape' && expanded) onToggle(cellKey);
+    }}
+  >
+    <span className="msfd-cell-expandable-text">{cell.text}</span>
+    <Icon name={expanded ? 'compress' : 'expand'} />
+  </button>
+);
+
+const renderDataCell = (row, column, cellKey, isExpanded, onToggle) => {
+  const cell = row[column.key];
+
+  if (column.expandable && cell && !cell.empty) {
+    return renderExpandableCell(cell, cellKey, isExpanded(cellKey), onToggle);
+  }
+
+  return renderCell(cell);
+};
+
+// Per-column minimum width. The provider can tune it per column (`minWidth`
+// in the column spec) and that always wins; when it does not (or until the
+// backend providing the hints is reloaded), a small semantic fallback keeps
+// the table readable: long free-text columns and name/URL columns get more
+// room than short code/label columns. The table keeps its auto layout, but a
+// cell is never squeezed below its minimum, so the wrapper scrolls
+// horizontally rather than wrapping columns to death.
+const DEFAULT_MIN_WIDTH = 130;
+const EXPANDABLE_MIN_WIDTH = 220;
+const NAME_MIN_WIDTH = 200;
+const URL_MIN_WIDTH = 200;
+
+const columnMinWidth = (column) => {
+  if (column.minWidth) return column.minWidth;
+  if (column.expandable) return EXPANDABLE_MIN_WIDTH;
+  if (/url|link|website|homepage/i.test(column.key)) return URL_MIN_WIDTH;
+  if (/name|title/i.test(column.key)) return NAME_MIN_WIDTH;
+
+  return DEFAULT_MIN_WIDTH;
+};
+
+const columnStyle = (column) => ({
+  minWidth: `${columnMinWidth(column)}px`,
+});
+
 // Renders one data row. `key` is passed in because grouped rows need a stable
 // key per group (the row index alone is not unique across groups).
-const renderDataRow = (row, key, columns, onView) => (
+const renderDataRow = (row, key, columns, onView, isExpanded, onToggleCell) => (
   <tr key={key}>
-    {columns.map((column) => (
-      <td
-        key={column.key}
-        className={column.align === 'right' ? 'is-right' : ''}
-      >
-        {renderCell(row[column.key])}
-      </td>
-    ))}
+    {columns.map((column) => {
+      const cellKey = `${key}:${column.key}`;
+
+      return (
+        <td
+          key={column.key}
+          className={column.align === 'right' ? 'is-right' : ''}
+          style={columnStyle(column)}
+        >
+          {renderDataCell(row, column, cellKey, isExpanded, onToggleCell)}
+        </td>
+      );
+    })}
     <td className="msfd-table-action-col">
       <button
         type="button"
@@ -63,6 +146,7 @@ const renderHeaderCells = (columns, sort, dir, onSort) => (
       <th
         key={column.key}
         className={column.align === 'right' ? 'is-right' : ''}
+        style={columnStyle(column)}
       >
         {column.sortable ? (
           <button
@@ -104,6 +188,17 @@ const ExplorerTable = ({
   groups,
   groupBy,
 }) => {
+  const [expandedCells, setExpandedCells] = React.useState({});
+
+  const toggleCell = React.useCallback((key) => {
+    setExpandedCells((previous) => ({ ...previous, [key]: !previous[key] }));
+  }, []);
+
+  const isExpanded = React.useCallback(
+    (key) => Boolean(expandedCells[key]),
+    [expandedCells],
+  );
+
   if (!columns || !columns.length) return null;
 
   const isGrouped = Boolean(groupBy && groups && groups.length);
@@ -155,6 +250,8 @@ const ExplorerTable = ({
                         `row-${group.key}-${index}`,
                         columns,
                         onView,
+                        isExpanded,
+                        toggleCell,
                       ),
                     )}
                   </tbody>
@@ -175,7 +272,14 @@ const ExplorerTable = ({
         </thead>
         <tbody>
           {(rows || []).map((row, index) =>
-            renderDataRow(row, `row-${index}`, columns, onView),
+            renderDataRow(
+              row,
+              `row-${index}`,
+              columns,
+              onView,
+              isExpanded,
+              toggleCell,
+            ),
           )}
         </tbody>
       </table>

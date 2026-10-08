@@ -755,6 +755,65 @@
     color: @msfd-muted;
   }
 
+  // URL cells rendered as real links (see ExplorerTable).
+  .msfd-link {
+    color: @msfd-blue-link;
+    word-break: break-word;
+
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
+    }
+  }
+
+  // -- expandable long-text cells --------------------------------------
+  .msfd-cell-expandable {
+    display: inline-flex;
+    max-width: 280px;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    gap: 6px;
+    text-align: left;
+
+    .msfd-cell-expandable-text {
+      overflow: hidden;
+      min-width: 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    i.icon {
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 11px;
+    }
+
+    &:hover .msfd-cell-expandable-text {
+      color: @msfd-blue-dark;
+    }
+
+    &.is-expanded {
+      max-width: none;
+      align-items: flex-start;
+
+      .msfd-cell-expandable-text {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+      }
+
+      i.icon {
+        color: @msfd-blue;
+      }
+    }
+  }
+
   // -- pagination ------------------------------------------------------
   .msfd-pagination {
     display: flex;
@@ -999,6 +1058,14 @@
     &.active {
       border-color: @msfd-blue;
     }
+  }
+
+  .msfd-period-static {
+    padding: 8px 0;
+    margin: 0;
+    color: @msfd-blue-dark;
+    font-size: 14px;
+    font-weight: 600;
   }
 
   .msfd-sidebar-articles {

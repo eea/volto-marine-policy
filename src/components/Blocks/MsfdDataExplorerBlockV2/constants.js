@@ -27,6 +27,31 @@ export const ARTICLE4_CYCLES = [
   { value: '2012', text: '2012 - 2018' },
 ];
 
+// Reporting period control shown in the explorer sidebar. A4 reports several
+// cycles (dropdown); A7 has a single period, the 2012 reporting exercise, so it
+// renders a static label instead of a one-option dropdown. `periodConfig`
+// returns the config for the current article, tolerating an unknown slug.
+export const PERIOD_CONFIG = {
+  'marine-units': { heading: 'Reporting cycle', options: ARTICLE4_CYCLES },
+  'competent-authorities': {
+    heading: 'Reporting period',
+    static: '2012 reporting exercise',
+  },
+};
+
+export const getPeriodConfig = (article) =>
+  PERIOD_CONFIG[article] || { heading: 'Reporting cycle', options: [] };
+
+// Default reporting period per article: the value used when the URL does not
+// override it. A7 is always the 2012 exercise.
+export const ARTICLE_DEFAULT_CYCLE = {
+  'marine-units': '2024',
+  'competent-authorities': '2012',
+};
+
+export const getDefaultCycle = (article) =>
+  ARTICLE_DEFAULT_CYCLE[article] || '2024';
+
 // Articles shown in the explorer sidebar (MSFD Articles section). The order and
 // labels mirror the WISE Marine navigation. Each entry has its own page: `page`
 // is the URL segment of that page (e.g. "/path/article-4" for Article 4), and
@@ -38,6 +63,12 @@ export const MSFD_ARTICLES = [
     number: '4',
     label: 'Marine Units',
     page: 'article-4',
+  },
+  {
+    slug: 'competent-authorities',
+    number: '7',
+    label: 'Competent Authorities',
+    page: 'article-7',
   },
   { slug: 'assessments', number: '8', label: 'Assessment', page: 'article-8' },
   {
