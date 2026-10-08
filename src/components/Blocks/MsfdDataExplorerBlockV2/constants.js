@@ -27,6 +27,14 @@ export const ARTICLE4_CYCLES = [
   { value: '2012', text: '2012 - 2018' },
 ];
 
+// Reporting periods of Article 9. Unlike Article 4 these are reporting
+// exercises, not cycles, and all three have a React renderer.
+export const ARTICLE9_PERIODS = [
+  { value: '2024', text: '2024 reporting exercise' },
+  { value: '2018', text: '2018 reporting exercise' },
+  { value: '2012', text: '2012 reporting exercise' },
+];
+
 // Reporting period control shown in the explorer sidebar. A4 reports several
 // cycles (dropdown); A7 has a single period, the 2012 reporting exercise, so it
 // renders a static label instead of a one-option dropdown. `periodConfig`
@@ -36,6 +44,10 @@ export const PERIOD_CONFIG = {
   'competent-authorities': {
     heading: 'Reporting period',
     static: '2012 reporting exercise',
+  },
+  'determination-of-good-environmental-status': {
+    heading: 'Reporting period',
+    options: ARTICLE9_PERIODS,
   },
 };
 
@@ -47,6 +59,7 @@ export const getPeriodConfig = (article) =>
 export const ARTICLE_DEFAULT_CYCLE = {
   'marine-units': '2024',
   'competent-authorities': '2012',
+  'determination-of-good-environmental-status': '2024',
 };
 
 export const getDefaultCycle = (article) =>

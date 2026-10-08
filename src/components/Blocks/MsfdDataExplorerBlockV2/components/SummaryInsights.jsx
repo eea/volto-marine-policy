@@ -54,7 +54,7 @@ const formatNumber = (value) => {
 const valueText = (value, unit) => {
   const text = formatNumber(value);
 
-  if (text === null) return '—';
+  if (text === null) return '-';
 
   return unit ? `${text} ${unit}` : text;
 };

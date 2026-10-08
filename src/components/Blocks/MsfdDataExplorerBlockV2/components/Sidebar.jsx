@@ -51,7 +51,7 @@ const Sidebar = ({ article, cycle, onSelectCycle }) => {
         >
           <span className="msfd-sidebar-toggle-text">
             {activeArticle
-              ? `Article ${activeArticle.number} — ${activeArticle.label}`
+              ? `Article ${activeArticle.number} - ${activeArticle.label}`
               : 'Select an article'}
           </span>
           <Icon name={articlesOpen ? 'caret up' : 'caret down'} />
