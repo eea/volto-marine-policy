@@ -1,0 +1,1192 @@
+// Styles for the React data explorer (v2), matching the WISE Marine redesign:
+// a Filters panel and a flat results table in the main column, with the
+// reporting cycle and MSFD Articles navigation in the right sidebar.
+
+@msfd-blue-dark: #004b7f;
+@msfd-blue: #0071b3;
+@msfd-blue-link: #0079cf;
+@msfd-blue-light-gray: #dae8f4;
+@msfd-border: #d5dee6;
+@msfd-border-soft: #e6ecf1;
+@msfd-text: #3d5265;
+@msfd-muted: #6b7c8c;
+@msfd-chip-bg: #e4eef8;
+@msfd-surface: #ffffff;
+@msfd-header-bg: #eef2f5;
+
+.msfd-explorer-v2 {
+  color: @msfd-text;
+  font-size: 14px;
+
+  // -- layout ----------------------------------------------------------
+  .msfd-explorer-layout {
+    display: grid;
+    align-items: start;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) 300px;
+
+    @media (max-width: 991px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-explorer-main {
+    min-width: 0;
+  }
+
+  .msfd-explorer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  // Top row: the Filters panel and the sidebar share one wrapper; the Results
+  // table sits in its own full width wrapper below (see .msfd-results).
+  .msfd-explorer-top {
+    display: grid;
+    align-items: stretch;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) 300px;
+
+    @media (max-width: 991px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  // -- panels ----------------------------------------------------------
+  .msfd-panel {
+    border-radius: 4px;
+    background: @msfd-surface;
+  }
+
+  .msfd-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #bec7cf;
+    gap: 12px;
+  }
+
+  .msfd-panel-title {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: @msfd-blue-dark;
+    font-size: 16px;
+    font-weight: 600;
+    gap: 8px;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-blue;
+    }
+  }
+
+  .msfd-panel-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .msfd-refreshing {
+    display: inline-flex;
+    color: @msfd-muted;
+
+    i.icon {
+      margin: 0;
+    }
+  }
+
+  .msfd-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-blue-link;
+    cursor: pointer;
+    font-size: 13px;
+    gap: 6px;
+
+    i.icon {
+      margin: 0;
+    }
+
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
+    }
+  }
+
+  // -- panel loading ---------------------------------------------------
+  .msfd-panel-body {
+    position: relative;
+  }
+
+  .msfd-panel-loading {
+    display: flex;
+    min-height: 120px;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+
+    &.is-overlay {
+      position: absolute;
+      z-index: 5;
+      min-height: 100%;
+      background: rgba(255, 255, 255, 0.72);
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .ui.loader {
+      margin: 0;
+    }
+  }
+
+  // -- filters ---------------------------------------------------------
+  .msfd-filters {
+    display: grid;
+    align-items: start;
+    background: @msfd-blue-light-gray;
+    grid-auto-flow: row;
+  }
+
+  .msfd-filters-grid {
+    display: grid;
+    align-items: stretch;
+    padding: 16px;
+    padding-top: 0;
+    // Column gap is 0: the space between columns comes from the fields'
+    // horizontal padding, so a full-height divider can sit at each field edge.
+    // gap: 16px 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    .msfd-field {
+      display: grid;
+      align-content: center;
+      padding-right: 1rem;
+      padding-bottom: 1rem;
+      padding-left: 1rem;
+      border-right: 1px solid #bec7cf;
+
+      // No divider and no outer padding on the first column...
+      &:nth-child(3n + 1) {
+        padding-left: 0;
+      }
+
+      // ...and on the right edge of the last column.
+      &:nth-child(3n),
+      &:last-child {
+        padding-right: 0;
+        border-right: none;
+      }
+    }
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+
+      .msfd-field {
+        padding-right: 0;
+        padding-left: 0;
+        border-right: none;
+      }
+    }
+  }
+
+  .msfd-field {
+    min-width: 0;
+  }
+
+  .msfd-field-label {
+    display: block;
+    margin-bottom: 6px;
+    color: @msfd-text;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  // -- multi-select facet ----------------------------------------------
+  .msfd-multiselect {
+    position: relative;
+  }
+
+  .msfd-multiselect-trigger {
+    position: relative;
+    display: flex;
+    min-height: 38px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 4px 30px 4px 8px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    cursor: pointer;
+    gap: 4px;
+    outline: none;
+
+    > i.icon {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 11px;
+      transform: translateY(-50%);
+    }
+
+    &:hover,
+    &.is-open,
+    &:focus {
+      border-color: @msfd-blue;
+    }
+  }
+
+  .msfd-multiselect-placeholder {
+    padding: 4px 6px;
+    color: @msfd-muted;
+  }
+
+  .msfd-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .msfd-chip {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    padding: 2px 4px 2px 8px;
+    border-radius: 12px;
+    background: @msfd-chip-bg;
+    color: @msfd-blue-dark;
+    font-size: 12px;
+    gap: 2px;
+  }
+
+  .msfd-chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .msfd-chip-remove {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: @msfd-blue-dark;
+    cursor: pointer;
+
+    i.icon {
+      margin: 0;
+      font-size: 10px;
+    }
+
+    &:hover {
+      background: rgba(0, 75, 127, 0.15);
+    }
+  }
+
+  .msfd-multiselect-panel {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 300px;
+    max-width: 90vw;
+    padding: 10px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  }
+
+  .msfd-multiselect-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid @msfd-border-soft;
+    margin-bottom: 8px;
+    gap: 12px;
+  }
+
+  .msfd-inline-action {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-blue-link;
+    cursor: pointer;
+    font-size: 12px;
+
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
+    }
+  }
+
+  .msfd-multiselect-search {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .msfd-multiselect-options {
+    max-height: 220px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow-y: auto;
+  }
+
+  .msfd-multiselect-option {
+    border-radius: 3px;
+
+    &:hover {
+      background: #f1f5f9;
+    }
+
+    &.is-selected {
+      background: @msfd-chip-bg;
+    }
+  }
+
+  .msfd-multiselect-option-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    gap: 8px;
+
+    input[type='checkbox'] {
+      width: 15px;
+      height: 15px;
+      flex: none;
+      margin: 0;
+      accent-color: @msfd-blue-dark;
+      cursor: pointer;
+    }
+  }
+
+  .msfd-multiselect-option-text {
+    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .msfd-multiselect-option-count {
+    flex: none;
+    color: @msfd-muted;
+    font-size: 12px;
+  }
+
+  .msfd-multiselect-empty {
+    padding: 6px;
+    color: @msfd-muted;
+  }
+
+  .msfd-multiselect-more {
+    display: block;
+    padding: 6px 6px 0;
+    border: none;
+    background: transparent;
+    color: @msfd-blue-link;
+    cursor: pointer;
+    font-size: 13px;
+
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
+    }
+  }
+
+  // -- text facet ------------------------------------------------------
+  .msfd-text-input {
+    width: 100%;
+
+    input {
+      font-size: 14px;
+    }
+  }
+
+  // -- toggle facet ----------------------------------------------------
+  .msfd-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .msfd-toggle {
+    padding: 8px 14px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+
+    &:hover {
+      border-color: @msfd-blue;
+    }
+
+    &.is-selected {
+      border-color: @msfd-blue-dark;
+      background: @msfd-blue-dark;
+      color: #fff;
+    }
+  }
+
+  // -- range facet -----------------------------------------------------
+  .msfd-range {
+    position: relative;
+    height: 22px;
+    margin: 4px 0 12px;
+  }
+
+  .msfd-range-rail,
+  .msfd-range-fill {
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    border-radius: 2px;
+    transform: translateY(-50%);
+  }
+
+  .msfd-range-rail {
+    right: 0;
+    left: 0;
+    background: @msfd-border;
+  }
+
+  .msfd-range-fill {
+    background: @msfd-blue;
+  }
+
+  .msfd-range-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    outline: none;
+    pointer-events: none;
+  }
+
+  .msfd-range-input-low {
+    z-index: 4;
+  }
+
+  .msfd-range-input-high {
+    z-index: 3;
+  }
+
+  .msfd-range-input::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    border: 2px solid @msfd-blue;
+    border-radius: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .msfd-range-input::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 2px solid @msfd-blue;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .msfd-range-input::-moz-range-track {
+    background: none;
+  }
+
+  .msfd-range-values {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .msfd-range-value {
+    display: block;
+
+    span {
+      display: block;
+      margin-bottom: 4px;
+      color: @msfd-muted;
+      font-size: 12px;
+    }
+
+    input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid @msfd-border;
+      border-radius: 4px;
+      color: @msfd-text;
+      font-size: 14px;
+
+      &:focus {
+        border-color: @msfd-blue;
+        outline: none;
+      }
+    }
+  }
+
+  // -- results ---------------------------------------------------------
+  .msfd-results-header {
+    border: none;
+
+    .msfd-download {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border: 1px solid @msfd-border;
+      border-radius: 4px;
+      background: @msfd-surface;
+      color: @msfd-blue-dark;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      gap: 6px;
+
+      i.icon {
+        margin: 0;
+      }
+
+      &:hover:not(:disabled) {
+        border-color: @msfd-blue;
+        color: @msfd-blue;
+      }
+
+      &:disabled {
+        color: @msfd-muted;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .msfd-results-body {
+    padding: 0 0 8px;
+  }
+
+  .msfd-no-data {
+    padding: 24px 16px;
+    color: @msfd-muted;
+    text-align: center;
+  }
+
+  .msfd-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .msfd-group table.msfd-table {
+    border: none;
+  }
+
+  table.msfd-table {
+    width: 100%;
+    border: 1px solid @msfd-border;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid @msfd-border-soft;
+      text-align: left;
+      // white-space: nowrap;
+    }
+
+    th {
+      background: #f2f6f9;
+      color: @msfd-text;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    tbody tr:hover td {
+      background: #f7fafc;
+    }
+
+    .is-right {
+      text-align: right;
+    }
+  }
+
+  // -- grouped results (2012 cycle) ------------------------------------
+  .msfd-group {
+    border: 1px solid @msfd-border;
+  }
+
+  .msfd-group + .msfd-group {
+    margin-top: 24px;
+  }
+
+  .msfd-group-row {
+    border-bottom: 1px solid @msfd-border;
+    background: @msfd-blue-light-gray;
+  }
+
+  .msfd-group-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .msfd-group-name {
+    color: @msfd-blue-dark;
+    font-weight: 600;
+  }
+
+  .msfd-group-count {
+    color: @msfd-muted;
+    font-size: 12px;
+  }
+
+  .msfd-group-detail {
+    padding: 12px 16px;
+    border-bottom: 1px solid @msfd-border-soft;
+    background: #fbfdfe;
+  }
+
+  .msfd-group-detail-fields {
+    display: grid;
+    margin: 0;
+    gap: 6px 16px;
+    grid-template-columns: 200px minmax(0, 1fr);
+
+    dt {
+      color: @msfd-text;
+      font-weight: 600;
+    }
+
+    dd {
+      margin: 0;
+      color: @msfd-muted;
+    }
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-table-sort {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    gap: 6px;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 11px;
+    }
+
+    &:hover {
+      color: @msfd-blue-dark;
+
+      i.icon {
+        color: @msfd-blue;
+      }
+    }
+  }
+
+  .msfd-table-action-col {
+    width: 90px;
+    text-align: right;
+  }
+
+  .msfd-view {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-blue-link;
+    cursor: pointer;
+    font-size: 13px;
+    gap: 5px;
+
+    i.icon {
+      margin: 0;
+      font-size: 11px;
+    }
+
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
+    }
+  }
+
+  .msfd-empty {
+    color: @msfd-muted;
+  }
+
+  // URL cells rendered as real links (see ExplorerTable).
+  .msfd-link {
+    color: @msfd-blue-link;
+    word-break: break-word;
+
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
+    }
+  }
+
+  // -- expandable long-text cells --------------------------------------
+  .msfd-cell-expandable {
+    display: inline-flex;
+    max-width: 280px;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    gap: 6px;
+    text-align: left;
+
+    .msfd-cell-expandable-text {
+      overflow: hidden;
+      min-width: 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    i.icon {
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 11px;
+    }
+
+    &:hover .msfd-cell-expandable-text {
+      color: @msfd-blue-dark;
+    }
+
+    &.is-expanded {
+      max-width: none;
+      align-items: flex-start;
+
+      .msfd-cell-expandable-text {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+      }
+
+      i.icon {
+        color: @msfd-blue;
+      }
+    }
+  }
+
+  // -- pagination ------------------------------------------------------
+  .msfd-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    gap: 12px;
+
+    &-top {
+      border-bottom: 1px solid @msfd-border-soft;
+    }
+  }
+
+  .msfd-pagination-info {
+    color: @msfd-muted;
+    font-size: 13px;
+
+    b {
+      color: @msfd-text;
+      font-weight: 600;
+    }
+  }
+
+  .msfd-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .msfd-page {
+    display: inline-flex;
+    min-width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    color: @msfd-blue-dark;
+    cursor: pointer;
+    font-size: 13px;
+
+    i.icon {
+      margin: 0;
+      font-size: 11px;
+    }
+
+    &:hover:not(:disabled):not(.is-active) {
+      border-color: @msfd-blue;
+    }
+
+    &.is-active {
+      border-color: @msfd-blue-dark;
+      background: @msfd-blue-dark;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    &:disabled {
+      color: @msfd-muted;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  .msfd-page-gap {
+    padding: 0 2px;
+    color: @msfd-muted;
+  }
+
+  // -- summary & insights ----------------------------------------------
+  .msfd-summary {
+    background-color: @msfd-blue-light-gray;
+  }
+
+  .msfd-summary-body {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .msfd-summary-toggle {
+    i.icon {
+      font-size: 11px;
+    }
+  }
+
+  .msfd-summary-cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    @media (max-width: 991px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-summary-card {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    gap: 12px;
+  }
+
+  .msfd-summary-card-icon {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: @msfd-chip-bg;
+    color: @msfd-blue;
+
+    i.icon {
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+
+  .msfd-summary-card-content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .msfd-summary-card-label {
+    display: flex;
+    align-items: center;
+    color: @msfd-text;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 6px;
+  }
+
+  .msfd-summary-card-value {
+    color: @msfd-blue-dark;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .msfd-summary-card-details {
+    display: flex;
+    flex-wrap: wrap;
+    color: @msfd-muted;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .msfd-summary-card-sep {
+    color: @msfd-border;
+  }
+
+  .msfd-summary-card-caption {
+    color: @msfd-muted;
+    font-size: 12px;
+  }
+
+  .msfd-summary-hint {
+    color: @msfd-muted;
+    cursor: help;
+
+    i.icon {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+
+  .msfd-summary-charts {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-summary-chart {
+    min-width: 0;
+    padding: 12px 16px 0;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background-color: white;
+  }
+
+  .msfd-summary-chart-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 4px;
+    color: @msfd-text;
+    font-size: 14px;
+    font-weight: 600;
+    gap: 6px;
+  }
+
+  // Keeps the panel height stable while the lazy-loaded chart chunk arrives.
+  .msfd-summary-chart-loading {
+    height: 260px;
+  }
+
+  // -- sidebar ---------------------------------------------------------
+  .msfd-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .msfd-sidebar-block {
+    padding: 16px;
+    border: 1px solid @msfd-border;
+    border-radius: 4px;
+    background: @msfd-surface;
+    background-color: @msfd-blue-light-gray;
+  }
+
+  .msfd-sidebar-heading {
+    margin: 0 0 12px;
+    color: @msfd-text;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .msfd-cycle-dropdown.ui.dropdown {
+    border-color: @msfd-border;
+    font-size: 14px;
+
+    &:hover,
+    &.active {
+      border-color: @msfd-blue;
+    }
+  }
+
+  .msfd-period-static {
+    padding: 8px 0;
+    margin: 0;
+    color: @msfd-blue-dark;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .msfd-sidebar-articles {
+    position: relative;
+
+    &.is-open {
+      z-index: 40;
+    }
+  }
+
+  .msfd-sidebar-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    border: none;
+    margin: 0;
+    background: transparent;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    gap: 8px;
+    text-align: left;
+
+    i.icon {
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 1rem;
+    }
+
+    &:hover {
+      color: @msfd-blue-dark;
+
+      i.icon {
+        color: @msfd-blue;
+      }
+    }
+  }
+
+  .msfd-articles-current {
+    display: flex;
+    overflow: hidden;
+    margin-top: 1rem;
+    color: #004b7f;
+    font-size: 1rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Expanded list overlays the content below: it is taken out of flow so the
+  // surrounding grid row does not grow and the results table stays put.
+  .msfd-articles-list {
+    position: absolute;
+    z-index: 50;
+    top: 100%;
+    right: -1px;
+    left: -1px;
+    padding: 8px;
+    border: 1px solid @msfd-border;
+    border-radius: 0 0 4px 4px;
+    border-top: none;
+    margin: 0;
+    background: @msfd-blue-light-gray;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    list-style: none;
+  }
+
+  .msfd-articles-item {
+    border-radius: 4px;
+
+    &.is-active {
+      background: @msfd-blue;
+      // box-shadow: inset 3px 0 0 @msfd-blue-dark;
+
+      .msfd-articles-link {
+        color: white;
+      }
+    }
+  }
+
+  .msfd-articles-link {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 9px 10px;
+    border: none;
+    background: transparent;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: 13px;
+    gap: 8px;
+    text-align: left;
+    text-decoration: none;
+
+    i.icon {
+      width: 12px;
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: 11px;
+    }
+
+    &:hover {
+      color: @msfd-blue-dark;
+    }
+  }
+
+  .msfd-articles-number {
+    flex: none;
+    font-weight: 600;
+  }
+
+  .msfd-articles-label {
+    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

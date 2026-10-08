@@ -1,0 +1,84 @@
+import React from 'react';
+import { Message } from 'semantic-ui-react';
+import { useHistory, useLocation } from 'react-router-dom';
+
+import { getRenderer } from './renderers';
+import LegacyView from './LegacyView';
+import Sidebar from './components/Sidebar';
+import { ARTICLE_SLUGS, getDefaultCycle } from './constants';
+import { readUrlState, writeUrlState } from './urlState';
+import './styles.less';
+
+// New data explorer block. The backend is a single generic endpoint; the
+// frontend dispatches to a per-article renderer. Each article has its own page
+// and its own block config; the sidebar links to those pages. Articles without
+// a renderer still fall back to the legacy explorer when their page is opened.
+//
+// The layout (sidebar + main content) lives here, so the reporting cycle and
+// the MSFD Articles navigation stay visible on every article page. Only the
+// main content is provided by the per-article renderer.
+const MsfdDataExplorerBlockV2View = (props) => {
+  const { editable, data = {} } = props;
+  const history = useHistory();
+  const location = useLocation();
+
+  const urlState = readUrlState(location.search);
+  const defaultArticle = data.article_select;
+  // In edit mode the block data is the source of truth; in view mode a URL
+  // override keeps old/shareable numeric links (e.g. ?msfd_article=4) working.
+  const articleValue = editable
+    ? defaultArticle
+    : urlState.article || defaultArticle;
+  const article = ARTICLE_SLUGS[articleValue] || articleValue;
+  // The default reporting period depends on the article: A4 defaults to 2024,
+  // A7 is always the 2012 reporting exercise.
+  const cycle = urlState.cycle || getDefaultCycle(article);
+
+  if (!article) {
+    return editable ? <Message>Select article</Message> : null;
+  }
+
+  const handleSelectCycle = (value) => {
+    writeUrlState(history, location, { cycle: value });
+  };
+
+  const Renderer = getRenderer(article);
+
+  const sidebar = (
+    <Sidebar
+      article={article}
+      cycle={cycle}
+      onSelectCycle={handleSelectCycle}
+    />
+  );
+
+  // React renderers place the sidebar next to their Filters panel and keep the
+  // Results table in a separate, wider row (see the renderer). The legacy
+  // explorer has no such split, so it keeps the two column layout.
+  if (Renderer) {
+    return (
+      <div className="msfd-explorer-v2">
+        <Renderer
+          {...props}
+          article={article}
+          cycle={cycle}
+          sidebar={sidebar}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="msfd-explorer-v2">
+      <div className="msfd-explorer-layout">
+        <main className="msfd-explorer-main">
+          <LegacyView {...props} data={{ ...data, article_select: article }} />
+        </main>
+
+        {sidebar}
+      </div>
+    </div>
+  );
+};
+
+export default MsfdDataExplorerBlockV2View;
