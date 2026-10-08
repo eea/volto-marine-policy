@@ -51,6 +51,9 @@ describe('ObjectivesChart', () => {
       />,
     );
 
-    expect(container.firstChild).toBeNull();
+    expect(
+      container.querySelector('.objectives-chart'),
+    ).not.toBeInTheDocument();
+    expect(container.textContent).toBe('');
   });
 });

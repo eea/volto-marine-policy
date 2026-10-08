@@ -5,8 +5,12 @@ import { IntlProvider } from 'react-intl';
 import ProgressWorkflow, { getWorkflowProgress } from './ProgressWorkflow';
 
 jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
   useSelector: () => null,
+}));
+jest.mock('@plone/volto/actions/workflow/workflow', () => ({
+  transitionWorkflow: jest.fn(),
 }));
 
 describe('getWorkflowProgress', () => {
