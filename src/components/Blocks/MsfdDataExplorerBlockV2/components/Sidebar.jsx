@@ -54,7 +54,7 @@ const Sidebar = ({ article, cycle, onSelectCycle }) => {
               ? `Article ${activeArticle.number} - ${activeArticle.label}`
               : 'Select an article'}
           </span>
-          <Icon name={articlesOpen ? 'caret up' : 'caret down'} />
+          <Icon name={articlesOpen ? 'dropdown reverse' : 'dropdown'} />
         </button>
 
         {articlesOpen ? (

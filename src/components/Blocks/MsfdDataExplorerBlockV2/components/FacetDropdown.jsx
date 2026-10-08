@@ -1,7 +1,6 @@
 import React from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 
-const INITIAL_VISIBLE = 10;
 const SEARCH_THRESHOLD = 7;
 
 // One multi-select facet, rendered as a dropdown with the current selection as
@@ -18,7 +17,6 @@ const FacetDropdown = ({
   const { name, label, options } = facet;
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
-  const [expanded, setExpanded] = React.useState(false);
   const ref = React.useRef(null);
 
   React.useEffect(() => {
@@ -43,7 +41,6 @@ const FacetDropdown = ({
   const selectedValues = selected || [];
   const selectedSet = new Set(selectedValues);
   const allValues = options.map((option) => option.value);
-  const searching = query.trim().length > 0;
 
   const labelFor = (value) => {
     const option = options.find((item) => item.value === value);
@@ -70,9 +67,7 @@ const FacetDropdown = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options, query, selectedValues.join('|')]);
 
-  const visible =
-    searching || expanded ? ordered : ordered.slice(0, INITIAL_VISIBLE);
-  const hiddenCount = ordered.length - visible.length;
+  const visible = ordered;
 
   return (
     <div className="msfd-field">
@@ -183,26 +178,6 @@ const FacetDropdown = ({
                 <li className="msfd-multiselect-empty">No matching options</li>
               ) : null}
             </ul>
-
-            {hiddenCount > 0 ? (
-              <button
-                type="button"
-                className="msfd-multiselect-more"
-                onClick={() => setExpanded(true)}
-              >
-                Show {hiddenCount} more
-              </button>
-            ) : null}
-
-            {expanded && !searching && ordered.length > INITIAL_VISIBLE ? (
-              <button
-                type="button"
-                className="msfd-multiselect-more"
-                onClick={() => setExpanded(false)}
-              >
-                Show less
-              </button>
-            ) : null}
           </div>
         ) : null}
       </div>

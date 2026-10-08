@@ -226,7 +226,7 @@
     gap: 4px;
     outline: none;
 
-    > i.icon {
+    >i.icon {
       position: absolute;
       top: 50%;
       right: 10px;
@@ -393,21 +393,6 @@
   .msfd-multiselect-empty {
     padding: 6px;
     color: @msfd-muted;
-  }
-
-  .msfd-multiselect-more {
-    display: block;
-    padding: 6px 6px 0;
-    border: none;
-    background: transparent;
-    color: @msfd-blue-link;
-    cursor: pointer;
-    font-size: 13px;
-
-    &:hover {
-      color: @msfd-blue-dark;
-      text-decoration: underline;
-    }
   }
 
   // -- text facet ------------------------------------------------------
@@ -644,7 +629,7 @@
     border: 1px solid @msfd-border;
   }
 
-  .msfd-group + .msfd-group {
+  .msfd-group+.msfd-group {
     margin-top: 24px;
   }
 
@@ -1050,6 +1035,11 @@
     font-weight: 600;
   }
 
+  .msfd-cycle-dropdown .divider {
+    color: #004b7f !important;
+    font-weight: 600;
+  }
+
   .msfd-cycle-dropdown.ui.dropdown {
     border-color: @msfd-border;
     font-size: 14px;
@@ -1095,7 +1085,7 @@
     i.icon {
       flex: none;
       margin: 0;
-      color: @msfd-muted;
+      // color: @msfd-muted;
       font-size: 1rem;
     }
 
@@ -1108,15 +1098,35 @@
     }
   }
 
+  .msfd-sidebar-toggle-text {
+    overflow: hidden;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .msfd-articles-current {
     display: flex;
     overflow: hidden;
+    min-height: 38px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.67857143em 1em;
+    border: 1px solid @msfd-border;
+    border-radius: 0.28571429rem;
     margin-top: 1rem;
+    background: white;
     color: #004b7f;
-    font-size: 1rem;
+    cursor: pointer;
+    font-size: 14px;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &:hover,
+    &.is-open {
+      border-color: @msfd-blue;
+    }
   }
 
   // Expanded list overlays the content below: it is taken out of flow so the
