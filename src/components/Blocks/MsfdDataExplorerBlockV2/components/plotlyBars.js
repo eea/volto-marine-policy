@@ -3,6 +3,6 @@
 // puts plotly in its own chunk. The bar-only build is used instead of the full
 // plotly.js bundle (`react-plotly.js/factory` lets us pick the build).
 import createPlotlyComponent from 'react-plotly.js/factory';
-import Plotly from 'plotly.js/dist/plotly-basic.min';
+import Plotly from 'plotly.js/dist/plotly-basic.min.js';
 
 export default createPlotlyComponent(Plotly);
