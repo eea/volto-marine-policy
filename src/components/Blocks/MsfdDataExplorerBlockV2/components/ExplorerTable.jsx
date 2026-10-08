@@ -24,10 +24,27 @@ const renderCellValue = (cell) => {
   return cell.text;
 };
 
+const renderCellList = (items) => (
+  <ul className="msfd-cell-list">
+    {items.map((item, index) => (
+      <li key={`${item}-${index}`}>{item}</li>
+    ))}
+  </ul>
+);
+
 const renderCell = (cell) => {
   if (!cell) return null;
 
   if (cell.empty) return <em className="msfd-empty">No value</em>;
+
+  // Multi-valued cells (packed codes such as the Article 9 features and
+  // marine reporting units) render one bullet per token instead of a comma
+  // join. The comma joined `text` is still used for the CSV export.
+  if (Array.isArray(cell.items) && cell.items.length) {
+    const list = renderCellList(cell.items);
+
+    return cell.tooltip ? <div title={cell.tooltip}>{list}</div> : list;
+  }
 
   const value = renderCellValue(cell);
 

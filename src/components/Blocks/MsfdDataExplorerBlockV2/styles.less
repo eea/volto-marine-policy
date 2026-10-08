@@ -740,6 +740,20 @@
     color: @msfd-muted;
   }
 
+  // Bullet list for multi-valued cells (one item per packed token).
+  .msfd-cell-list {
+    margin: 0;
+    padding-left: 18px;
+
+    li {
+      margin: 0 0 2px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   // URL cells rendered as real links (see ExplorerTable).
   .msfd-link {
     color: @msfd-blue-link;
