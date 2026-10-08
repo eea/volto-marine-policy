@@ -38,6 +38,7 @@ describe('ProgressWorkflow', () => {
       </IntlProvider>,
     );
 
-    expect(container.firstChild).toBeNull();
+    expect(container.textContent).toBe('');
+    expect(container.querySelector('.toolbar-workflow-progress')).toBeNull();
   });
 });
