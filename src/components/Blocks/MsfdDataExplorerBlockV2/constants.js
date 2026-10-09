@@ -128,8 +128,13 @@ export const articlePageHref = (pathname, page) => {
 export const DEFAULT_PAGE_SIZE = 10;
 
 // (article, cycle) combinations that have a backend Summary & insights
-// payload. Only Article 4 / 2024 for now; adding a cycle here is all the
-// frontend needs once the provider implements `build_summary`.
+// payload: every Article 4 cycle exposes one (2012 reports counts only, while
+// 2018/2024 also report area), Article 7 exposes a count-based one, and
+// Article 9 exposes one for all three periods.
+// Adding a cycle here is all the frontend needs once the provider implements
+// `_build_summary`.
 export const SUMMARY_CYCLES = {
-  4: ['2024'],
+  4: ['2024', '2018', '2012'],
+  7: ['2012'],
+  9: ['2024', '2018', '2012'],
 };
