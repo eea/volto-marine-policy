@@ -32,6 +32,61 @@ const renderCellList = (items) => (
   </ul>
 );
 
+// Grouped cells (the Article 9/2012 `Feature(s)` column) pack
+// `groups: [{label, items: []}]`. They render a FeatureType heading with the
+// features as bullets underneath. When the column declares `maxItems` and the
+// cell holds more items than that, the list is collapsed to a global budget
+// (walking the groups in order, dropping a heading once its items run out)
+// with a "Show N more" control that expands it in place.
+const renderGroupedCell = (cell, column, cellKey, expanded, onToggle) => {
+  const groups = (cell.groups || []).filter(
+    (group) => group.items && group.items.length,
+  );
+  const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const maxItems = column.maxItems || 0;
+  const collapsible = maxItems > 0 && total > maxItems;
+  const collapsed = collapsible && !expanded;
+
+  let remaining = collapsed ? maxItems : Infinity;
+  const visible = [];
+
+  groups.forEach((group) => {
+    if (remaining <= 0) return;
+
+    const items = group.items.slice(0, remaining);
+    remaining -= items.length;
+
+    if (items.length) visible.push({ label: group.label, items });
+  });
+
+  const shown = visible.reduce((sum, group) => sum + group.items.length, 0);
+  const hidden = total - shown;
+
+  return (
+    <div className="msfd-cell-grouped">
+      {visible.map((group) => (
+        <div className="msfd-cell-group" key={group.label}>
+          <span className="msfd-cell-group-label">{group.label}</span>
+          <ul className="msfd-cell-list">
+            {group.items.map((item, index) => (
+              <li key={`${item}-${index}`}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      {(collapsed || expanded) && collapsible && (
+        <button
+          type="button"
+          className="msfd-cell-more"
+          onClick={() => onToggle(cellKey)}
+        >
+          {collapsed ? `Show ${hidden} more` : 'Show less'}
+        </button>
+      )}
+    </div>
+  );
+};
+
 const renderCell = (cell) => {
   if (!cell) return null;
 
@@ -106,6 +161,16 @@ const ExpandableCell = ({ cell, cellKey, expanded, onToggle }) => {
 
 const renderDataCell = (row, column, cellKey, isExpanded, onToggle) => {
   const cell = row[column.key];
+
+  if (cell && Array.isArray(cell.groups) && cell.groups.length) {
+    return renderGroupedCell(
+      cell,
+      column,
+      cellKey,
+      isExpanded(cellKey),
+      onToggle,
+    );
+  }
 
   if (column.expandable && cell && !cell.empty) {
     return (

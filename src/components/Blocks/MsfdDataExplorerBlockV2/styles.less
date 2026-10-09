@@ -754,6 +754,41 @@
     }
   }
 
+  // Grouped cells (Article 9/2012 features): a FeatureType heading with its
+  // features as bullets underneath, plus a Show more/less control when the
+  // cell holds more items than the column's maxItems.
+  .msfd-cell-grouped {
+    .msfd-cell-group + .msfd-cell-group {
+      margin-top: 6px;
+    }
+
+    .msfd-cell-group-label {
+      display: block;
+      margin-bottom: 2px;
+      color: @msfd-muted;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .msfd-cell-more {
+      margin-top: 4px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: @msfd-blue-link;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+
+      &:hover {
+        color: @msfd-blue-dark;
+        text-decoration: underline;
+      }
+    }
+  }
+
   // URL cells rendered as real links (see ExplorerTable).
   .msfd-link {
     color: @msfd-blue-link;

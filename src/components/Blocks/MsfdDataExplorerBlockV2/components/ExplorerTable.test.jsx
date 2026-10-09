@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import ExplorerTable from './ExplorerTable';
@@ -22,6 +22,25 @@ const expandableColumns = [
     expandable: true,
   },
 ];
+
+const groupedColumns = [
+  { key: 'Feature', label: 'Feature(s)', sortable: true, maxItems: 10 },
+];
+
+const groupedCell = (pressureCount) => ({
+  text: 'grouped',
+  empty: false,
+  groups: [
+    { label: 'Species group', items: ['All birds'] },
+    {
+      label: 'Pressures',
+      items: Array.from(
+        { length: pressureCount },
+        (_, index) => `Pressure ${index}`,
+      ),
+    },
+  ],
+});
 
 const renderTable = (rows, extra = {}) =>
   render(
@@ -110,5 +129,38 @@ describe('ExplorerTable', () => {
     });
 
     expect(document.querySelector('.msfd-cell-expandable i.icon')).toBeNull();
+  });
+
+  it('renders grouped cells as FeatureType headings with bullets', () => {
+    renderTable([{ Feature: groupedCell(1) }], {
+      columns: groupedColumns,
+    });
+
+    expect(screen.getByText('Species group')).toBeInTheDocument();
+    expect(screen.getByText('Pressures')).toBeInTheDocument();
+    expect(screen.getByText('All birds')).toBeInTheDocument();
+    expect(screen.getByText('Pressure 0')).toBeInTheDocument();
+    expect(screen.queryByText(/Show \d+ more/)).toBeNull();
+  });
+
+  it('collapses a grouped cell above maxItems and expands on demand', () => {
+    renderTable([{ Feature: groupedCell(11) }], {
+      columns: groupedColumns,
+    });
+
+    // 1 species-group item + 11 pressures = 12; only 10 show (group headings
+    // whose items are all hidden are dropped).
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(10);
+    expect(screen.getByText('Pressure 8')).toBeInTheDocument();
+    expect(screen.queryByText('Pressure 9')).toBeNull();
+
+    const toggle = screen.getByText('Show 2 more');
+    fireEvent.click(toggle);
+
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(12);
+    expect(screen.getByText('Pressure 10')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Show less'));
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(10);
   });
 });
