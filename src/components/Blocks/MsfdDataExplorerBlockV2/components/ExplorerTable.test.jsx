@@ -14,6 +14,15 @@ const columns = [
   { key: 'GESDescription', label: 'GES Description', sortable: false },
 ];
 
+const expandableColumns = [
+  {
+    key: 'GESDescription',
+    label: 'GES Description',
+    sortable: false,
+    expandable: true,
+  },
+];
+
 const renderTable = (rows, extra = {}) =>
   render(
     <ExplorerTable
@@ -72,5 +81,34 @@ describe('ExplorerTable', () => {
 
     expect(document.querySelector('ul.msfd-cell-list')).toBeNull();
     expect(screen.getByText('Good status')).toBeInTheDocument();
+  });
+
+  it('shows the expand icon only when the text overflows the cell box', () => {
+    const scrollWidth = jest
+      .spyOn(Element.prototype, 'scrollWidth', 'get')
+      .mockReturnValue(400);
+    const clientWidth = jest
+      .spyOn(Element.prototype, 'clientWidth', 'get')
+      .mockReturnValue(200);
+
+    renderTable(
+      [{ GESDescription: { text: 'A very long value', empty: false } }],
+      { columns: expandableColumns },
+    );
+
+    expect(
+      document.querySelector('.msfd-cell-expandable i.icon'),
+    ).toBeInTheDocument();
+
+    scrollWidth.mockRestore();
+    clientWidth.mockRestore();
+  });
+
+  it('hides the expand icon when the text fits', () => {
+    renderTable([{ GESDescription: { text: 'Short', empty: false } }], {
+      columns: expandableColumns,
+    });
+
+    expect(document.querySelector('.msfd-cell-expandable i.icon')).toBeNull();
   });
 });

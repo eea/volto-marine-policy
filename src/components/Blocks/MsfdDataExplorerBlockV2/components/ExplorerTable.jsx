@@ -59,27 +59,63 @@ const renderCell = (cell) => {
 // reveals the full value in place (clicking again, or pressing Escape, collapses
 // it). `isExpanded`/`onToggle` are passed in because the expanded state lives on
 // the table, keyed by a stable cell id.
-const renderExpandableCell = (cell, cellKey, expanded, onToggle) => (
-  <button
-    type="button"
-    className={`msfd-cell-expandable${expanded ? ' is-expanded' : ''}`}
-    aria-expanded={expanded}
-    title={expanded ? 'Click to collapse' : 'Click to see the full text'}
-    onClick={() => onToggle(cellKey)}
-    onKeyDown={(event) => {
-      if (event.key === 'Escape' && expanded) onToggle(cellKey);
-    }}
-  >
-    <span className="msfd-cell-expandable-text">{cell.text}</span>
-    <Icon name={expanded ? 'compress' : 'expand'} />
-  </button>
-);
+//
+// The expand/compress icon is only shown when the text actually overflows the
+// single-line box (measured against the CSS `max-width`), so short values look
+// like plain text. The overflow is measured with a layout effect so there is no
+// visible flash; while expanded the box is unconstrained, so the last measured
+// value is kept to keep the collapse control on screen.
+const ExpandableCell = ({ cell, cellKey, expanded, onToggle }) => {
+  const textRef = React.useRef(null);
+  const [overflowing, setOverflowing] = React.useState(false);
+
+  React.useLayoutEffect(() => {
+    if (expanded) return;
+
+    const node = textRef.current;
+
+    if (node) setOverflowing(node.scrollWidth > node.clientWidth);
+  }, [cell.text, expanded]);
+
+  const showToggle = overflowing || expanded;
+
+  return (
+    <button
+      type="button"
+      className={`msfd-cell-expandable${expanded ? ' is-expanded' : ''}`}
+      aria-expanded={showToggle ? expanded : undefined}
+      title={
+        showToggle
+          ? expanded
+            ? 'Click to collapse'
+            : 'Click to see the full text'
+          : undefined
+      }
+      onClick={() => onToggle(cellKey)}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape' && expanded) onToggle(cellKey);
+      }}
+    >
+      <span className="msfd-cell-expandable-text" ref={textRef}>
+        {cell.text}
+      </span>
+      {showToggle && <Icon name={expanded ? 'compress' : 'expand'} />}
+    </button>
+  );
+};
 
 const renderDataCell = (row, column, cellKey, isExpanded, onToggle) => {
   const cell = row[column.key];
 
   if (column.expandable && cell && !cell.empty) {
-    return renderExpandableCell(cell, cellKey, isExpanded(cellKey), onToggle);
+    return (
+      <ExpandableCell
+        cell={cell}
+        cellKey={cellKey}
+        expanded={isExpanded(cellKey)}
+        onToggle={onToggle}
+      />
+    );
   }
 
   return renderCell(cell);
