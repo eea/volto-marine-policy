@@ -27,6 +27,17 @@ const groupedColumns = [
   { key: 'Feature', label: 'Feature(s)', sortable: true, maxItems: 10 },
 ];
 
+const multiColumns = [
+  { key: 'Feature', label: 'Feature(s)', sortable: false, maxItems: 10 },
+];
+
+const multiCell = (count) => ({
+  text: 'multi',
+  tooltip: 'codes',
+  empty: false,
+  items: Array.from({ length: count }, (_, index) => `Item ${index}`),
+});
+
 const groupedCell = (pressureCount) => ({
   text: 'grouped',
   empty: false,
@@ -129,6 +140,49 @@ describe('ExplorerTable', () => {
     });
 
     expect(document.querySelector('.msfd-cell-expandable i.icon')).toBeNull();
+  });
+
+  it('collapses a multi cell above maxItems and expands on demand', () => {
+    renderTable([{ Feature: multiCell(13) }], { columns: multiColumns });
+
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(10);
+    expect(screen.getByText('Item 9')).toBeInTheDocument();
+    expect(screen.queryByText('Item 10')).toBeNull();
+
+    fireEvent.click(screen.getByText('Show 3 more'));
+
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(13);
+    expect(screen.getByText('Item 12')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Show less'));
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(10);
+  });
+
+  it('does not collapse a multi cell at or below maxItems', () => {
+    renderTable([{ Feature: multiCell(10) }], { columns: multiColumns });
+
+    expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(10);
+    expect(screen.queryByText(/Show \d+ more/)).toBeNull();
+  });
+
+  it('renders URL items in a multi cell as links', () => {
+    renderTable(
+      [
+        {
+          Feature: {
+            text: 'http://a;http://b',
+            items: ['http://a', 'http://b'],
+            empty: false,
+          },
+        },
+      ],
+      { columns: multiColumns },
+    );
+
+    const links = document.querySelectorAll('ul.msfd-cell-list a.msfd-link');
+    expect(links).toHaveLength(2);
+    expect(links[0]).toHaveAttribute('href', 'http://a');
+    expect(links[1]).toHaveAttribute('href', 'http://b');
   });
 
   it('renders grouped cells as FeatureType headings with bullets', () => {

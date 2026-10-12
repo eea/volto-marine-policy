@@ -771,21 +771,23 @@
       letter-spacing: 0.02em;
       text-transform: uppercase;
     }
+  }
 
-    .msfd-cell-more {
-      padding: 0;
-      border: none;
-      margin-top: 4px;
-      background: transparent;
-      color: @msfd-blue-link;
-      cursor: pointer;
-      font: inherit;
-      font-size: 12px;
+  // Show more/less control shared by collapsible multi-valued and grouped
+  // cells (both collapse above the column's maxItems).
+  .msfd-cell-more {
+    padding: 0;
+    border: none;
+    margin-top: 4px;
+    background: transparent;
+    color: @msfd-blue-link;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
 
-      &:hover {
-        color: @msfd-blue-dark;
-        text-decoration: underline;
-      }
+    &:hover {
+      color: @msfd-blue-dark;
+      text-decoration: underline;
     }
   }
 

@@ -27,7 +27,20 @@ const renderCellValue = (cell) => {
 const renderCellList = (items) => (
   <ul className="msfd-cell-list">
     {items.map((item, index) => (
-      <li key={`${item}-${index}`}>{item}</li>
+      <li key={`${item}-${index}`}>
+        {typeof item === 'string' && URL_RE.test(item) ? (
+          <a
+            className="msfd-link"
+            href={item}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {item}
+          </a>
+        ) : (
+          item
+        )}
+      </li>
     ))}
   </ul>
 );
@@ -87,19 +100,41 @@ const renderGroupedCell = (cell, column, cellKey, expanded, onToggle) => {
   );
 };
 
+// Multi-valued cells (packed codes such as the Article 9 features and marine
+// reporting units, or the Article 19.3 dataset URLs) render one bullet per
+// token. When the column declares `maxItems` and the cell holds more items than
+// that, only the first `maxItems` bullets are shown, with a "Show N more"
+// control that expands the cell in place. The comma joined `text` is still used
+// for the CSV export.
+const renderMultiCell = (cell, column, cellKey, expanded, onToggle) => {
+  const items = cell.items;
+  const maxItems = column.maxItems || 0;
+  const collapsible = maxItems > 0 && items.length > maxItems;
+  const collapsed = collapsible && !expanded;
+  const visible = collapsed ? items.slice(0, maxItems) : items;
+  const hidden = items.length - visible.length;
+  const list = renderCellList(visible);
+
+  return (
+    <div className="msfd-cell-multi">
+      {cell.tooltip ? <div title={cell.tooltip}>{list}</div> : list}
+      {collapsible && (
+        <button
+          type="button"
+          className="msfd-cell-more"
+          onClick={() => onToggle(cellKey)}
+        >
+          {collapsed ? `Show ${hidden} more` : 'Show less'}
+        </button>
+      )}
+    </div>
+  );
+};
+
 const renderCell = (cell) => {
   if (!cell) return null;
 
   if (cell.empty) return <em className="msfd-empty">No value</em>;
-
-  // Multi-valued cells (packed codes such as the Article 9 features and
-  // marine reporting units) render one bullet per token instead of a comma
-  // join. The comma joined `text` is still used for the CSV export.
-  if (Array.isArray(cell.items) && cell.items.length) {
-    const list = renderCellList(cell.items);
-
-    return cell.tooltip ? <div title={cell.tooltip}>{list}</div> : list;
-  }
 
   const value = renderCellValue(cell);
 
@@ -164,6 +199,16 @@ const renderDataCell = (row, column, cellKey, isExpanded, onToggle) => {
 
   if (cell && Array.isArray(cell.groups) && cell.groups.length) {
     return renderGroupedCell(
+      cell,
+      column,
+      cellKey,
+      isExpanded(cellKey),
+      onToggle,
+    );
+  }
+
+  if (cell && Array.isArray(cell.items) && cell.items.length) {
+    return renderMultiCell(
       cell,
       column,
       cellKey,

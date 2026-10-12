@@ -35,6 +35,16 @@ export const ARTICLE9_PERIODS = [
   { value: '2012', text: '2012 reporting exercise' },
 ];
 
+// Information types of Article 19.3 (Datasets used). The article has no
+// reporting cycle: each type is served by its own backend provider (the API
+// reuses the `cycle` query parameter for it).
+export const ARTICLE19_INFORMATION_TYPES = [
+  { value: '2024', text: '2024 Article 8 & 10' },
+  { value: '2020', text: '2020 Article 11 Monitoring programmes' },
+  { value: '2018', text: '2018 Article 8 & 10' },
+  { value: '2012', text: '2012 Article 19.3' },
+];
+
 // Reporting period control shown in the explorer sidebar. A4 reports several
 // cycles (dropdown); A7 has a single period, the 2012 reporting exercise, so it
 // renders a static label instead of a one-option dropdown. `periodConfig`
@@ -49,6 +59,10 @@ export const PERIOD_CONFIG = {
     heading: 'Reporting period',
     options: ARTICLE9_PERIODS,
   },
+  'datasets-used': {
+    heading: 'Information type',
+    options: ARTICLE19_INFORMATION_TYPES,
+  },
 };
 
 export const getPeriodConfig = (article) =>
@@ -60,6 +74,7 @@ export const ARTICLE_DEFAULT_CYCLE = {
   'marine-units': '2024',
   'competent-authorities': '2012',
   'determination-of-good-environmental-status': '2024',
+  'datasets-used': '2024',
 };
 
 export const getDefaultCycle = (article) =>
@@ -111,6 +126,12 @@ export const MSFD_ARTICLES = [
   // The mockup labels this "Article 15", but the MSFD exceptions are reported
   // under Article 14 (see ARTICLE_IDS / schema.jsx).
   { slug: 'exceptions', number: '14', label: 'Exceptions', page: 'article-14' },
+  {
+    slug: 'datasets-used',
+    number: '19.3',
+    label: 'Datasets used',
+    page: 'datasets-used',
+  },
 ];
 
 // Builds the URL of a sibling article page from the current location: the
