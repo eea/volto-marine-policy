@@ -33,6 +33,24 @@ describe('MsfdDataExplorerBlockV2View', () => {
     expect(screen.getByText('Reporting cycle')).toBeInTheDocument();
   });
 
+  it('adds the article page class next to the explorer class', () => {
+    const { container } = renderView(
+      { data: { article_select: '9' }, editable: true },
+    );
+
+    expect(container.firstChild).toHaveClass('msfd-explorer-v2');
+    expect(container.firstChild).toHaveClass('article-9');
+  });
+
+  it('adds the article page class in view mode too', () => {
+    const { container } = renderView(
+      { data: { article_select: 'datasets-used' }, editable: false },
+    );
+
+    expect(container.firstChild).toHaveClass('msfd-explorer-v2');
+    expect(container.firstChild).toHaveClass('datasets-used');
+  });
+
   it('uses the article and cycle from URL overrides in view mode', () => {
     renderView(
       { data: { article_select: '4' }, editable: false },

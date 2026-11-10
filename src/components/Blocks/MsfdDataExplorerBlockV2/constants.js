@@ -134,6 +134,18 @@ export const MSFD_ARTICLES = [
   },
 ];
 
+// CSS class added next to `msfd-explorer-v2` on the block wrapper, one per
+// article: the page segment of that article ("article-9", "datasets-used"), so
+// the hook and the URL name the same thing. Unknown slugs fall back to
+// `article-<slug>`.
+export const ARTICLE_PAGE_CLASS = MSFD_ARTICLES.reduce((acc, item) => {
+  acc[item.slug] = item.page;
+  return acc;
+}, {});
+
+export const getArticlePageClass = (article) =>
+  ARTICLE_PAGE_CLASS[article] || `article-${article}`;
+
 // Builds the URL of a sibling article page from the current location: the
 // current page's parent is kept and the article page segment is appended, so
 // the sidebar works under any base path (e.g. /a/b/article-4 -> /a/b/article-7).

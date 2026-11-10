@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { getRenderer } from './renderers';
 import LegacyView from './LegacyView';
 import Sidebar from './components/Sidebar';
-import { ARTICLE_SLUGS, getDefaultCycle } from './constants';
+import { ARTICLE_SLUGS, getArticlePageClass, getDefaultCycle } from './constants';
 import { readUrlState, writeUrlState } from './urlState';
 import './styles.less';
 
@@ -43,6 +43,9 @@ const MsfdDataExplorerBlockV2View = (props) => {
   };
 
   const Renderer = getRenderer(article);
+  // The article also becomes a class on the block wrapper (e.g.
+  // "msfd-explorer-v2 article-9"), so per-article tweaks can hook onto it.
+  const wrapperClass = `msfd-explorer-v2 ${getArticlePageClass(article)}`;
 
   const sidebar = (
     <Sidebar
@@ -57,7 +60,7 @@ const MsfdDataExplorerBlockV2View = (props) => {
   // explorer has no such split, so it keeps the two column layout.
   if (Renderer) {
     return (
-      <div className="msfd-explorer-v2">
+      <div className={wrapperClass}>
         <Renderer
           {...props}
           article={article}
@@ -69,7 +72,7 @@ const MsfdDataExplorerBlockV2View = (props) => {
   }
 
   return (
-    <div className="msfd-explorer-v2">
+    <div className={wrapperClass}>
       <div className="msfd-explorer-layout">
         <main className="msfd-explorer-main">
           <LegacyView {...props} data={{ ...data, article_select: article }} />
