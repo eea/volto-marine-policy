@@ -338,7 +338,7 @@ const DataExplorer = (props) => {
             onClick={handleDownload}
           >
             <Icon name="download" />
-            Download results
+            Download results (CSV)
           </button>
         </div>
 

@@ -13,7 +13,8 @@ const Plot = loadable(() => import('./plotlyBars'), {
   fallback: <div className="msfd-summary-chart-loading" />,
 });
 
-const CHART_COLOR = '#4a7fbf';
+// WISE Marine secondary colour (blue-3 of the EEA Design System palette).
+const CHART_COLOR = '#0079CF';
 
 // Plotly labels every category on the categorical axis by default, which is
 // unreadable once there are many MRU size bins or regions. Show at most this

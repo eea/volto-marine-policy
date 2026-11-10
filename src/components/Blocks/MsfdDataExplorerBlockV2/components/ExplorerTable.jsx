@@ -273,7 +273,7 @@ const renderDataRow = (row, key, columns, onView, isExpanded, onToggleCell) => (
         </td>
       );
     })}
-    <td className="msfd-table-action-col">
+    {/* <td className="msfd-table-action-col">
       <button
         type="button"
         className="msfd-view"
@@ -281,7 +281,7 @@ const renderDataRow = (row, key, columns, onView, isExpanded, onToggleCell) => (
       >
         View <Icon name="external" />
       </button>
-    </td>
+    </td> */}
   </tr>
 );
 
@@ -333,7 +333,7 @@ const renderHeaderCells = (columns, sort, dir, onSort) => (
         )}
       </th>
     ))}
-    <th className="msfd-table-action-col">Action</th>
+    {/* <th className="msfd-table-action-col">Action</th> */}
   </>
 );
 
