@@ -304,6 +304,9 @@ const DataExplorer = (props) => {
 
   const hasRows = data.rows && data.rows.length;
   const total = data.pagination ? data.pagination.total : null;
+  // Both header actions are unavailable while a download runs or while there
+  // are no rows to act on (e.g. the first load).
+  const actionsDisabled = Boolean(downloading || !hasRows);
 
   return (
     <div className="msfd-explorer-content">
@@ -338,10 +341,19 @@ const DataExplorer = (props) => {
           <div className="msfd-results-actions">
             {discodataUrl ? (
               <a
-                className="msfd-discodata"
+                className={`msfd-discodata${
+                  actionsDisabled ? ' is-disabled' : ''
+                }`}
                 href={discodataUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-disabled={actionsDisabled || undefined}
+                tabIndex={actionsDisabled ? -1 : undefined}
+                onClick={
+                  actionsDisabled
+                    ? (event) => event.preventDefault()
+                    : undefined
+                }
               >
                 <Icon name="external" />
                 Query and download from Discodata
@@ -351,7 +363,7 @@ const DataExplorer = (props) => {
             <button
               type="button"
               className="msfd-download"
-              disabled={downloading || !hasRows}
+              disabled={actionsDisabled}
               onClick={handleDownload}
             >
               <Icon name="download" />

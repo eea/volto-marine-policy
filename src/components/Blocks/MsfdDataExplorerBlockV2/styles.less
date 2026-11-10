@@ -679,7 +679,8 @@
         outline-offset: @space-1;
       }
 
-      &:disabled {
+      &:disabled,
+      &.is-disabled {
         cursor: not-allowed;
         opacity: 0.4;
       }
@@ -694,10 +695,17 @@
       color: white;
       text-decoration: none;
 
-      &:hover {
+      &:hover:not(.is-disabled) {
         border-color: @blue-6;
-        background: @grey-0;
+        background: @blue-7;
         color: white;
+      }
+
+      // The anchor can never carry `disabled`, so mirror the button's disabled
+      // look (cursor + opacity above) and drop pointer events entirely.
+      &.is-disabled {
+        pointer-events: none;
+        text-decoration: none;
       }
     }
   }
