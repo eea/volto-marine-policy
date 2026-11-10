@@ -46,7 +46,9 @@
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
 // unsupported value would silently drop the shadow instead of degrading.
-@msfd-shadow: 0 3px 5px -2px fade(@blue-grey-6, 4%), 0 7px 14px -5px fade(@blue-grey-6, 6%);
+@msfd-shadow:
+  0 3px 5px -2px fade(@blue-grey-6, 4%),
+  0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
 
 // The block ships no shape language of its own: the project theme sets the
@@ -124,9 +126,9 @@
     color: @msfd-heading;
     font-size: @msfd-font-title;
     font-weight: @font-weight-7;
+    gap: @space-2;
     letter-spacing: @font-letterspacing-00;
     line-height: @font-lineheight-0;
-    gap: @space-2;
 
     i.icon {
       margin: 0;
@@ -210,9 +212,9 @@
   .msfd-filters {
     display: grid;
     align-items: start;
+    border: 1px solid #bec7cf;
     background: #dae8f4;
     grid-auto-flow: row;
-    border: 1px solid #bec7cf;
   }
 
   .msfd-filters-grid {
@@ -282,7 +284,7 @@
     cursor: pointer;
     gap: @space-1;
 
-    >i.icon {
+    > i.icon {
       position: absolute;
       top: 50%;
       right: @space-3;
@@ -725,7 +727,7 @@
     border: @border-size-1 solid @msfd-border;
   }
 
-  .msfd-group+.msfd-group {
+  .msfd-group + .msfd-group {
     margin-top: @space-6;
   }
 
@@ -866,7 +868,7 @@
   // features as bullets underneath, plus a Show more/less control when the
   // cell holds more items than the column's maxItems.
   .msfd-cell-grouped {
-    .msfd-cell-group+.msfd-cell-group {
+    .msfd-cell-group + .msfd-cell-group {
       margin-top: @space-2;
     }
 
@@ -1047,8 +1049,8 @@
 
   // -- summary & insights ----------------------------------------------
   .msfd-summary {
-    background: #dae8f4;
     border: 1px solid #bec7cf;
+    background: #dae8f4;
   }
 
   .msfd-summary-body {
