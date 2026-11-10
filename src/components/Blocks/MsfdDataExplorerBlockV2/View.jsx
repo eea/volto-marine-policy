@@ -5,7 +5,11 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { getRenderer } from './renderers';
 import LegacyView from './LegacyView';
 import Sidebar from './components/Sidebar';
-import { ARTICLE_SLUGS, getArticlePageClass, getDefaultCycle } from './constants';
+import {
+  ARTICLE_SLUGS,
+  getArticlePageClass,
+  getDefaultCycle,
+} from './constants';
 import { readUrlState, writeUrlState } from './urlState';
 import './styles.less';
 
