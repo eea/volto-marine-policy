@@ -60,6 +60,14 @@
 @msfd-font-meta: @font-size-00;
 @msfd-font-title: @font-size-2;
 
+.section-article-4 {
+  .msfd-explorer-v2 {
+    .msfd-summary-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}
+
 .msfd-explorer-v2 {
   color: @msfd-text;
   font-size: @msfd-font-prose;
@@ -226,7 +234,7 @@
     .msfd-field {
       display: grid;
       align-content: center;
-      padding: 0 @space-4 @space-4;
+      padding: @space-3 @space-4 @space-4;
       border-right: @border-size-1 solid #bec7cf;
 
       // No divider and no outer padding on the first column...
@@ -631,9 +639,18 @@
   // -- results ---------------------------------------------------------
   .msfd-results-header {
     border: none;
+  }
+
+  // The header actions sit together on the right: the optional Discodata link
+  // followed by the CSV download.
+  .msfd-results-actions {
+    display: inline-flex;
+    align-items: stretch;
+    gap: @space-3;
 
     // Secondary (blue) button: the design system's secondary action colour.
-    .msfd-download {
+    .msfd-download,
+    .msfd-discodata {
       display: inline-flex;
       align-items: center;
       padding: @space-3 @space-5;
@@ -663,6 +680,22 @@
       &:disabled {
         cursor: not-allowed;
         opacity: 0.4;
+      }
+    }
+
+    // Outlined secondary action: same shape as the download button, but the
+    // page background with the heading colour, so it reads as the lighter of
+    // the two.
+    .msfd-discodata {
+      border-color: @msfd-heading;
+      background: #004B7F;
+      color: white;
+      text-decoration: none;
+
+      &:hover {
+        border-color: @blue-6;
+        background: @grey-0;
+        color: white;
       }
     }
   }

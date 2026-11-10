@@ -23,6 +23,7 @@ const FETCH_DEBOUNCE = 200;
 //   subject         noun used in the results header (e.g. 'Competent Authorities')
 //   csvName(cycle)  filename for the client side download
 //   supportsSummary(cycle) -> boolean, whether to request Summary & insights
+//   discodataUrl(cycle) -> string|null, link to the public Discodata view
 //
 // Filters apply immediately: any facet change updates `selections`, which
 // refetches both the option counts and the results (debounced). There is no
@@ -36,6 +37,9 @@ const DataExplorer = (props) => {
   const supportsSummary = config.supportsSummary
     ? config.supportsSummary(cycle)
     : false;
+  // Optional link to the public Discodata view of the same data set (only the
+  // Article 4 / 2024 cycle publishes one).
+  const discodataUrl = config.discodataUrl ? config.discodataUrl(cycle) : null;
 
   // Read the initial state from the URL exactly once.
   const initialRef = React.useRef(null);
@@ -331,15 +335,29 @@ const DataExplorer = (props) => {
               : config.subject}
           </h2>
 
-          <button
-            type="button"
-            className="msfd-download"
-            disabled={downloading || !hasRows}
-            onClick={handleDownload}
-          >
-            <Icon name="download" />
-            Download results (CSV)
-          </button>
+          <div className="msfd-results-actions">
+            {discodataUrl ? (
+              <a
+                className="msfd-discodata"
+                href={discodataUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon name="external" />
+                Query and download from Discodata
+              </a>
+            ) : null}
+
+            <button
+              type="button"
+              className="msfd-download"
+              disabled={downloading || !hasRows}
+              onClick={handleDownload}
+            >
+              <Icon name="download" />
+              Download results (CSV)
+            </button>
+          </div>
         </div>
 
         <div className="msfd-results-body msfd-panel-body">

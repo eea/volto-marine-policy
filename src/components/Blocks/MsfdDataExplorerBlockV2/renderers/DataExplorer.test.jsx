@@ -114,4 +114,29 @@ describe('DataExplorer', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it('links to Discodata in a new tab when the config provides a URL', async () => {
+    const discodataUrl =
+      'https://discomap.eea.europa.eu/App/DiscodataViewer/?fqn=test';
+
+    renderExplorer({
+      config: { ...config, discodataUrl: () => discodataUrl },
+    });
+
+    const link = await screen.findByRole('link', {
+      name: /Query and download from Discodata/i,
+    });
+    expect(link).toHaveAttribute('href', discodataUrl);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('renders no Discodata link when the config has none for the cycle', async () => {
+    renderExplorer({ config: { ...config, discodataUrl: () => null } });
+
+    await screen.findByTestId('results-table');
+    expect(
+      screen.queryByText(/Query and download from Discodata/i),
+    ).not.toBeInTheDocument();
+  });
 });
