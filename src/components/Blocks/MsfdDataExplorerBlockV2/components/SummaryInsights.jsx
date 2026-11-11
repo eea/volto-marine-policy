@@ -109,8 +109,8 @@ const SummaryChart = ({ chart, options }) => {
   const categoryStyle = horizontal
     ? horizontalLayout(labels.length)
     : forcedVertical
-    ? verticalLayout(labels.length)
-    : null;
+      ? verticalLayout(labels.length)
+      : null;
   const ticks = categoryStyle ? {} : categoricalTicks(labels);
   const minHeight = categoryStyle ? categoryStyle.height : BASE_CHART_HEIGHT;
   const [plotRef, height] = useFillHeight(minHeight);
