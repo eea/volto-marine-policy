@@ -23,6 +23,8 @@ const FETCH_DEBOUNCE = 200;
 //   subject         noun used in the results header (e.g. 'Competent Authorities')
 //   csvName(cycle)  filename for the client side download
 //   supportsSummary(cycle) -> boolean, whether to request Summary & insights
+//   summaryChartOptions(chart) -> object|null, per-chart display overrides
+//                        for Summary & insights (e.g. { orientation: 'v' })
 //   discodataUrl(cycle) -> string|null, link to the public Discodata view
 //
 // Filters apply immediately: any facet change updates `selections`, which
@@ -327,7 +329,11 @@ const DataExplorer = (props) => {
       </div>
 
       {supportsSummary ? (
-        <SummaryInsights summary={summary} loading={loadingSummary} />
+        <SummaryInsights
+          summary={summary}
+          loading={loadingSummary}
+          chartOptions={config.summaryChartOptions}
+        />
       ) : null}
 
       <section className="msfd-panel msfd-results">
