@@ -1,0 +1,173 @@
+// Maps the block's `article_select` slug to the article identifier used by the
+// `@msfd-explorer` API.
+export const ARTICLE_IDS = {
+  'marine-units': '4',
+  'competent-authorities': '7',
+  assessments: '8',
+  'determination-of-good-environmental-status': '9',
+  'establishment-of-environmental-targets': '10',
+  'monitoring-programmes': '11',
+  'programmes-of-measures-progress-of-pom': '13',
+  exceptions: '14',
+  'datasets-used': '19.3',
+};
+
+// Reverse of ARTICLE_IDS, so old/shareable URLs that stored the numeric article
+// (msfd_article=4) still resolve to the slug used by the renderer registry.
+export const ARTICLE_SLUGS = Object.keys(ARTICLE_IDS).reduce((acc, slug) => {
+  acc[ARTICLE_IDS[slug]] = slug;
+  return acc;
+}, {});
+
+// Reporting cycles of Article 4. All three cycles have a React renderer: the
+// 2012 one is grouped by country (see ExplorerTable).
+export const ARTICLE4_CYCLES = [
+  { value: '2024', text: '2024 - 2030' },
+  { value: '2018', text: '2018 - 2024' },
+  { value: '2012', text: '2012 - 2018' },
+];
+
+// Reporting periods of Article 9. Unlike Article 4 these are reporting
+// exercises, not cycles, and all three have a React renderer.
+export const ARTICLE9_PERIODS = [
+  { value: '2024', text: '2024 reporting exercise' },
+  { value: '2018', text: '2018 reporting exercise' },
+  { value: '2012', text: '2012 reporting exercise' },
+];
+
+// Information types of Article 19.3 (Datasets used). The article has no
+// reporting cycle: each type is served by its own backend provider (the API
+// reuses the `cycle` query parameter for it).
+export const ARTICLE19_INFORMATION_TYPES = [
+  { value: '2024', text: '2024 Article 8 & 10' },
+  { value: '2020', text: '2020 Article 11 Monitoring programmes' },
+  { value: '2018', text: '2018 Article 8 & 10' },
+  { value: '2012', text: '2012 Article 19.3' },
+];
+
+// Reporting period control shown in the explorer sidebar. A4 reports several
+// cycles (dropdown); A7 has a single period, the 2012 reporting exercise, so it
+// renders a static label instead of a one-option dropdown. `periodConfig`
+// returns the config for the current article, tolerating an unknown slug.
+export const PERIOD_CONFIG = {
+  'marine-units': { heading: 'Reporting cycle', options: ARTICLE4_CYCLES },
+  'competent-authorities': {
+    heading: 'Reporting period',
+    static: '2012 reporting exercise',
+  },
+  'determination-of-good-environmental-status': {
+    heading: 'Reporting period',
+    options: ARTICLE9_PERIODS,
+  },
+  'datasets-used': {
+    heading: 'Information type',
+    options: ARTICLE19_INFORMATION_TYPES,
+  },
+};
+
+export const getPeriodConfig = (article) =>
+  PERIOD_CONFIG[article] || { heading: 'Reporting cycle', options: [] };
+
+// Default reporting period per article: the value used when the URL does not
+// override it. A7 is always the 2012 exercise.
+export const ARTICLE_DEFAULT_CYCLE = {
+  'marine-units': '2024',
+  'competent-authorities': '2012',
+  'determination-of-good-environmental-status': '2024',
+  'datasets-used': '2024',
+};
+
+export const getDefaultCycle = (article) =>
+  ARTICLE_DEFAULT_CYCLE[article] || '2024';
+
+// Articles shown in the explorer sidebar (MSFD Articles section). The order and
+// labels mirror the WISE Marine navigation. Each entry has its own page: `page`
+// is the URL segment of that page (e.g. "/path/article-4" for Article 4), and
+// the sidebar navigates between those pages instead of switching in place. The
+// pages are authored separately (each carrying its own block config).
+export const MSFD_ARTICLES = [
+  {
+    slug: 'marine-units',
+    number: '4',
+    label: 'Marine Units',
+    page: 'article-4',
+  },
+  {
+    slug: 'competent-authorities',
+    number: '7',
+    label: 'Competent Authorities',
+    page: 'article-7',
+  },
+  { slug: 'assessments', number: '8', label: 'Assessment', page: 'article-8' },
+  {
+    slug: 'determination-of-good-environmental-status',
+    number: '9',
+    label: 'Good Environmental Status',
+    page: 'article-9',
+  },
+  {
+    slug: 'establishment-of-environmental-targets',
+    number: '10',
+    label: 'Environmental Targets',
+    page: 'article-10',
+  },
+  {
+    slug: 'monitoring-programmes',
+    number: '11',
+    label: 'Monitoring Programmes',
+    page: 'article-11',
+  },
+  {
+    slug: 'programmes-of-measures-progress-of-pom',
+    number: '13',
+    label: 'Programmes of Measures',
+    page: 'article-13',
+  },
+  // The mockup labels this "Article 15", but the MSFD exceptions are reported
+  // under Article 14 (see ARTICLE_IDS / schema.jsx).
+  { slug: 'exceptions', number: '14', label: 'Exceptions', page: 'article-14' },
+  {
+    slug: 'datasets-used',
+    number: '19.3',
+    label: 'Datasets used',
+    page: 'datasets-used',
+  },
+];
+
+// CSS class added next to `msfd-explorer-v2` on the block wrapper, one per
+// article: the page segment of that article ("article-9", "datasets-used"), so
+// the hook and the URL name the same thing. Unknown slugs fall back to
+// `article-<slug>`.
+export const ARTICLE_PAGE_CLASS = MSFD_ARTICLES.reduce((acc, item) => {
+  acc[item.slug] = item.page;
+  return acc;
+}, {});
+
+export const getArticlePageClass = (article) =>
+  ARTICLE_PAGE_CLASS[article] || `article-${article}`;
+
+// Builds the URL of a sibling article page from the current location: the
+// current page's parent is kept and the article page segment is appended, so
+// the sidebar works under any base path (e.g. /a/b/article-4 -> /a/b/article-7).
+export const articlePageHref = (pathname, page) => {
+  if (!page) return null;
+
+  const clean = (pathname || '').replace(/\/+$/, '');
+  const base = clean.replace(/\/[^/]*$/, '');
+
+  return `${base}/${page}`;
+};
+
+export const DEFAULT_PAGE_SIZE = 10;
+
+// (article, cycle) combinations that have a backend Summary & insights
+// payload: every Article 4 cycle exposes one (2012 reports counts only, while
+// 2018/2024 also report area), Article 7 exposes a count-based one, and
+// Article 9 exposes one for all three periods.
+// Adding a cycle here is all the frontend needs once the provider implements
+// `_build_summary`.
+export const SUMMARY_CYCLES = {
+  4: ['2024', '2018', '2012'],
+  7: ['2012'],
+  9: ['2024', '2018', '2012'],
+};

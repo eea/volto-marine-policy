@@ -1,0 +1,1430 @@
+// Styles for the React data explorer (v2): a Filters panel and a flat results
+// table in the main column, with the reporting cycle and MSFD Articles
+// navigation in the right sidebar.
+//
+// Every value below comes from the EEA Design System tokens (colours, type
+// scale, borders, shadows, z-index), so the block follows the theme instead of
+// carrying its own parallel palette. The tokens are compiled in here because
+// this file is its own LESS entry point and does not see the semantic theme
+// variables.
+//
+// `tokens/tokens` is imported piecemeal on purpose: its `sizes.less` derives
+// `@rem-space-*` from the `@1px`…`@80px` helpers of the theme's
+// `globals/site.variables` (and `site.variables` itself needs the full Semantic
+// default theme), so the bundle cannot be imported on its own. The spacing steps
+// used below are therefore declared locally, from the same 4px base.
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/colors';
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/fonts';
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/borders';
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/z-index';
+
+// -- spacing (mirrors tokens/sizes.less) ------------------------------------
+@spacer: 4px;
+@space-025: @spacer * 0.25; // 1px
+@space-05: @spacer * 0.5; // 2px
+@space-1: @spacer; // 4px
+@space-2: @spacer * 2; // 8px
+@space-3: @spacer * 3; // 12px
+@space-4: @spacer * 4; // 16px
+@space-5: @spacer * 5; // 20px
+@space-6: @spacer * 6; // 24px
+
+// -- semantic aliases -------------------------------------------------------
+// Roles mapped onto the token palette; the components only ever refer to these.
+@msfd-text: @blue-grey-5; // body text
+@msfd-muted: @blue-grey-4; // secondary text (5.8:1 on white, passes AA)
+@msfd-heading: @blue-5; // panel titles, values (EEA Blue)
+@msfd-accent: @blue-3; // hover/active accents
+@msfd-link: @blue-4; // link default
+@msfd-link-hover: @blue-5; // link hover
+@msfd-surface: @grey-0; // card surface
+@msfd-surface-alt: @grey-1; // supplementary background
+@msfd-surface-sidebar: @blue-grey-0; // sidebar cards keep the blue wash
+@msfd-surface-tint: @blue-grey-0; // selected/grouped state
+@msfd-border: #bec7cf;
+// Overlay elevation. These are the `@shadow-2` / `@shadow-1` tokens from the
+// design system, written out with literal alpha because the tokens express it as
+// `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
+// unsupported value would silently drop the shadow instead of degrading.
+@msfd-shadow:
+  0 3px 5px -2px fade(@blue-grey-6, 4%),
+  0 7px 14px -5px fade(@blue-grey-6, 6%);
+@msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
+
+// The block ships no shape language of its own: the project theme sets the
+// global Semantic radius (@absoluteBorderRadius in theme/globals/site.variables)
+// to 4px, so the block mirrors it rather than inventing a second radius.
+@msfd-radius: 4px;
+
+// Type scale roles (DESIGN.md: body 16, caption 14, small 12).
+@msfd-font-prose: @font-size-1;
+@msfd-font-data: @font-size-0;
+@msfd-font-meta: @font-size-00;
+@msfd-font-title: @font-size-2;
+
+.msfd-explorer-v2.article-4 {
+  .msfd-summary-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.msfd-explorer-v2.article-7,
+.msfd-explorer-v2.article-9 {
+  .msfd-summary-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.msfd-explorer-v2 {
+  color: @msfd-text;
+  font-size: @msfd-font-prose;
+  line-height: @font-lineheight-3;
+
+  // -- layout ----------------------------------------------------------
+  .msfd-explorer-layout {
+    display: grid;
+    align-items: start;
+    gap: @space-6;
+    grid-template-columns: minmax(0, 1fr) 300px;
+
+    @media (max-width: 991px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-explorer-main {
+    min-width: 0;
+  }
+
+  .msfd-explorer-content {
+    display: flex;
+    flex-direction: column;
+    gap: @space-5;
+  }
+
+  // Top row: the Filters panel and the sidebar share one wrapper; the Results
+  // table sits in its own full width wrapper below (see .msfd-results).
+  .msfd-explorer-top {
+    display: grid;
+    align-items: stretch;
+    gap: @space-6;
+    grid-template-columns: minmax(0, 1fr) 300px;
+
+    @media (max-width: 991px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  // -- panels ----------------------------------------------------------
+  // Flat surface + 1px border. Hierarchy comes from typography and contrast,
+  // not from elevation (DESIGN.md: no drop shadows for structure).
+  .msfd-panel {
+    // border: @border-size-1 solid @msfd-border;
+    background: @msfd-surface;
+  }
+
+  .msfd-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: @space-3 @space-4;
+    border-bottom: @border-size-1 solid @msfd-border;
+    gap: @space-3;
+  }
+
+  .msfd-panel-title {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: @msfd-heading;
+    font-size: @msfd-font-title;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+    letter-spacing: @font-letterspacing-00;
+    line-height: @font-lineheight-0;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-accent;
+    }
+  }
+
+  .msfd-panel-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-3;
+  }
+
+  .msfd-refreshing {
+    display: inline-flex;
+    color: @msfd-muted;
+
+    i.icon {
+      margin: 0;
+    }
+  }
+
+  // Inline text action (Reset filters, Show/Hide). Links are not underlined by
+  // default in the design system; the underline appears on hover only.
+  .msfd-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-link;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-6;
+    gap: @space-2;
+
+    i.icon {
+      margin: 0;
+    }
+
+    &:hover {
+      color: @msfd-link-hover;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // -- panel loading ---------------------------------------------------
+  .msfd-panel-body {
+    position: relative;
+  }
+
+  .msfd-panel-loading {
+    display: flex;
+    min-height: 120px;
+    align-items: center;
+    justify-content: center;
+    padding: @space-6;
+
+    &.is-overlay {
+      position: absolute;
+      z-index: @z-index-4;
+      min-height: 100%;
+      background: fade(@msfd-surface, 72%);
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .ui.loader {
+      margin: 0;
+    }
+  }
+
+  // -- filters ---------------------------------------------------------
+  // Supplementary background (grey-1) rather than a saturated blue wash; the
+  // tints are reserved for selected and grouped states.
+  .msfd-filters {
+    display: grid;
+    align-items: start;
+    border: 1px solid #bec7cf;
+    background: #dae8f4;
+    grid-auto-flow: row;
+  }
+
+  .msfd-filters-grid {
+    display: grid;
+    align-items: stretch;
+    padding: 0 @space-4 @space-4;
+    // Column gap is 0: the space between columns comes from the fields'
+    // horizontal padding, so a full-height divider can sit at each field edge.
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    .msfd-field {
+      display: grid;
+      align-content: center;
+      padding: @space-3 @space-4 @space-4;
+      border-right: @border-size-1 solid #bec7cf;
+
+      // No divider and no outer padding on the first column...
+      &:nth-child(3n + 1) {
+        padding-left: 0;
+      }
+
+      // ...and on the right edge of the last column.
+      &:nth-child(3n),
+      &:last-child {
+        padding-right: 0;
+        border-right: none;
+      }
+    }
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+
+      .msfd-field {
+        padding-right: 0;
+        padding-left: 0;
+        border-right: none;
+      }
+    }
+  }
+
+  .msfd-field {
+    min-width: 0;
+  }
+
+  .msfd-field-label {
+    display: block;
+    margin-bottom: @space-2;
+    color: @msfd-text;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+  }
+
+  // -- multi-select facet ----------------------------------------------
+  .msfd-multiselect {
+    position: relative;
+  }
+
+  .msfd-multiselect-trigger {
+    position: relative;
+    display: flex;
+    min-height: 40px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: @space-1 30px @space-1 @space-2;
+    border: @border-size-1 solid @msfd-border;
+    background: @msfd-surface;
+    cursor: pointer;
+    gap: @space-1;
+
+    > i.icon {
+      position: absolute;
+      top: 50%;
+      right: @space-3;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: @font-size-00;
+      transform: translateY(-50%);
+    }
+
+    &:hover,
+    &.is-open {
+      border-color: @msfd-accent;
+    }
+
+    // 2.4.7 Focus Visible: a border colour change alone is not enough.
+    &:focus-visible {
+      border-color: @msfd-accent;
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-05;
+    }
+  }
+
+  .msfd-multiselect-placeholder {
+    padding: @space-1 @space-2;
+    color: @msfd-muted;
+  }
+
+  .msfd-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-1;
+  }
+
+  // Tag shape: sharp corners, grey/blue-grey tint, body-caption type.
+  .msfd-chip {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    padding: @space-05 @space-1 @space-05 @space-2;
+    border-radius: @msfd-radius;
+    background: @msfd-surface-tint;
+    color: @msfd-heading;
+    font-size: @msfd-font-meta;
+    gap: @space-1;
+  }
+
+  .msfd-chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .msfd-chip-remove {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: @msfd-radius;
+    background: transparent;
+    color: @msfd-heading;
+    cursor: pointer;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-00;
+    }
+
+    &:hover {
+      background: fade(@blue-5, 15%);
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: 0;
+    }
+  }
+
+  .msfd-multiselect-panel {
+    position: absolute;
+    z-index: @z-index-5;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 320px;
+    max-width: 90vw;
+    padding: @space-3;
+    border: @border-size-1 solid @msfd-border;
+    background: @msfd-surface;
+    box-shadow: @msfd-shadow;
+  }
+
+  .msfd-multiselect-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-bottom: @space-2;
+    border-bottom: @border-size-1 solid @msfd-border;
+    margin-bottom: @space-2;
+    gap: @space-3;
+  }
+
+  .msfd-inline-action {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-link;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-5;
+
+    &:hover {
+      color: @msfd-link-hover;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  .msfd-multiselect-search {
+    width: 100%;
+    margin-bottom: @space-2;
+  }
+
+  .msfd-multiselect-options {
+    max-height: 240px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow-y: auto;
+  }
+
+  .msfd-multiselect-option {
+    &:hover {
+      background: @msfd-surface-alt;
+    }
+
+    &.is-selected {
+      background: @msfd-surface-tint;
+    }
+  }
+
+  .msfd-multiselect-option-row {
+    display: flex;
+    align-items: center;
+    padding: @space-1 @space-1;
+    margin: 0;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    gap: @space-2;
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      margin: 0;
+      accent-color: @msfd-heading;
+      cursor: pointer;
+    }
+
+    &:focus-within {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: -2px;
+    }
+  }
+
+  .msfd-multiselect-option-text {
+    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .msfd-multiselect-option-count {
+    flex: none;
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-multiselect-empty {
+    padding: @space-2;
+    color: @msfd-muted;
+    font-size: @msfd-font-data;
+  }
+
+  // -- text facet ------------------------------------------------------
+  .msfd-text-input {
+    width: 100%;
+
+    input {
+      font-size: @msfd-font-data;
+    }
+  }
+
+  // -- toggle facet ----------------------------------------------------
+  .msfd-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+  }
+
+  .msfd-toggle {
+    padding: @space-2 @space-3;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-6;
+
+    &:hover {
+      border-color: @msfd-accent;
+    }
+
+    &.is-selected {
+      border-color: @msfd-heading;
+      background: @msfd-heading;
+      color: @grey-0;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // -- range facet -----------------------------------------------------
+  .msfd-range {
+    position: relative;
+    height: 24px;
+    margin: @space-1 0 @space-3;
+  }
+
+  .msfd-range-rail,
+  .msfd-range-fill {
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    transform: translateY(-50%);
+  }
+
+  .msfd-range-rail {
+    right: 0;
+    left: 0;
+    background: @msfd-border;
+  }
+
+  .msfd-range-fill {
+    background: @msfd-accent;
+  }
+
+  .msfd-range-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    pointer-events: none;
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-05;
+    }
+  }
+
+  .msfd-range-input-low {
+    z-index: 2;
+  }
+
+  .msfd-range-input-high {
+    z-index: 1;
+  }
+
+  // Circular thumbs are the documented exception to the sharp-corner rule
+  // (@thumbBorderRadius in the theme).
+  .msfd-range-input::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    border: @border-size-2 solid @msfd-accent;
+    border-radius: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: @grey-0;
+    box-shadow: @msfd-shadow-thumb;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .msfd-range-input::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: @border-size-2 solid @msfd-accent;
+    border-radius: 50%;
+    background: @grey-0;
+    box-shadow: @msfd-shadow-thumb;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .msfd-range-input::-moz-range-track {
+    background: none;
+  }
+
+  .msfd-range-values {
+    display: grid;
+    gap: @space-3;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .msfd-range-value {
+    display: block;
+
+    span {
+      display: block;
+      margin-bottom: @space-1;
+      color: @msfd-muted;
+      font-size: @msfd-font-meta;
+    }
+
+    input {
+      width: 100%;
+      padding: @space-2;
+      border: @border-size-1 solid @msfd-border;
+      border-radius: @msfd-radius;
+      color: @msfd-text;
+      font-size: @msfd-font-data;
+
+      &:focus-visible {
+        border-color: @msfd-accent;
+        outline: @border-size-2 solid @blue-2;
+        outline-offset: 0;
+      }
+    }
+  }
+
+  // -- results ---------------------------------------------------------
+  .msfd-results-header {
+    border: none;
+  }
+
+  // The header actions sit together on the right: the optional Discodata link
+  // followed by the CSV download.
+  .msfd-results-actions {
+    display: inline-flex;
+    align-items: stretch;
+    gap: @space-3;
+
+    // Secondary (blue) button: the design system's secondary action colour.
+    .msfd-download,
+    .msfd-discodata {
+      display: inline-flex;
+      align-items: center;
+      padding: @space-3 @space-5;
+      border: @border-size-1 solid @msfd-heading;
+      border-radius: @msfd-radius;
+      background: @msfd-heading;
+      color: @grey-0;
+      cursor: pointer;
+      font-size: @msfd-font-data;
+      font-weight: @font-weight-6;
+      gap: @space-2;
+
+      i.icon {
+        margin: 0;
+      }
+
+      &:hover:not(:disabled) {
+        border-color: @blue-6;
+        background: @blue-6; // secondary button hover
+      }
+
+      &:focus-visible {
+        outline: @border-size-2 solid @blue-2;
+        outline-offset: @space-1;
+      }
+
+      &:disabled,
+      &.is-disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+    }
+
+    // Outlined secondary action: same shape as the download button, but the
+    // page background with the heading colour, so it reads as the lighter of
+    // the two.
+    .msfd-discodata {
+      border-color: @msfd-heading;
+      background: #004b7f;
+      color: white;
+      text-decoration: none;
+
+      &:hover:not(.is-disabled) {
+        border-color: @blue-6;
+        background: @blue-6;
+        color: white;
+      }
+
+      // The anchor can never carry `disabled`, so mirror the button's disabled
+      // look (cursor + opacity above) and drop pointer events entirely.
+      &.is-disabled {
+        pointer-events: none;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .msfd-results-body {
+    padding: 0 0 @space-2;
+  }
+
+  .msfd-no-data {
+    padding: @space-6 @space-4;
+    color: @msfd-muted;
+    text-align: center;
+  }
+
+  .msfd-table-wrapper {
+    overflow-x: auto;
+  }
+
+  // Data grid: denser than prose, so it uses the caption step of the type
+  // scale, with the design system's header treatment (blue heading colour on a
+  // supplementary background).
+  table.msfd-table {
+    width: 100%;
+    border: @border-size-1 solid @msfd-border;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: @space-2 @space-3;
+      border-bottom: @border-size-1 solid @msfd-border;
+      text-align: left;
+    }
+
+    th {
+      background: @msfd-surface-alt;
+      color: @msfd-heading;
+      font-size: @msfd-font-data;
+      font-weight: @font-weight-7;
+    }
+
+    td {
+      font-size: @msfd-font-data;
+    }
+
+    tbody tr:hover td {
+      background: @msfd-surface-alt;
+    }
+
+    .is-right {
+      text-align: right;
+    }
+  }
+
+  .msfd-group table.msfd-table {
+    border: none;
+  }
+
+  // -- grouped results (2012 cycle) ------------------------------------
+  .msfd-group {
+    border: @border-size-1 solid @msfd-border;
+  }
+
+  .msfd-group + .msfd-group {
+    margin-top: @space-6;
+  }
+
+  .msfd-group-row {
+    border-bottom: @border-size-1 solid @msfd-border;
+    background: @msfd-surface-tint;
+  }
+
+  .msfd-group-header {
+    display: flex;
+    align-items: center;
+    padding: @space-2 @space-3;
+    gap: @space-3;
+  }
+
+  .msfd-group-name {
+    color: @msfd-heading;
+    font-size: @msfd-font-prose;
+    font-weight: @font-weight-7;
+  }
+
+  .msfd-group-count {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-group-detail {
+    padding: @space-3 @space-4;
+    border-bottom: @border-size-1 solid @msfd-border;
+    background: @msfd-surface;
+  }
+
+  .msfd-group-detail-fields {
+    display: grid;
+    margin: 0;
+    font-size: @msfd-font-data;
+    gap: @space-2 @space-4;
+    grid-template-columns: 200px minmax(0, 1fr);
+
+    dt {
+      color: @msfd-text;
+      font-weight: @font-weight-6;
+    }
+
+    dd {
+      margin: 0;
+      color: @msfd-muted;
+    }
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-table-sort {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-muted;
+      font-size: @font-size-00;
+    }
+
+    &:hover {
+      color: @blue-6;
+
+      i.icon {
+        color: @msfd-accent;
+      }
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  .msfd-table-action-col {
+    width: 90px;
+    text-align: right;
+  }
+
+  .msfd-view {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-link;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    gap: @space-1;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-00;
+    }
+
+    &:hover {
+      color: @msfd-link-hover;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  .msfd-empty {
+    color: @msfd-muted;
+  }
+
+  // Bullet list for multi-valued cells (one item per packed token).
+  .msfd-cell-list {
+    padding-left: @space-4;
+    margin: 0;
+
+    li {
+      margin: 0 0 @space-05;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Grouped cells (Article 9/2012 features): a FeatureType heading with its
+  // features as bullets underneath, plus a Show more/less control when the
+  // cell holds more items than the column's maxItems.
+  .msfd-cell-grouped {
+    .msfd-cell-group + .msfd-cell-group {
+      margin-top: @space-2;
+    }
+
+    // Group label: overline style from the type scale (12px, 500, tracked).
+    .msfd-cell-group-label {
+      display: block;
+      margin-bottom: @space-05;
+      color: @msfd-muted;
+      font-size: @msfd-font-meta;
+      font-weight: @font-weight-5;
+      letter-spacing: @font-letterspacing-4;
+      text-transform: uppercase;
+    }
+  }
+
+  // Show more/less control shared by collapsible multi-valued and grouped
+  // cells (both collapse above the column's maxItems).
+  .msfd-cell-more {
+    padding: 0;
+    border: none;
+    margin-top: @space-1;
+    background: transparent;
+    color: @msfd-link;
+    cursor: pointer;
+    font: inherit;
+    font-size: @msfd-font-meta;
+    font-weight: @font-weight-6;
+
+    &:hover {
+      color: @msfd-link-hover;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // URL cells rendered as real links (see ExplorerTable).
+  .msfd-link {
+    color: @msfd-link;
+    word-break: break-word;
+
+    &:hover {
+      color: @msfd-link-hover;
+      text-decoration: underline;
+    }
+  }
+
+  // -- expandable long-text cells --------------------------------------
+  .msfd-cell-expandable {
+    display: inline-flex;
+    max-width: 280px;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    gap: @space-2;
+    text-align: left;
+
+    .msfd-cell-expandable-text {
+      overflow: hidden;
+      min-width: 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    i.icon {
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: @font-size-00;
+    }
+
+    &:hover .msfd-cell-expandable-text {
+      color: @msfd-heading;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+
+    &.is-expanded {
+      max-width: none;
+
+      .msfd-cell-expandable-text {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+      }
+
+      i.icon {
+        color: @msfd-accent;
+      }
+    }
+  }
+
+  // -- pagination ------------------------------------------------------
+  .msfd-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: @space-3 @space-4;
+    gap: @space-3;
+
+    &-top {
+      border-bottom: @border-size-1 solid @msfd-border;
+    }
+  }
+
+  .msfd-pagination-info {
+    color: @msfd-muted;
+    font-size: @msfd-font-data;
+
+    b {
+      color: @msfd-text;
+      font-weight: @font-weight-7;
+    }
+  }
+
+  .msfd-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: @space-1;
+  }
+
+  .msfd-page {
+    display: inline-flex;
+    min-width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 @space-2;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    color: @msfd-heading;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-00;
+    }
+
+    &:hover:not(:disabled):not(.is-active) {
+      border-color: @msfd-accent;
+    }
+
+    &.is-active {
+      border-color: @msfd-heading;
+      background: @msfd-heading;
+      color: @grey-0;
+      font-weight: @font-weight-7;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+
+    &:disabled {
+      color: @msfd-muted;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  .msfd-page-gap {
+    padding: 0 @space-05;
+    color: @msfd-muted;
+  }
+
+  // -- summary & insights ----------------------------------------------
+  .msfd-summary {
+    border: 1px solid #bec7cf;
+    background: #dae8f4;
+  }
+
+  .msfd-summary-body {
+    display: flex;
+    flex-direction: column;
+    padding: @space-4;
+    gap: @space-4;
+  }
+
+  .msfd-summary-toggle {
+    i.icon {
+      font-size: @font-size-00;
+    }
+  }
+
+  .msfd-summary-cards {
+    display: grid;
+    gap: @space-4;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    @media (max-width: 991px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-summary-card {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    padding: @space-4;
+    border: @border-size-1 solid @msfd-border;
+    background: @msfd-surface;
+    gap: @space-3;
+  }
+
+  .msfd-summary-card-icon {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: @msfd-radius;
+    background: @msfd-surface-tint;
+    color: @msfd-accent;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-1;
+    }
+  }
+
+  .msfd-summary-card-content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: @space-05;
+  }
+
+  .msfd-summary-card-label {
+    display: flex;
+    align-items: center;
+    color: @msfd-text;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+  }
+
+  // The headline number: h3 step of the type scale.
+  .msfd-summary-card-value {
+    color: @msfd-heading;
+    font-size: @font-size-5;
+    font-weight: @font-weight-7;
+    letter-spacing: @font-letterspacing-00;
+    line-height: @font-lineheight-0;
+  }
+
+  .msfd-summary-card-details {
+    display: flex;
+    flex-wrap: wrap;
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+    gap: @space-1;
+  }
+
+  .msfd-summary-card-sep {
+    color: @msfd-border;
+  }
+
+  .msfd-summary-card-caption {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-summary-hint {
+    color: @msfd-muted;
+    cursor: help;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-00;
+    }
+  }
+
+  .msfd-summary-charts {
+    display: grid;
+    gap: @space-4;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .msfd-summary-chart {
+    min-width: 0;
+    padding: @space-3 @space-4 0;
+    border: @border-size-1 solid @msfd-border;
+    background: @msfd-surface;
+  }
+
+  .msfd-summary-chart-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 @space-1;
+    color: @msfd-text;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+  }
+
+  // Keeps the panel height stable while the lazy-loaded chart chunk arrives.
+  .msfd-summary-chart-loading {
+    height: 260px;
+  }
+
+  // -- sidebar ---------------------------------------------------------
+  .msfd-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: @space-4;
+  }
+
+  .msfd-sidebar-block {
+    padding: @space-4;
+    border: @border-size-1 solid @msfd-border;
+    background: @msfd-surface-sidebar;
+  }
+
+  .msfd-sidebar-heading {
+    margin: 0 0 @space-3;
+    color: @msfd-heading;
+    font-size: @msfd-font-title;
+    font-weight: @font-weight-7;
+    letter-spacing: @font-letterspacing-00;
+    line-height: @font-lineheight-0;
+  }
+
+  .msfd-cycle-dropdown .divider {
+    color: @msfd-heading !important;
+    font-weight: @font-weight-7;
+  }
+
+  .msfd-cycle-dropdown.ui.dropdown {
+    border-color: @msfd-border;
+    font-size: @msfd-font-data;
+
+    &:hover,
+    &.active {
+      border-color: @msfd-accent;
+    }
+  }
+
+  .msfd-period-static {
+    padding: @space-2 0;
+    margin: 0;
+    color: @msfd-heading;
+    font-size: @msfd-font-prose;
+    font-weight: @font-weight-7;
+  }
+
+  .msfd-sidebar-articles {
+    position: relative;
+
+    &.is-open {
+      z-index: @z-index-5;
+    }
+  }
+
+  .msfd-sidebar-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    border: none;
+    margin: 0;
+    background: transparent;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: @msfd-font-title;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+    text-align: left;
+
+    i.icon {
+      flex: none;
+      margin: 0;
+      font-size: @font-size-1;
+    }
+
+    &:hover {
+      color: @msfd-heading;
+
+      i.icon {
+        color: @msfd-accent;
+      }
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  .msfd-sidebar-toggle-text {
+    overflow: hidden;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .msfd-articles-current {
+    display: flex;
+    overflow: hidden;
+    min-height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    padding: @space-2 @space-3;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    margin-top: @space-4;
+    background: @msfd-surface;
+    color: @msfd-heading;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover,
+    &.is-open {
+      border-color: @msfd-accent;
+    }
+  }
+
+  // Expanded list overlays the content below: it is taken out of flow so the
+  // surrounding grid row does not grow and the results table stays put.
+  .msfd-articles-list {
+    position: absolute;
+    z-index: @z-index-6;
+    top: 100%;
+    right: -1px;
+    left: -1px;
+    padding: @space-2;
+    border: @border-size-1 solid @msfd-border;
+    margin: 0;
+    background: @msfd-surface;
+    box-shadow: @msfd-shadow;
+    list-style: none;
+  }
+
+  .msfd-articles-item {
+    &.is-active {
+      background: @msfd-heading;
+
+      .msfd-articles-link {
+        color: @grey-0;
+      }
+    }
+  }
+
+  .msfd-articles-link {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: @space-2 @space-3;
+    border: none;
+    background: transparent;
+    color: @msfd-text;
+    cursor: pointer;
+    font-size: @msfd-font-data;
+    gap: @space-2;
+    text-align: left;
+    text-decoration: none;
+
+    i.icon {
+      width: 12px;
+      flex: none;
+      margin: 0;
+      color: @msfd-muted;
+      font-size: @font-size-00;
+    }
+
+    &:hover {
+      color: @msfd-heading;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: -2px;
+    }
+  }
+
+  .msfd-articles-number {
+    flex: none;
+    font-weight: @font-weight-7;
+  }
+
+  .msfd-articles-label {
+    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

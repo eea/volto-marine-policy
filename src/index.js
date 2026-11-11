@@ -14,6 +14,7 @@ import TitleDefaultTemplate from '@eeacms/volto-eea-website-theme/components/man
 // import HomePageView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageView';
 // import HomePageInverseView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageInverseView';
 import installMsfdDataExplorerBlock from './components/Blocks/MsfdDataExplorerBlock';
+import installMsfdDataExplorerBlockV2 from './components/Blocks/MsfdDataExplorerBlockV2';
 import { breadcrumb, localnavigation, workflowProgressPath } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
@@ -568,6 +569,7 @@ const applyConfig = (config) => {
 
   const final = [
     installMsfdDataExplorerBlock,
+    installMsfdDataExplorerBlockV2,
     installSearchEngine,
     installDemoSitesExplorer,
   ].reduce((acc, apply) => apply(acc), config);
