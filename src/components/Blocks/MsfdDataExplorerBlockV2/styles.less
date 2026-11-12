@@ -46,10 +46,13 @@
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
 // unsupported value would silently drop the shadow instead of degrading.
-@msfd-shadow:
-  0 3px 5px -2px fade(@blue-grey-6, 4%),
+@msfd-shadow: 0 3px 5px -2px fade(@blue-grey-6, 4%),
   0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
+// Edge cue of the horizontally scrolling results table: a hairline darkening
+// that reads as "there is more table under this edge".
+@msfd-scroll-cue: fade(@blue-grey-6, 18%);
+@msfd-scroll-cue-size: @space-6; // 24px
 
 // The block ships no shape language of its own: the project theme sets the
 // global Semantic radius (@absoluteBorderRadius in theme/globals/site.variables)
@@ -297,7 +300,7 @@
     cursor: pointer;
     gap: @space-1;
 
-    > i.icon {
+    >i.icon {
       position: absolute;
       top: 50%;
       right: @space-3;
@@ -725,8 +728,81 @@
     text-align: center;
   }
 
-  .msfd-table-wrapper {
+  // -- horizontally scrolling results table -----------------------------
+  // Wide tables overflow sideways instead of squeezing their columns, so the
+  // scroll box has to announce itself: a visible scrollbar, a fade on the edge
+  // that still has content behind it, and a pinned first column (the country)
+  // that keeps the row context on screen once the rest has scrolled away.
+  .msfd-table-frame {
+    position: relative;
+  }
+
+  .msfd-table-scroll {
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    // Overlay scrollbars (macOS, recent Windows) stay invisible until hovered,
+    // which removes the only native cue that the table continues. Ask for a
+    // thin but permanent bar and style it in the EEA greys.
+    scrollbar-width: thin;
+    scrollbar-color: @msfd-muted @msfd-surface-alt;
+
+    &::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: @msfd-surface-alt;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: @msfd-muted;
+      border-radius: 5px;
+    }
+
+    // The box is focusable so it can be scrolled with the keyboard; make the
+    // focus ring visible so that is discoverable.
+    &:focus-visible {
+      outline: @border-size-2 solid @msfd-link;
+      outline-offset: @space-1;
+    }
+  }
+
+  // Edge cues. They sit outside the scroller so they stay pinned to the visible
+  // edge, and are painted only when the matching edge really has content
+  // behind it (`is-visible`, set from the scroll/Resize observers). They stop at
+  // the top of the horizontal scrollbar (its height is measured and published on
+  // the frame) instead of shading the bar itself.
+  .msfd-table-cue {
+    position: absolute;
+    z-index: @z-index-3;
+    top: 0;
+    bottom: var(--msfd-scrollbar-height, 0);
+    width: @msfd-scroll-cue-size;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-in-out;
+
+    &.is-visible {
+      opacity: 1;
+    }
+
+    &.is-left {
+      // The left shadow belongs to the pinned column, not to the edge of the
+      // table: it starts where that column ends (the width is measured from the
+      // header cell and published on the frame) so it reads as the pinned
+      // column casting a shadow over the cells sliding underneath.
+      left: var(--msfd-sticky-width, 0);
+      background: linear-gradient(to right,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
+    }
+
+    &.is-right {
+      right: 0;
+      background: linear-gradient(to left,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
+    }
   }
 
   // Data grid: denser than prose, so it uses the caption step of the type
@@ -735,6 +811,9 @@
   table.msfd-table {
     width: 100%;
     border: @border-size-1 solid @msfd-border;
+    // The left edge belongs to the pinned first column (see below) so that it
+    // stays put when the table scrolls and does not double when it does not.
+    border-left: 0;
     border-collapse: collapse;
 
     th,
@@ -744,15 +823,62 @@
       text-align: left;
     }
 
+    // Pin the first column (the country) to the left edge of the scroll box: it
+    // is the key of the row, and it must stay readable while the rest of the
+    // row scrolls under it.
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: @z-index-1;
+      background: @msfd-surface;
+
+      // Drawn rather than declared as borders: with `border-collapse: collapse`
+      // Chromium leaves a cell's own borders at the cell's static position, so a
+      // pinned cell slides away from them and the column loses its edges.
+      // Pseudo-elements are part of the cell and travel with it.
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: @border-size-1;
+        background: @msfd-border;
+      }
+
+      // Left edge: always on, because the table's own left border scrolls out of
+      // view with the content and must not come back a pixel late.
+      &::before {
+        left: 0;
+      }
+
+      // Right edge: only once the table is actually scrolled, where it is what
+      // separates the pinned column from the cells sliding underneath. At the
+      // origin the column is just the first column and needs no seam.
+      &::after {
+        right: -1px;
+        display: none;
+      }
+    }
+
     th {
       background: @msfd-surface-alt;
       color: @msfd-heading;
       font-size: @msfd-font-data;
       font-weight: @font-weight-7;
+
+      &:first-child {
+        z-index: @z-index-2;
+      }
     }
 
     td {
       font-size: @msfd-font-data;
+    }
+
+    thead th:first-child {
+      background: @msfd-surface-alt;
     }
 
     tbody tr:hover td {
@@ -764,8 +890,25 @@
     }
   }
 
+  // The seam between the pinned column and the scrolling ones only exists while
+  // the table is scrolled (`is-scrolled` on the frame).
+  .msfd-table-frame.is-scrolled table.msfd-table {
+
+    th:first-child::after,
+    td:first-child::after {
+      display: block;
+    }
+  }
+
   .msfd-group table.msfd-table {
     border: none;
+
+    // The group itself is a bordered box that does not scroll with the table, so
+    // its left edge is already on screen: a second one here would double it.
+    th:first-child::before,
+    td:first-child::before {
+      display: none;
+    }
   }
 
   // -- grouped results (2012 cycle) ------------------------------------
@@ -773,7 +916,7 @@
     border: @border-size-1 solid @msfd-border;
   }
 
-  .msfd-group + .msfd-group {
+  .msfd-group+.msfd-group {
     margin-top: @space-6;
   }
 
@@ -914,7 +1057,7 @@
   // features as bullets underneath, plus a Show more/less control when the
   // cell holds more items than the column's maxItems.
   .msfd-cell-grouped {
-    .msfd-cell-group + .msfd-cell-group {
+    .msfd-cell-group+.msfd-cell-group {
       margin-top: @space-2;
     }
 
@@ -989,8 +1132,10 @@
     i.icon {
       flex: none;
       margin: 0;
-      color: @msfd-muted;
+      color: @blue-6;
       font-size: @font-size-00;
+      font-weight: bolder;
+      font-size: 1rem;
     }
 
     &:hover .msfd-cell-expandable-text {

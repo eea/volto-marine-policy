@@ -337,6 +337,123 @@ const renderHeaderCells = (columns, sort, dir, onSort) => (
   </>
 );
 
+// Tracks whether the horizontally scrolling box has content hidden past either
+// edge, so the edge cues are only painted when there is actually something to
+// scroll to. The table can change width without the box changing size (columns
+// are sized from their content), hence the observer on the first child too.
+//
+// It also reports the width of the pinned first column, because the left cue is
+// drawn at that column's right edge: the shadow has to read as the pinned
+// column casting it over the cells sliding underneath, not as a shadow at the
+// edge of the table. The height of the horizontal scrollbar is measured for the
+// same reason on the other axis: the cues stop above the bar rather than run
+// over it.
+const useEdgeCue = () => {
+  const scrollRef = React.useRef(null);
+  const [edges, setEdges] = React.useState({ start: false, end: false });
+  const [stickyWidth, setStickyWidth] = React.useState(0);
+  const [scrollbarHeight, setScrollbarHeight] = React.useState(0);
+  const edgesRef = React.useRef(edges);
+
+  React.useEffect(() => {
+    const node = scrollRef.current;
+
+    if (!node) return undefined;
+
+    const update = () => {
+      const max = node.scrollWidth - node.clientWidth;
+      const next = {
+        start: node.scrollLeft > 1,
+        end: max > 1 && node.scrollLeft < max - 1,
+      };
+
+      // Scroll fires once per frame: only re-render when an edge actually
+      // changed (setting the width to the same number already bails out).
+      if (
+        next.start !== edgesRef.current.start ||
+        next.end !== edgesRef.current.end
+      ) {
+        edgesRef.current = next;
+        setEdges(next);
+      }
+
+      const head = node.querySelector('th:first-child');
+      setStickyWidth(head ? head.offsetWidth : 0);
+      // `clientHeight` is the box without its horizontal scrollbar, so the
+      // difference is the bar (0 when the browser uses overlay scrollbars).
+      setScrollbarHeight(node.offsetHeight - node.clientHeight);
+    };
+
+    update();
+    node.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+
+    let observer;
+
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(update);
+      observer.observe(node);
+      if (node.firstElementChild) observer.observe(node.firstElementChild);
+    }
+
+    return () => {
+      node.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+      if (observer) observer.disconnect();
+    };
+  }, []);
+
+  return { scrollRef, edges, stickyWidth, scrollbarHeight };
+};
+
+// The scroll box plus the two edge cues. The cues live outside the scroller (in
+// the `frame`, which does not scroll) so they stay pinned to the visible edge
+// instead of travelling with the table, and are `pointer-events: none` so they
+// never swallow a click on the cell underneath.
+//
+// `is-scrolled` tells the stylesheet the table is no longer at its left edge:
+// the table's own left border has scrolled out of view by then, so the pinned
+// column has to draw its own.
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- `role="region"` plus
+   `tabIndex={0}` is the blessed pattern for a scrollable region (it is what
+   makes the box scrollable with the keyboard); the rule only knows about
+   interactive roles and flags the very thing that makes it reachable. */
+const TableScrollFrame = ({ label, children }) => {
+  const { scrollRef, edges, stickyWidth, scrollbarHeight } = useEdgeCue();
+
+  return (
+    <div
+      className={`msfd-table-frame${edges.start ? ' is-scrolled' : ''}`}
+      style={{
+        '--msfd-sticky-width': `${stickyWidth}px`,
+        '--msfd-scrollbar-height': `${scrollbarHeight}px`,
+      }}
+    >
+      <div
+        className="msfd-table-scroll"
+        ref={scrollRef}
+        role="region"
+        aria-label={label}
+        tabIndex={0}
+      >
+        {children}
+      </div>
+      <span
+        className={`msfd-table-cue is-left${edges.start ? ' is-visible' : ''}`}
+        aria-hidden="true"
+      />
+      <span
+        className={`msfd-table-cue is-right${edges.end ? ' is-visible' : ''}`}
+        aria-hidden="true"
+      />
+    </div>
+  );
+};
+
+/* eslint-enable jsx-a11y/no-noninteractive-tabindex */
+
+const SCROLL_LABEL = 'Results table, scrollable horizontally';
+
 // Flat results table with sortable column headers and a per row action. When
 // the provider declares a `groupBy` (only the 2012 cycle does) each group gets
 // its own block: the country header row, its detail panel, then the column
@@ -401,7 +518,7 @@ const ExplorerTable = ({
                 </div>
               )}
 
-              <div className="msfd-table-wrapper">
+              <TableScrollFrame label={SCROLL_LABEL}>
                 <table className="msfd-table">
                   <thead>
                     <tr>{renderHeaderCells(columns, sort, dir, onSort)}</tr>
@@ -419,7 +536,7 @@ const ExplorerTable = ({
                     )}
                   </tbody>
                 </table>
-              </div>
+              </TableScrollFrame>
             </section>
           );
         })}
@@ -428,7 +545,7 @@ const ExplorerTable = ({
   }
 
   return (
-    <div className="msfd-table-wrapper">
+    <TableScrollFrame label={SCROLL_LABEL}>
       <table className="msfd-table">
         <thead>
           <tr>{renderHeaderCells(columns, sort, dir, onSort)}</tr>
@@ -446,7 +563,7 @@ const ExplorerTable = ({
           )}
         </tbody>
       </table>
-    </div>
+    </TableScrollFrame>
   );
 };
 

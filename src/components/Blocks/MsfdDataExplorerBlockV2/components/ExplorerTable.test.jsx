@@ -217,4 +217,67 @@ describe('ExplorerTable', () => {
     fireEvent.click(screen.getByText('Show less'));
     expect(document.querySelectorAll('ul.msfd-cell-list li')).toHaveLength(10);
   });
+
+  // The results table scrolls sideways, which is easy to miss: the box is a
+  // focusable region, and each edge gets a cue for as long as it hides content.
+  it('shows the edge cues only on the sides that hide more table', () => {
+    const width = (element, property, value) =>
+      Object.defineProperty(element, property, {
+        configurable: true,
+        value,
+      });
+
+    renderTable([{ Feature: { text: 'Nutrients', empty: false } }]);
+
+    const scroller = screen.getByRole('region', {
+      name: 'Results table, scrollable horizontally',
+    });
+    const left = document.querySelector('.msfd-table-cue.is-left');
+    const right = document.querySelector('.msfd-table-cue.is-right');
+
+    expect(scroller).toHaveAttribute('tabindex', '0');
+    // jsdom reports a zero-width box, i.e. nothing to scroll.
+    expect(left).not.toHaveClass('is-visible');
+    expect(right).not.toHaveClass('is-visible');
+    expect(scroller.parentElement).not.toHaveClass('is-scrolled');
+
+    // A table twice as wide as the box, scrolled to the start: only the right
+    // edge hides content.
+    width(scroller, 'scrollWidth', 800);
+    width(scroller, 'clientWidth', 400);
+    width(scroller, 'scrollLeft', 0);
+    fireEvent.scroll(scroller);
+    expect(left).not.toHaveClass('is-visible');
+    expect(right).toHaveClass('is-visible');
+
+    // Halfway: content on both sides, and the frame flags that the table's own
+    // left border has scrolled away.
+    width(scroller, 'scrollLeft', 200);
+    fireEvent.scroll(scroller);
+    expect(left).toHaveClass('is-visible');
+    expect(right).toHaveClass('is-visible');
+    expect(scroller.parentElement).toHaveClass('is-scrolled');
+
+    // At the end: the right cue is gone.
+    width(scroller, 'scrollLeft', 400);
+    fireEvent.scroll(scroller);
+    expect(left).toHaveClass('is-visible');
+    expect(right).not.toHaveClass('is-visible');
+
+    // The left cue is anchored to the pinned column rather than to the edge of
+    // the table, so its offset is published for the stylesheet to use.
+    width(document.querySelector('th:first-child'), 'offsetWidth', 180);
+    fireEvent.scroll(scroller);
+    expect(
+      scroller.parentElement.style.getPropertyValue('--msfd-sticky-width'),
+    ).toBe('180px');
+
+    // Same for the horizontal scrollbar: the cues have to stop above it.
+    width(scroller, 'offsetHeight', 240);
+    width(scroller, 'clientHeight', 229);
+    fireEvent.scroll(scroller);
+    expect(
+      scroller.parentElement.style.getPropertyValue('--msfd-scrollbar-height'),
+    ).toBe('11px');
+  });
 });
