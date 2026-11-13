@@ -64,10 +64,7 @@ test('turning the toggle off drops the null token', () => {
 
   fireEvent.click(screen.getByRole('checkbox'));
 
-  expect(onChange).toHaveBeenCalledWith('determination_date', [
-    '2019',
-    '2024',
-  ]);
+  expect(onChange).toHaveBeenCalledWith('determination_date', ['2019', '2024']);
 });
 
 test('turning the toggle back on appends the null token', () => {
@@ -99,7 +96,9 @@ test('moving a bound keeps the null token while it is on', () => {
 });
 
 test('a facet without a null option renders no toggle', () => {
-  render(<FacetRange facet={areaFacet} value={undefined} onChange={jest.fn()} />);
+  render(
+    <FacetRange facet={areaFacet} value={undefined} onChange={jest.fn()} />,
+  );
 
   expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
 });
