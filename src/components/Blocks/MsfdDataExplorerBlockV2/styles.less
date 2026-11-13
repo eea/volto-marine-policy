@@ -46,8 +46,7 @@
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
 // unsupported value would silently drop the shadow instead of degrading.
-@msfd-shadow:
-  0 3px 5px -2px fade(@blue-grey-6, 4%),
+@msfd-shadow: 0 3px 5px -2px fade(@blue-grey-6, 4%),
   0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
 // Edge cue of the horizontally scrolling results table: a hairline darkening
@@ -72,7 +71,12 @@
   }
 }
 
-.msfd-explorer-v2.article-7,
+.msfd-explorer-v2.article-7 {
+  .msfd-summary-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .msfd-explorer-v2.article-9 {
   .msfd-summary-cards {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -301,7 +305,7 @@
     cursor: pointer;
     gap: @space-1;
 
-    > i.icon {
+    >i.icon {
       position: absolute;
       top: 50%;
       right: @space-3;
@@ -647,6 +651,39 @@
     }
   }
 
+  // "Keep rows without a value" toggle of a range facet.
+  .msfd-range-null {
+    display: flex;
+    align-items: center;
+    margin-top: @space-3;
+    cursor: pointer;
+    font-size: @msfd-font-meta;
+    gap: @space-2;
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      margin: 0;
+      accent-color: @msfd-heading;
+      cursor: pointer;
+    }
+
+    &:focus-within {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  .msfd-range-null-label {
+    color: @msfd-muted;
+  }
+
+  .msfd-range-null-count {
+    color: @msfd-muted;
+    font-variant-numeric: tabular-nums;
+  }
+
   // -- results ---------------------------------------------------------
   .msfd-results-header {
     border: none;
@@ -793,20 +830,16 @@
       // header cell and published on the frame) so it reads as the pinned
       // column casting a shadow over the cells sliding underneath.
       left: var(--msfd-sticky-width, 0);
-      background: linear-gradient(
-        to right,
-        @msfd-scroll-cue,
-        fade(@msfd-scroll-cue, 0%)
-      );
+      background: linear-gradient(to right,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
     }
 
     &.is-right {
       right: 0;
-      background: linear-gradient(
-        to left,
-        @msfd-scroll-cue,
-        fade(@msfd-scroll-cue, 0%)
-      );
+      background: linear-gradient(to left,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
     }
   }
 
@@ -898,6 +931,7 @@
   // The seam between the pinned column and the scrolling ones only exists while
   // the table is scrolled (`is-scrolled` on the frame).
   .msfd-table-frame.is-scrolled table.msfd-table {
+
     th:first-child::after,
     td:first-child::after {
       display: block;
@@ -920,7 +954,7 @@
     border: @border-size-1 solid @msfd-border;
   }
 
-  .msfd-group + .msfd-group {
+  .msfd-group+.msfd-group {
     margin-top: @space-6;
   }
 
@@ -1061,7 +1095,7 @@
   // features as bullets underneath, plus a Show more/less control when the
   // cell holds more items than the column's maxItems.
   .msfd-cell-grouped {
-    .msfd-cell-group + .msfd-cell-group {
+    .msfd-cell-group+.msfd-cell-group {
       margin-top: @space-2;
     }
 
