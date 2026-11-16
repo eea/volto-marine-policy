@@ -23,6 +23,10 @@ import {
 } from './utils';
 
 const styleCache = {};
+
+const ARCGIS_MPA_URL =
+  'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer';
+
 const MapContextGateway = ({ setMap }) => {
   const { map } = useMapContext();
   React.useEffect(() => {
@@ -50,10 +54,25 @@ function DemoSitesMap(props) {
   const [resetMapButtonClass, setResetMapButtonClass] =
     React.useState('inactive');
 
+  // ol/source/TileArcGISRest always builds the export request with UPPERCASE
+  // parameter names (BBOX, SIZE, BBOXSR, IMAGESR, ...). The EEA ArcGIS server
+  // is case-sensitive for `bbox` and answers the uppercase variant with
+  // 400 "Unable to export map" / "bbox must be specified", so every generated
+  // tile URL has its query keys lowercased before it reaches the network.
   const arcgisSource = React.useMemo(() => {
-    return new ol.source.TileArcGISRest({
-      url: 'https://water.discomap.eea.europa.eu/arcgis/rest/services/Marine/MPA_networks_in_EEA_marine_assessment_areas_2021/MapServer',
-    });
+    const source = new ol.source.TileArcGISRest({ url: ARCGIS_MPA_URL });
+    const tileUrlFunction = source.tileUrlFunction.bind(source);
+    source.tileUrlFunction = (tileCoord, pixelRatio, projection) => {
+      const url = tileUrlFunction(tileCoord, pixelRatio, projection);
+      if (!url) return url;
+      const [base, query = ''] = url.split('?');
+      const normalized = new URLSearchParams();
+      new URLSearchParams(query).forEach((value, key) => {
+        normalized.append(key.toLowerCase(), value);
+      });
+      return `${base}?${normalized.toString()}`;
+    };
+    return source;
   }, [ol.source.TileArcGISRest]);
 
   const [tileWMSSources] = React.useState([
