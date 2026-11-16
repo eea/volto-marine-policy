@@ -21,9 +21,14 @@ jest.mock('./utils', () => ({
 }));
 
 const makeSource = jest.fn(function Source() {});
+// ol/source/TileArcGISRest always exposes a `tileUrlFunction` bound to the
+// source; DemoSitesMap wraps it to lowercase the query-string keys.
+const makeTileArcGISRestSource = jest.fn(function Source() {
+  this.tileUrlFunction = jest.fn(() => '');
+});
 const ol = {
   source: {
-    TileArcGISRest: makeSource,
+    TileArcGISRest: makeTileArcGISRestSource,
     TileWMS: makeSource,
     Vector: makeSource,
     Cluster: makeSource,
