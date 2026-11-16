@@ -53,7 +53,7 @@ export const PERIOD_CONFIG = {
   'marine-units': { heading: 'Reporting cycle', options: ARTICLE4_CYCLES },
   'competent-authorities': {
     heading: 'Reporting period',
-    static: '2012 reporting exercise',
+    static: 'Continous reporting',
   },
   'determination-of-good-environmental-status': {
     heading: 'Reporting period',
