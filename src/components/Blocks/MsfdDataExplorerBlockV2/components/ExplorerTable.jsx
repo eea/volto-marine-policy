@@ -252,27 +252,88 @@ const columnMinWidth = (column) => {
   return DEFAULT_MIN_WIDTH;
 };
 
+// Pinning is a per-table choice (nothing is pinned by default). `pinState`
+// carries the pinned columns in column order, because the pinned strip is
+// stacked in that order no matter which order the user pinned them in.
 const columnStyle = (column) => ({
   minWidth: `${columnMinWidth(column)}px`,
 });
 
+// A pinned column is drawn once, as a leading cell of the row: it is moved out
+// of its place in the column list and glued to the left edge of the scroll box.
+// The leading pinned cells stack, so each one starts where the pinned column
+// before it ends: the offsets are measured from the pinned headers and published
+// on the frame (see useEdgeCue), which lets a cell know its own position in the
+// strip without knowing its neighbours.
+const pinCellStyle = (column, pinIndex) => ({
+  minWidth: `${columnMinWidth(column)}px`,
+  left: `var(--msfd-pin-offset-${pinIndex}, 0px)`,
+});
+
+const pinCellClassName = (column, pinIndex, pinCount) =>
+  [
+    'msfd-pinned',
+    column.align === 'right' ? 'is-right' : '',
+    pinIndex === 0 ? 'is-pinned-first' : '',
+    pinIndex === pinCount - 1 ? 'is-pinned-last' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+const cellClassName = (column) => (column.align === 'right' ? 'is-right' : '');
+
+// Renders the pinned cells that lead the row: one per pinned column, in column
+// order. They are the only rendering of those columns (see renderDataRow).
+const renderPinnedCells = (row, key, pinState, isExpanded, onToggleCell) =>
+  pinState.columns.map((column, pinIndex) => (
+    <td
+      key={column.key}
+      className={pinCellClassName(column, pinIndex, pinState.count)}
+      style={pinCellStyle(column, pinIndex)}
+    >
+      {renderDataCell(
+        row,
+        column,
+        `${key}:${column.key}`,
+        isExpanded,
+        onToggleCell,
+      )}
+    </td>
+  ));
+
+// The columns that are still in their original place: a pinned column lives in
+// the pinned strip instead, so it must not be drawn a second time here.
+const unpinnedColumns = (columns, pinState) =>
+  columns.filter((column) => pinState.index[column.key] === undefined);
+
 // Renders one data row. `key` is passed in because grouped rows need a stable
 // key per group (the row index alone is not unique across groups).
-const renderDataRow = (row, key, columns, onView, isExpanded, onToggleCell) => (
+const renderDataRow = (
+  row,
+  key,
+  columns,
+  onView,
+  pinState,
+  isExpanded,
+  onToggleCell,
+) => (
   <tr key={key}>
-    {columns.map((column) => {
-      const cellKey = `${key}:${column.key}`;
-
-      return (
-        <td
-          key={column.key}
-          className={column.align === 'right' ? 'is-right' : ''}
-          style={columnStyle(column)}
-        >
-          {renderDataCell(row, column, cellKey, isExpanded, onToggleCell)}
-        </td>
-      );
-    })}
+    {renderPinnedCells(row, key, pinState, isExpanded, onToggleCell)}
+    {unpinnedColumns(columns, pinState).map((column) => (
+      <td
+        key={column.key}
+        className={cellClassName(column)}
+        style={columnStyle(column)}
+      >
+        {renderDataCell(
+          row,
+          column,
+          `${key}:${column.key}`,
+          isExpanded,
+          onToggleCell,
+        )}
+      </td>
+    ))}
     {/* <td className="msfd-table-action-col">
       <button
         type="button"
@@ -302,63 +363,114 @@ const bucketRows = (rows, groupBy) => {
   return buckets;
 };
 
-// Column header cells, shared by the flat table and each per-group table.
-const renderHeaderCells = (columns, sort, dir, onSort) => (
+// The label of a header cell: a sort control when the column is sortable, a
+// plain label otherwise. Shared by the pinned headers and the ones in place.
+const renderHeaderLabel = (column, sort, dir, onSort) =>
+  column.sortable ? (
+    <button
+      type="button"
+      className="msfd-table-sort"
+      onClick={() => onSort(column.key)}
+    >
+      <span>{column.label}</span>
+      <Icon
+        name={
+          sort === column.key
+            ? dir === 'desc'
+              ? 'caret down'
+              : 'caret up'
+            : 'sort'
+        }
+      />
+    </button>
+  ) : (
+    <span className="msfd-table-head-label">{column.label}</span>
+  );
+
+// Column header cells, shared by the flat table and each per-group table. The
+// pinned columns come first, moved out of their original place and stuck to the
+// left edge of the scroll box; the rest follow in their own order. Every header
+// carries a pin checkbox: ticking it pins the column, unticking it sends the
+// column back to its place.
+const renderHeaderCells = (columns, sort, dir, onSort, pinState) => (
   <>
-    {columns.map((column) => (
+    {pinState.columns.map((column, pinIndex) => (
       <th
         key={column.key}
-        className={column.align === 'right' ? 'is-right' : ''}
+        className={pinCellClassName(column, pinIndex, pinState.count)}
+        style={pinCellStyle(column, pinIndex)}
+      >
+        <div className="msfd-table-head">
+          {renderHeaderLabel(column, sort, dir, onSort)}
+          <label className="msfd-table-pin" title="Unpin column">
+            <input
+              type="checkbox"
+              className="msfd-table-pin-input"
+              checked
+              aria-label={`Unpin column ${column.label}`}
+              onChange={() => pinState.onToggle(column.key)}
+            />
+          </label>
+        </div>
+      </th>
+    ))}
+    {unpinnedColumns(columns, pinState).map((column) => (
+      <th
+        key={column.key}
+        className={cellClassName(column)}
         style={columnStyle(column)}
       >
-        {column.sortable ? (
-          <button
-            type="button"
-            className="msfd-table-sort"
-            onClick={() => onSort(column.key)}
-          >
-            <span>{column.label}</span>
-            <Icon
-              name={
-                sort === column.key
-                  ? dir === 'desc'
-                    ? 'caret down'
-                    : 'caret up'
-                  : 'sort'
-              }
+        <div className="msfd-table-head">
+          {renderHeaderLabel(column, sort, dir, onSort)}
+          <label className="msfd-table-pin" title="Pin column">
+            <input
+              type="checkbox"
+              className="msfd-table-pin-input"
+              checked={false}
+              aria-label={`Pin column ${column.label}`}
+              onChange={() => pinState.onToggle(column.key)}
             />
-          </button>
-        ) : (
-          <span>{column.label}</span>
-        )}
+          </label>
+        </div>
       </th>
     ))}
     {/* <th className="msfd-table-action-col">Action</th> */}
   </>
 );
 
+// `useLayoutEffect` warns when a block is rendered on the server (Volto renders
+// for the first paint), so fall back to `useEffect` where there is no DOM.
+const useIsomorphicLayoutEffect =
+  typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
+
 // Tracks whether the horizontally scrolling box has content hidden past either
 // edge, so the edge cues are only painted when there is actually something to
 // scroll to. The table can change width without the box changing size (columns
 // are sized from their content), hence the observer on the first child too.
 //
-// It also reports the width of the pinned first column, because the left cue is
-// drawn at that column's right edge: the shadow has to read as the pinned
-// column casting it over the cells sliding underneath, not as a shadow at the
-// edge of the table. The height of the horizontal scrollbar is measured for the
-// same reason on the other axis: the cues stop above the bar rather than run
-// over it.
+// It also measures the pinned columns: their widths are published on the frame
+// as `--msfd-pin-offset-<n>` so each pinned cell knows where to stop (any column
+// can be pinned, so the run of sticky cells is not known up front), and their
+// total width is what the left cue is anchored to. The shadow has to read as the
+// pinned columns casting it over the cells sliding underneath, not as a shadow
+// at the edge of the table. The height of the horizontal scrollbar is measured
+// for the same reason on the other axis: the cues stop above the bar rather than
+// run over it.
 const useEdgeCue = () => {
+  const frameRef = React.useRef(null);
   const scrollRef = React.useRef(null);
   const [edges, setEdges] = React.useState({ start: false, end: false });
   const [stickyWidth, setStickyWidth] = React.useState(0);
   const [scrollbarHeight, setScrollbarHeight] = React.useState(0);
   const edgesRef = React.useRef(edges);
+  const publishedPins = React.useRef(0);
+  const updateRef = React.useRef(null);
 
   React.useEffect(() => {
     const node = scrollRef.current;
+    const frame = frameRef.current;
 
-    if (!node) return undefined;
+    if (!node || !frame) return undefined;
 
     const update = () => {
       const max = node.scrollWidth - node.clientWidth;
@@ -377,13 +489,33 @@ const useEdgeCue = () => {
         setEdges(next);
       }
 
-      const head = node.querySelector('th:first-child');
-      setStickyWidth(head ? head.offsetWidth : 0);
+      // Stack the pinned headers from the left edge: each one starts where the
+      // previous one ends. Offsets beyond the current run are removed so a
+      // column pinned later cannot inherit a stale position.
+      const heads = node.querySelectorAll('th.msfd-pinned');
+      let offset = 0;
+
+      heads.forEach((head, index) => {
+        frame.style.setProperty(`--msfd-pin-offset-${index}`, `${offset}px`);
+        offset += head.offsetWidth;
+      });
+
+      for (
+        let index = heads.length;
+        index < publishedPins.current;
+        index += 1
+      ) {
+        frame.style.removeProperty(`--msfd-pin-offset-${index}`);
+      }
+
+      publishedPins.current = heads.length;
+      setStickyWidth(offset);
       // `clientHeight` is the box without its horizontal scrollbar, so the
       // difference is the bar (0 when the browser uses overlay scrollbars).
       setScrollbarHeight(node.offsetHeight - node.clientHeight);
     };
 
+    updateRef.current = update;
     update();
     node.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
@@ -403,8 +535,57 @@ const useEdgeCue = () => {
     };
   }, []);
 
-  return { scrollRef, edges, stickyWidth, scrollbarHeight };
+  // Pinning or unpinning changes which headers are sticky without necessarily
+  // resizing the table, so re-measure after every render (before paint, so the
+  // cells never read the previous run's offsets).
+  useIsomorphicLayoutEffect(() => {
+    if (updateRef.current) updateRef.current();
+  });
+
+  return { frameRef, scrollRef, edges, stickyWidth, scrollbarHeight };
 };
+
+// Unpins everything with one click, putting the columns back in their original
+// order. It sits above the table (not in a header cell, which lives in the
+// horizontally scrolling box) and is only rendered while something is pinned.
+const PinClearBar = ({ count, onClear }) =>
+  count > 0 ? (
+    <div className="msfd-pin-bar">
+      <span className="msfd-pin-bar-count">
+        {count} pinned {count === 1 ? 'column' : 'columns'}
+      </span>
+      <button
+        type="button"
+        className="msfd-pin-clear"
+        title="Unpin all columns"
+        aria-label="Unpin all columns"
+        onClick={onClear}
+      >
+        <Icon name="close" />
+      </button>
+    </div>
+  ) : null;
+
+// One-off coach mark above the table pointing at the pin checkboxes. It lives in
+// the frame rather than in a header cell because the header sits inside the
+// horizontally scrolling box, which would clip anything drawn above it.
+const PinHint = ({ onDismiss }) => (
+  <div className="msfd-pin-hint">
+    <Icon name="info circle" />
+    <p className="msfd-pin-hint-text">
+      You can pin a column by clicking the checkbox in its header, so it stays
+      on screen while the rest of the table scrolls.
+    </p>
+    <button
+      type="button"
+      className="msfd-pin-hint-close"
+      aria-label="Dismiss the column pinning hint"
+      onClick={onDismiss}
+    >
+      <Icon name="close" />
+    </button>
+  </div>
+);
 
 // The scroll box plus the two edge cues. The cues live outside the scroller (in
 // the `frame`, which does not scroll) so they stay pinned to the visible edge
@@ -413,22 +594,32 @@ const useEdgeCue = () => {
 //
 // `is-scrolled` tells the stylesheet the table is no longer at its left edge:
 // the table's own left border has scrolled out of view by then, so the pinned
-// column has to draw its own.
+// columns have to draw their own edges.
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex -- `role="region"` plus
    `tabIndex={0}` is the blessed pattern for a scrollable region (it is what
    makes the box scrollable with the keyboard); the rule only knows about
    interactive roles and flags the very thing that makes it reachable. */
-const TableScrollFrame = ({ label, children }) => {
-  const { scrollRef, edges, stickyWidth, scrollbarHeight } = useEdgeCue();
+const TableScrollFrame = ({
+  label,
+  children,
+  showPinHint,
+  onDismissPinHint,
+}) => {
+  const { frameRef, scrollRef, edges, stickyWidth, scrollbarHeight } =
+    useEdgeCue();
 
   return (
     <div
-      className={`msfd-table-frame${edges.start ? ' is-scrolled' : ''}`}
+      ref={frameRef}
+      className={`msfd-table-frame${edges.start ? ' is-scrolled' : ''}${
+        showPinHint ? ' is-hinting' : ''
+      }`}
       style={{
         '--msfd-sticky-width': `${stickyWidth}px`,
         '--msfd-scrollbar-height': `${scrollbarHeight}px`,
       }}
     >
+      {showPinHint && <PinHint onDismiss={onDismissPinHint} />}
       <div
         className="msfd-table-scroll"
         ref={scrollRef}
@@ -458,6 +649,10 @@ const SCROLL_LABEL = 'Results table, scrollable horizontally';
 // the provider declares a `groupBy` (only the 2012 cycle does) each group gets
 // its own block: the country header row, its detail panel, then the column
 // headers and that group's rows.
+//
+// Any column can be pinned to the left edge from its header checkbox. Nothing is
+// pinned by default, and the choice is shared by all the per-group tables (they
+// show the same columns).
 const ExplorerTable = ({
   columns,
   rows,
@@ -469,6 +664,8 @@ const ExplorerTable = ({
   groupBy,
 }) => {
   const [expandedCells, setExpandedCells] = React.useState({});
+  const [pinnedKeys, setPinnedKeys] = React.useState([]);
+  const [pinHint, setPinHint] = React.useState(true);
 
   const toggleCell = React.useCallback((key) => {
     setExpandedCells((previous) => ({ ...previous, [key]: !previous[key] }));
@@ -479,91 +676,146 @@ const ExplorerTable = ({
     [expandedCells],
   );
 
+  // Pinning a column doubles as "I got the hint", so the coach mark goes away.
+  const togglePin = React.useCallback((key) => {
+    setPinnedKeys((previous) =>
+      previous.indexOf(key) === -1
+        ? [...previous, key]
+        : previous.filter((item) => item !== key),
+    );
+    setPinHint(false);
+  }, []);
+
+  const dismissPinHint = React.useCallback(() => setPinHint(false), []);
+
+  // One click puts every column back where it was.
+  const clearPins = React.useCallback(() => setPinnedKeys([]), []);
+
   if (!columns || !columns.length) return null;
 
   const isGrouped = Boolean(groupBy && groups && groups.length);
+
+  // Pinned columns are stacked in visual column order, whatever order they were
+  // pinned in (and columns that are no longer in the table are ignored).
+  const pinnedColumns = columns.filter(
+    (column) => pinnedKeys.indexOf(column.key) !== -1,
+  );
+  const pinState = {
+    columns: pinnedColumns,
+    count: pinnedColumns.length,
+    index: pinnedColumns.reduce(
+      (map, column, index) => ({ ...map, [column.key]: index }),
+      {},
+    ),
+    onToggle: togglePin,
+    onClear: clearPins,
+  };
 
   if (isGrouped) {
     const buckets = bucketRows(rows, groupBy);
 
     return (
-      <div className="msfd-table-groups">
-        {groups.map((group) => {
-          const groupRows = buckets.get(group.key) || [];
-          const fields = (group.meta && group.meta.fields) || [];
+      <>
+        <PinClearBar count={pinState.count} onClear={pinState.onClear} />
+        <div className="msfd-table-groups">
+          {groups.map((group, groupIndex) => {
+            const groupRows = buckets.get(group.key) || [];
+            const fields = (group.meta && group.meta.fields) || [];
 
-          return (
-            <section className="msfd-group" key={group.key}>
-              <div className="msfd-group-row">
-                <div className="msfd-group-header">
-                  <span className="msfd-group-name">
-                    {group.label || group.key}
-                  </span>
-                  <span className="msfd-group-count">
-                    {group.count} {group.count === 1 ? 'MRU' : 'MRUs'}
-                  </span>
+            return (
+              <section className="msfd-group" key={group.key}>
+                <div className="msfd-group-row">
+                  <div className="msfd-group-header">
+                    <span className="msfd-group-name">
+                      {group.label || group.key}
+                    </span>
+                    <span className="msfd-group-count">
+                      {group.count} {group.count === 1 ? 'MRU' : 'MRUs'}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {fields.length > 0 && (
-                <div className="msfd-group-detail">
-                  <dl className="msfd-group-detail-fields">
-                    {fields.map((field) => (
-                      <React.Fragment key={field.key}>
-                        <dt>{field.label}</dt>
-                        <dd>{field.value}</dd>
-                      </React.Fragment>
-                    ))}
-                  </dl>
-                </div>
-              )}
+                {fields.length > 0 && (
+                  <div className="msfd-group-detail">
+                    <dl className="msfd-group-detail-fields">
+                      {fields.map((field) => (
+                        <React.Fragment key={field.key}>
+                          <dt>{field.label}</dt>
+                          <dd>{field.value}</dd>
+                        </React.Fragment>
+                      ))}
+                    </dl>
+                  </div>
+                )}
 
-              <TableScrollFrame label={SCROLL_LABEL}>
-                <table className="msfd-table">
-                  <thead>
-                    <tr>{renderHeaderCells(columns, sort, dir, onSort)}</tr>
-                  </thead>
-                  <tbody>
-                    {groupRows.map((row, index) =>
-                      renderDataRow(
-                        row,
-                        `row-${group.key}-${index}`,
-                        columns,
-                        onView,
-                        isExpanded,
-                        toggleCell,
-                      ),
-                    )}
-                  </tbody>
-                </table>
-              </TableScrollFrame>
-            </section>
-          );
-        })}
-      </div>
+                <TableScrollFrame
+                  label={SCROLL_LABEL}
+                  showPinHint={pinHint && groupIndex === 0}
+                  onDismissPinHint={dismissPinHint}
+                >
+                  <table className="msfd-table">
+                    <thead>
+                      <tr>
+                        {renderHeaderCells(
+                          columns,
+                          sort,
+                          dir,
+                          onSort,
+                          pinState,
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {groupRows.map((row, index) =>
+                        renderDataRow(
+                          row,
+                          `row-${group.key}-${index}`,
+                          columns,
+                          onView,
+                          pinState,
+                          isExpanded,
+                          toggleCell,
+                        ),
+                      )}
+                    </tbody>
+                  </table>
+                </TableScrollFrame>
+              </section>
+            );
+          })}
+        </div>
+      </>
     );
   }
 
   return (
-    <TableScrollFrame label={SCROLL_LABEL}>
-      <table className="msfd-table">
-        <thead>
-          <tr>{renderHeaderCells(columns, sort, dir, onSort)}</tr>
-        </thead>
-        <tbody>
-          {(rows || []).map((row, index) =>
-            renderDataRow(
-              row,
-              `row-${index}`,
-              columns,
-              onView,
-              isExpanded,
-              toggleCell,
-            ),
-          )}
-        </tbody>
-      </table>
-    </TableScrollFrame>
+    <>
+      <PinClearBar count={pinState.count} onClear={pinState.onClear} />
+      <TableScrollFrame
+        label={SCROLL_LABEL}
+        showPinHint={pinHint}
+        onDismissPinHint={dismissPinHint}
+      >
+        <table className="msfd-table">
+          <thead>
+            <tr>{renderHeaderCells(columns, sort, dir, onSort, pinState)}</tr>
+          </thead>
+          <tbody>
+            {(rows || []).map((row, index) =>
+              renderDataRow(
+                row,
+                `row-${index}`,
+                columns,
+                onView,
+                pinState,
+                isExpanded,
+                toggleCell,
+              ),
+            )}
+          </tbody>
+        </table>
+      </TableScrollFrame>
+    </>
   );
 };
 

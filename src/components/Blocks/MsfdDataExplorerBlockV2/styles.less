@@ -47,8 +47,7 @@
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
 // unsupported value would silently drop the shadow instead of degrading.
-@msfd-shadow:
-  0 3px 5px -2px fade(@blue-grey-6, 4%),
+@msfd-shadow: 0 3px 5px -2px fade(@blue-grey-6, 4%),
   0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
 // Range slider geometry: the thumb is a circle whose centre is the value, so the
@@ -98,6 +97,20 @@
 
   &.cycle-2020 .msfd-summary-cards {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// The pulse that points at the pin checkboxes while the hint is up. Declared at
+// the top level so it is emitted once, not per nesting level.
+@keyframes msfd-pin-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 fade(@msfd-link, 0%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px fade(@msfd-link, 35%);
   }
 }
 
@@ -417,7 +430,7 @@
     cursor: pointer;
     gap: @space-1;
 
-    > i.icon {
+    >i.icon {
       position: absolute;
       top: 50%;
       right: @space-3;
@@ -997,10 +1010,128 @@
   // -- horizontally scrolling results table -----------------------------
   // Wide tables overflow sideways instead of squeezing their columns, so the
   // scroll box has to announce itself: a visible scrollbar, a fade on the edge
-  // that still has content behind it, and a pinned first column (the country)
-  // that keeps the row context on screen once the rest has scrolled away.
+  // that still has content behind it, and (once the user pins one) a sticky
+  // column that keeps the row context on screen after the rest scrolled away.
   .msfd-table-frame {
     position: relative;
+  }
+
+  // Actions for the pinned strip, shown only while something is pinned: a count
+  // and a compact X that unpins every column and puts the table back in its
+  // original order. It sits above the scroll box, like the hint.
+  .msfd-pin-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: @space-2;
+    gap: @space-2;
+  }
+
+  .msfd-pin-bar-count {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-pin-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: 50%;
+    background: @msfd-surface;
+    color: @msfd-muted;
+    cursor: pointer;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-00;
+    }
+
+    &:hover {
+      border-color: @msfd-heading;
+      background: @msfd-surface-alt;
+      color: @msfd-heading;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // Coach mark pointing at the pin checkboxes, shown until the first column is
+  // pinned or it is dismissed. It sits above the scroll box (which would clip
+  // it otherwise) with a caret aimed at the header row.
+  .msfd-pin-hint {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: @space-3;
+    padding: @space-2 @space-3;
+    border: @border-size-1 solid @msfd-link;
+    border-radius: @msfd-radius;
+    background: @msfd-surface-tint;
+    color: @msfd-text;
+    font-size: @msfd-font-prose;
+    gap: @space-2;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-link;
+    }
+
+    // Caret aimed down at the first header cells, which carry the checkboxes.
+    &::after {
+      position: absolute;
+      top: 100%;
+      left: @space-6;
+      width: 0;
+      height: 0;
+      border: 6px solid transparent;
+      border-top-color: @msfd-link;
+      content: '';
+    }
+  }
+
+  .msfd-pin-hint-text {
+    flex: 1 1 auto;
+    margin: 0;
+  }
+
+  .msfd-pin-hint-close {
+    flex: 0 0 auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-muted;
+    cursor: pointer;
+
+    i.icon {
+      margin: 0;
+      color: inherit;
+    }
+
+    &:hover {
+      color: @msfd-heading;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // While the hint is up, breathe on the pin checkboxes so it is obvious what
+  // "here" refers to. The pulse lives on the label, not on the input: native
+  // checkboxes ignore `box-shadow`. It keeps looping for as long as the hint is
+  // shown, i.e. until the reader dismisses it or pins a column (`is-hinting` is
+  // dropped by ExplorerTable at that point).
+  .msfd-table-frame.is-hinting .msfd-table-pin {
+    border-radius: @msfd-radius;
+    animation: msfd-pin-pulse 1.6s ease-in-out infinite;
   }
 
   .msfd-table-scroll {
@@ -1053,25 +1184,22 @@
     }
 
     &.is-left {
-      // The left shadow belongs to the pinned column, not to the edge of the
-      // table: it starts where that column ends (the width is measured from the
-      // header cell and published on the frame) so it reads as the pinned
-      // column casting a shadow over the cells sliding underneath.
+      // The left shadow belongs to the pinned columns, not to the edge of the
+      // table: it starts where the last pinned column ends (the width is
+      // measured from the sticky headers and published on the frame) so it reads
+      // as the pinned columns casting a shadow over the cells sliding
+      // underneath. With nothing pinned it just shades the left edge.
       left: var(--msfd-sticky-width, 0);
-      background: linear-gradient(
-        to right,
-        @msfd-scroll-cue,
-        fade(@msfd-scroll-cue, 0%)
-      );
+      background: linear-gradient(to right,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
     }
 
     &.is-right {
       right: 0;
-      background: linear-gradient(
-        to left,
-        @msfd-scroll-cue,
-        fade(@msfd-scroll-cue, 0%)
-      );
+      background: linear-gradient(to left,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
     }
   }
 
@@ -1081,9 +1209,6 @@
   table.msfd-table {
     width: 100%;
     border: @border-size-1 solid @msfd-border;
-    // The left edge belongs to the pinned first column (see below) so that it
-    // stays put when the table scrolls and does not double when it does not.
-    border-left: 0;
     border-collapse: collapse;
 
     th,
@@ -1093,42 +1218,46 @@
       text-align: left;
     }
 
-    // Pin the first column (the country) to the left edge of the scroll box: it
-    // is the key of the row, and it must stay readable while the rest of the
-    // row scrolls under it.
-    th:first-child,
-    td:first-child {
+    // Pinned columns are moved out of their place and stuck to the left edge of
+    // the scroll box (they lead every row, see ExplorerTable). Any column can be
+    // pinned, and several at once, so the horizontal position is not in the
+    // stylesheet: each pinned cell is offset by the measured widths of the
+    // pinned cells before it (`--msfd-pin-offset-<n>`, published on the frame).
+    th.msfd-pinned,
+    td.msfd-pinned {
       position: sticky;
       z-index: @z-index-1;
-      left: 0;
       background: @msfd-surface;
 
       // Drawn rather than declared as borders: with `border-collapse: collapse`
       // Chromium leaves a cell's own borders at the cell's static position, so a
-      // pinned cell slides away from them and the column loses its edges.
-      // Pseudo-elements are part of the cell and travel with it.
+      // sticky cell slides away from them and the column loses its edges.
+      // Pseudo-elements are part of the cell and travel with it. They are off by
+      // default because a middle pinned column has no edges of its own: only the
+      // first and the last column of the pinned strip draw one (see below).
       &::before,
       &::after {
         position: absolute;
         top: 0;
         bottom: 0;
+        display: none;
         width: @border-size-1;
         background: @msfd-border;
         content: '';
       }
 
-      // Left edge: always on, because the table's own left border scrolls out of
-      // view with the content and must not come back a pixel late.
       &::before {
         left: 0;
       }
 
-      // Right edge: only once the table is actually scrolled, where it is what
-      // separates the pinned column from the cells sliding underneath. At the
-      // origin the column is just the first column and needs no seam.
       &::after {
         right: -1px;
-        display: none;
+      }
+
+      // The pinned strip reads as lifted off the table, so it is obvious which
+      // columns are pinned even before the table is scrolled.
+      &.is-pinned-last {
+        box-shadow: 2px 0 4px -2px fade(@blue-grey-6, 24%);
       }
     }
 
@@ -1138,17 +1267,14 @@
       font-size: @msfd-font-data;
       font-weight: @font-weight-7;
 
-      &:first-child {
+      &.msfd-pinned {
         z-index: @z-index-2;
+        background: @msfd-surface-alt;
       }
     }
 
     td {
       font-size: @msfd-font-data;
-    }
-
-    thead th:first-child {
-      background: @msfd-surface-alt;
     }
 
     tbody tr:hover td {
@@ -1160,12 +1286,29 @@
     }
   }
 
-  // The seam between the pinned column and the scrolling ones only exists while
-  // the table is scrolled (`is-scrolled` on the frame).
-  .msfd-table-frame.is-scrolled table.msfd-table {
-    th:first-child::after,
-    td:first-child::after {
+  // A pinned column is marked the moment it is pinned, not only once the table
+  // is scrolled: the first column of the pinned run draws its left edge and the
+  // last one the seam that separates the run from the cells that slide under it.
+  // That is the only feedback a table that fits the viewport can give, since
+  // nothing moves when such a column is pinned.
+  table.msfd-table {
+
+    th.msfd-pinned.is-pinned-first::before,
+    td.msfd-pinned.is-pinned-first::before,
+    th.msfd-pinned.is-pinned-last::after,
+    td.msfd-pinned.is-pinned-last::after {
       display: block;
+    }
+  }
+
+  // At the origin the table's own left border is still on screen, so the first
+  // pinned column would only double it. Once scrolled, the border has left with
+  // the content and the edge above takes over.
+  .msfd-table-frame:not(.is-scrolled) table.msfd-table {
+
+    th.msfd-pinned.is-pinned-first::before,
+    td.msfd-pinned.is-pinned-first::before {
+      display: none;
     }
   }
 
@@ -1174,8 +1317,8 @@
 
     // The group itself is a bordered box that does not scroll with the table, so
     // its left edge is already on screen: a second one here would double it.
-    th:first-child::before,
-    td:first-child::before {
+    th.msfd-pinned.is-pinned-first::before,
+    td.msfd-pinned.is-pinned-first::before {
       display: none;
     }
   }
@@ -1185,7 +1328,7 @@
     border: @border-size-1 solid @msfd-border;
   }
 
-  .msfd-group + .msfd-group {
+  .msfd-group+.msfd-group {
     margin-top: @space-6;
   }
 
@@ -1237,6 +1380,41 @@
 
     @media (max-width: 767px) {
       grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  // Header composition: the sort control (or the plain label) and the pin
+  // checkbox share one row, with the checkbox trailing the label.
+  .msfd-table-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+  }
+
+  .msfd-table-head-label {
+    font-weight: @font-weight-7;
+  }
+
+  .msfd-table-pin {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    margin: 0;
+    padding: @space-05;
+    cursor: pointer;
+  }
+
+  .msfd-table-pin-input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: @msfd-link;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
     }
   }
 
@@ -1326,7 +1504,7 @@
   // features as bullets underneath, plus a Show more/less control when the
   // cell holds more items than the column's maxItems.
   .msfd-cell-grouped {
-    .msfd-cell-group + .msfd-cell-group {
+    .msfd-cell-group+.msfd-cell-group {
       margin-top: @space-2;
     }
 
