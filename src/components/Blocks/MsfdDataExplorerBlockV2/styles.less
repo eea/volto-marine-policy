@@ -41,7 +41,8 @@
 @msfd-surface-alt: @grey-1; // supplementary background
 @msfd-surface-sidebar: @blue-grey-0; // sidebar cards keep the blue wash
 @msfd-surface-tint: @blue-grey-0; // selected/grouped state
-@msfd-border: #bec7cf;
+// @msfd-border: #bec7cf;
+@msfd-border: #ACCAE5;
 // Overlay elevation. These are the `@shadow-2` / `@shadow-1` tokens from the
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
@@ -244,7 +245,7 @@
   .msfd-filters {
     display: grid;
     align-items: start;
-    border: 1px solid #bec7cf;
+    // border: 1px solid @msfd-border;
     background: #dae8f4;
     grid-auto-flow: row;
   }
@@ -261,7 +262,7 @@
       display: grid;
       align-content: center;
       padding: @space-3 @space-4 @space-4;
-      border-right: @border-size-1 solid #bec7cf;
+      border-right: @border-size-1 solid @msfd-border;
 
       // No divider and no outer padding on the first column...
       &:nth-child(3n + 1) {
@@ -1292,7 +1293,7 @@
 
   // -- summary & insights ----------------------------------------------
   .msfd-summary {
-    border: 1px solid #bec7cf;
+    // border: 1px solid @msfd-border;
     background: #dae8f4;
   }
 
@@ -1328,7 +1329,7 @@
     min-width: 0;
     align-items: flex-start;
     padding: @space-4;
-    border: @border-size-1 solid @msfd-border;
+    // border: @border-size-1 solid @msfd-border;
     background: @msfd-surface;
     gap: @space-3;
   }
@@ -1417,7 +1418,7 @@
     min-width: 0;
     flex-direction: column;
     padding: @space-3 @space-4;
-    border: @border-size-1 solid @msfd-border;
+    // border: @border-size-1 solid @msfd-border;
     background: @msfd-surface;
   }
 
@@ -1453,7 +1454,7 @@
 
   .msfd-sidebar-block {
     padding: @space-4;
-    border: @border-size-1 solid @msfd-border;
+    // border: @border-size-1 solid @msfd-border;
     background: @msfd-surface-sidebar;
   }
 

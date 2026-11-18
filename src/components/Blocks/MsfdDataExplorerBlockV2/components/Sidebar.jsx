@@ -20,22 +20,6 @@ const Sidebar = ({ article, cycle, onSelectCycle }) => {
 
   return (
     <aside className="msfd-sidebar">
-      <div className="msfd-sidebar-block">
-        <h3 className="msfd-sidebar-heading">{period.heading}</h3>
-        {period.static ? (
-          <p className="msfd-period-static">{period.static}</p>
-        ) : (
-          <Dropdown
-            selection
-            fluid
-            className="msfd-cycle-dropdown"
-            options={period.options}
-            value={cycle}
-            onChange={(event, data) => onSelectCycle(data.value)}
-          />
-        )}
-      </div>
-
       <nav
         className={`msfd-sidebar-block msfd-sidebar-articles ${
           articlesOpen ? 'is-open' : ''
@@ -85,6 +69,22 @@ const Sidebar = ({ article, cycle, onSelectCycle }) => {
           </ul>
         ) : null}
       </nav>
+
+      <div className="msfd-sidebar-block">
+        <h3 className="msfd-sidebar-heading">{period.heading}</h3>
+        {period.static ? (
+          <p className="msfd-period-static">{period.static}</p>
+        ) : (
+          <Dropdown
+            selection
+            fluid
+            className="msfd-cycle-dropdown"
+            options={period.options}
+            value={cycle}
+            onChange={(event, data) => onSelectCycle(data.value)}
+          />
+        )}
+      </div>
     </aside>
   );
 };
