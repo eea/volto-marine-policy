@@ -1,10 +1,11 @@
 import React from 'react';
 
+import { RANGE_NULL_TOKEN } from '../constants';
 import RangeSlider from './RangeSlider';
 
 // Token the backend appends to the selection while rows without a value
 // (e.g. no determination date) are part of the result: `2019,2024,null`.
-const NULL_TOKEN = 'null';
+const NULL_TOKEN = RANGE_NULL_TOKEN;
 
 const toNumber = (value, fallback) => {
   const number = Number(value);

@@ -41,6 +41,7 @@ const FacetDropdown = ({
   const selectedValues = selected || [];
   const selectedSet = new Set(selectedValues);
   const allValues = options.map((option) => option.value);
+  const hasSelection = selectedValues.length > 0;
 
   const labelFor = (value) => {
     const option = options.find((item) => item.value === value);
@@ -75,7 +76,9 @@ const FacetDropdown = ({
 
       <div className="msfd-multiselect" ref={ref}>
         <div
-          className={`msfd-multiselect-trigger ${open ? 'is-open' : ''}`}
+          className={`msfd-multiselect-trigger${
+            hasSelection ? ' is-active' : ''
+          }${open ? ' is-open' : ''}`}
           role="button"
           tabIndex={0}
           aria-expanded={open}

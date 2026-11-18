@@ -249,46 +249,80 @@
     grid-auto-flow: row;
   }
 
+  // Active selection count in the panel header ("3 active"); the same number
+  // of chips is listed in the Applied filters row at the bottom.
+  .msfd-filters-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: @space-1;
+    padding: @space-05 @space-2;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    color: @msfd-heading;
+    font-size: @msfd-font-meta;
+    font-weight: @font-weight-6;
+    font-variant-numeric: tabular-nums;
+    line-height: @font-lineheight-0;
+  }
+
+  // The bands the facets are grouped in. A hairline rule between them, not a
+  // box around each one: the grouping should read at a glance without adding
+  // a second layer of chrome.
+  .msfd-filters-body {
+    display: grid;
+    grid-auto-flow: row;
+  }
+
+  .msfd-filter-group {
+    padding: @space-4;
+    border-bottom: @border-size-1 solid @msfd-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .msfd-filter-group-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 @space-3;
+    color: @msfd-heading;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+    letter-spacing: @font-letterspacing-00;
+    line-height: @font-lineheight-0;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-accent;
+      font-size: @font-size-00;
+    }
+  }
+
   .msfd-filters-grid {
     display: grid;
-    align-items: stretch;
-    padding: 0 @space-4 @space-4;
-    // Column gap is 0: the space between columns comes from the fields'
-    // horizontal padding, so a full-height divider can sit at each field edge.
+    align-items: center;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: @space-4;
 
-    .msfd-field {
-      display: grid;
-      align-content: center;
-      padding: @space-3 @space-4 @space-4;
-      // border-right: @border-size-1 solid @msfd-border;
-
-      // No divider and no outer padding on the first column...
-      &:nth-child(3n + 1) {
-        padding-left: 0;
-      }
-
-      // ...and on the right edge of the last column.
-      &:nth-child(3n),
-      &:last-child {
-        padding-right: 0;
-        border-right: none;
-      }
+    // A group holding a single range facet (e.g. Determination Date) gives it
+    // the whole row: a slider needs the width to be precise.
+    &.is-wide {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     @media (max-width: 767px) {
       grid-template-columns: minmax(0, 1fr);
-
-      .msfd-field {
-        padding-right: 0;
-        padding-left: 0;
-        border-right: none;
-      }
     }
   }
 
   .msfd-field {
     min-width: 0;
+
+    &.msfd-field-range {
+      grid-row: span 2;
+    }
   }
 
   .msfd-field-label {
@@ -297,6 +331,66 @@
     color: @msfd-text;
     font-size: @msfd-font-data;
     font-weight: @font-weight-7;
+  }
+
+  // -- applied filters --------------------------------------------------
+  // The selection summary at the bottom of the panel: one chip per active
+  // value, each removable, plus a single Clear all.
+  .msfd-applied {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: @space-3 @space-4;
+    border-top: @border-size-1 solid @msfd-border;
+    gap: @space-2 @space-3;
+  }
+
+  .msfd-applied-label {
+    display: inline-flex;
+    align-items: center;
+    color: @msfd-text;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-heading;
+    }
+  }
+
+  .msfd-applied-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    gap: @space-2;
+    list-style: none;
+  }
+
+  .msfd-applied-chip {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    padding: @space-05 @space-1 @space-05 @space-3;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    color: @msfd-heading;
+    font-size: @msfd-font-meta;
+    gap: @space-1;
+  }
+
+  .msfd-applied-chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Clear all sits at the far end of the row, away from the chips it undoes.
+  .msfd-applied-clear {
+    margin-left: auto;
   }
 
   // -- multi-select facet ----------------------------------------------
@@ -331,6 +425,13 @@
       border-color: @msfd-accent;
     }
 
+    // A facet with a selection keeps a visible "this narrows the results"
+    // state, so a user scanning the panel can tell which widgets are set.
+    &.is-active {
+      border-color: @msfd-heading;
+      // background: @msfd-surface-tint;
+    }
+
     // 2.4.7 Focus Visible: a border colour change alone is not enough.
     &:focus-visible {
       border-color: @msfd-accent;
@@ -363,13 +464,15 @@
     gap: @space-1;
   }
 
-  .msfd-chip-text {
+  .msfd-chip-text,
+  .msfd-applied-chip-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .msfd-chip-remove {
+  .msfd-chip-remove,
+  .msfd-applied-chip-remove {
     display: inline-flex;
     width: 20px;
     height: 20px;
@@ -384,6 +487,7 @@
 
     i.icon {
       margin: 0;
+      color: inherit;
       font-size: @font-size-00;
     }
 
@@ -554,6 +658,7 @@
     position: relative;
     height: 24px;
     margin: @space-1 0 @space-3;
+    max-width: 335px;
   }
 
   .msfd-range-rail,
@@ -630,10 +735,13 @@
     background: none;
   }
 
+  // The bounds keep a readable width even when the facet has the whole row
+  // (a lone range facet in its group): two full width number inputs say
+  // "type a long number" where a year is four digits.
   .msfd-range-values {
     display: grid;
     gap: @space-3;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 160px));
   }
 
   .msfd-range-value {

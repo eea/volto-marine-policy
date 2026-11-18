@@ -160,6 +160,12 @@ export const articlePageHref = (pathname, page) => {
 
 export const DEFAULT_PAGE_SIZE = 10;
 
+// Token the backend appends to a range selection while the rows without a
+// value (e.g. no determination date) are part of the result: `2019,2024,null`.
+// It is not a value the user picked, so the Applied filters row leaves it out
+// of the chip label (see FacetRange and AppliedFilters).
+export const RANGE_NULL_TOKEN = 'null';
+
 // (article, cycle) combinations that have a backend Summary & insights
 // payload: every Article 4 cycle exposes one (2012 reports counts only, while
 // 2018/2024 also report area), Article 7 exposes a count-based one, and
