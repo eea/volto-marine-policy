@@ -16,7 +16,7 @@ const facet = {
   selectedMin: 2019,
   selectedMax: 2024,
   nullOption: {
-    label: 'Include rows without a determination date',
+    label: 'Include empty values',
     value: 'null',
     count: 12,
     selected: true,
@@ -52,9 +52,7 @@ test('keeps rows without a date by default', () => {
 
   // an untouched facet must keep every row, so the toggle starts checked
   expect(screen.getByRole('checkbox')).toBeChecked();
-  expect(
-    screen.getByText('Include rows without a determination date'),
-  ).toBeInTheDocument();
+  expect(screen.getByText('Include empty values')).toBeInTheDocument();
   // the toggle also shows how many rows carry no date
   expect(screen.getByText('(12)')).toBeInTheDocument();
 });

@@ -47,10 +47,15 @@
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
 // unsupported value would silently drop the shadow instead of degrading.
-@msfd-shadow:
-  0 3px 5px -2px fade(@blue-grey-6, 4%),
+@msfd-shadow: 0 3px 5px -2px fade(@blue-grey-6, 4%),
   0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
+// Range slider geometry: the thumb is a circle whose centre is the value, so the
+// rail is inset by half of it (see .msfd-range-track).
+@msfd-range-thumb: 20px;
+@msfd-range-track-height: 6px;
+@msfd-range-hit: 32px; // the pointer target around the rail
+@msfd-range-duration: 120ms;
 // Edge cue of the horizontally scrolling results table: a hairline darkening
 // that reads as "there is more table under this edge".
 @msfd-scroll-cue: fade(@blue-grey-6, 18%);
@@ -304,7 +309,7 @@
   .msfd-filters-grid {
     display: grid;
     align-items: center;
-    gap: @space-4;
+    gap: @space-6;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 
     // A group holding a single range facet (e.g. Determination Date) gives it
@@ -411,7 +416,7 @@
     cursor: pointer;
     gap: @space-1;
 
-    > i.icon {
+    >i.icon {
       position: absolute;
       top: 50%;
       right: @space-3;
@@ -655,29 +660,39 @@
   }
 
   // -- range facet -----------------------------------------------------
+  // A dual thumb slider over two stacked native range inputs. The decorative
+  // rail lives in its own, inset box (`.msfd-range-track`) because a native
+  // input keeps its thumb half a thumb away from either end: the fill then lands
+  // exactly under the thumb centres instead of drifting half a thumb at both
+  // bounds. Sizes are local variables so the track, the thumbs and the bounds
+  // row cannot fall out of step.
   .msfd-range {
-    position: relative;
-    max-width: 335px;
-    height: 24px;
-    margin: @space-1 0 @space-3;
+    max-width: 420px;
+    margin: @space-2 0 @space-3;
   }
 
-  .msfd-range-rail,
-  .msfd-range-fill {
+  .msfd-range-slider {
+    position: relative;
+    height: @msfd-range-hit;
+  }
+
+  .msfd-range-track {
     position: absolute;
     top: 50%;
-    height: 4px;
+    right: @msfd-range-thumb * 0.5;
+    left: @msfd-range-thumb * 0.5;
+    height: @msfd-range-track-height;
+    border-radius: @msfd-range-track-height * 0.5;
+    background: @msfd-border;
     transform: translateY(-50%);
   }
 
-  .msfd-range-rail {
-    right: 0;
-    left: 0;
-    background: @msfd-border;
-  }
-
   .msfd-range-fill {
-    background: @msfd-accent;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: @msfd-heading;
   }
 
   .msfd-range-input {
@@ -685,16 +700,29 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 24px;
+    height: @msfd-range-hit;
     margin: 0;
     -webkit-appearance: none;
     appearance: none;
     background: none;
+    // The inputs only carry the thumbs; everything else is the rail above.
     pointer-events: none;
 
+    // The focus ring belongs on the thumb, not on a box around the whole rail.
     &:focus-visible {
-      outline: @border-size-2 solid @blue-2;
-      outline-offset: @space-05;
+      outline: none;
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+      box-shadow:
+        0 0 0 @border-size-1 @grey-0,
+        0 0 0 3px @blue-2;
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      box-shadow:
+        0 0 0 @border-size-1 @grey-0,
+        0 0 0 3px @blue-2;
     }
   }
 
@@ -709,82 +737,155 @@
   // Circular thumbs are the documented exception to the sharp-corner rule
   // (@thumbBorderRadius in the theme).
   .msfd-range-input::-webkit-slider-thumb {
-    width: 16px;
-    height: 16px;
-    border: @border-size-2 solid @msfd-accent;
+    box-sizing: border-box;
+    width: @msfd-range-thumb;
+    height: @msfd-range-thumb;
+    border: @border-size-2 solid @msfd-heading;
     border-radius: 50%;
     -webkit-appearance: none;
     appearance: none;
     background: @grey-0;
     box-shadow: @msfd-shadow-thumb;
-    cursor: pointer;
+    cursor: grab;
     pointer-events: auto;
+    // A transform keeps the thumb centred while it grows: changing its width
+    // would also change the inset a native range input reserves for it, and the
+    // thumb would jump by a pixel under the pointer.
+    transition: transform @msfd-range-duration ease-out;
   }
 
   .msfd-range-input::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border: @border-size-2 solid @msfd-accent;
+    box-sizing: border-box;
+    width: @msfd-range-thumb;
+    height: @msfd-range-thumb;
+    border: @border-size-2 solid @msfd-heading;
     border-radius: 50%;
     background: @grey-0;
     box-shadow: @msfd-shadow-thumb;
-    cursor: pointer;
+    cursor: grab;
     pointer-events: auto;
+    transition: transform @msfd-range-duration ease-out;
+  }
+
+  .msfd-range-input:hover::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+
+  .msfd-range-input:hover::-moz-range-thumb {
+    transform: scale(1.15);
+  }
+
+  .msfd-range-input:active::-webkit-slider-thumb {
+    cursor: grabbing;
+    transform: scale(1.25);
+  }
+
+  .msfd-range-input:active::-moz-range-thumb {
+    cursor: grabbing;
+    transform: scale(1.25);
   }
 
   .msfd-range-input::-moz-range-track {
     background: none;
   }
 
-  // The bounds keep a readable width even when the facet has the whole row
-  // (a lone range facet in its group): two full width number inputs say
-  // "type a long number" where a year is four digits.
+  // The scale of the control, aligned with the ends of the rail.
+  .msfd-range-bounds {
+    display: flex;
+    justify-content: space-between;
+    margin-top: @space-1;
+    padding: 0 @msfd-range-thumb * 0.5;
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  // The editable bounds: one compact row (min – max unit) instead of two
+  // labelled boxes, so four digits do not get a box meant for a long number.
   .msfd-range-values {
-    display: grid;
-    gap: @space-3;
-    grid-template-columns: repeat(2, minmax(0, 160px));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-2;
   }
 
   .msfd-range-value {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 @space-2;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    cursor: text;
+    gap: @space-2;
 
-    span {
-      display: block;
-      margin-bottom: @space-1;
-      color: @msfd-muted;
-      font-size: @msfd-font-meta;
+    &:hover {
+      border-color: @msfd-accent;
+    }
+
+    &:focus-within {
+      border-color: @msfd-heading;
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: 0;
     }
 
     input {
-      width: 100%;
-      padding: @space-2;
-      border: @border-size-1 solid @msfd-border;
-      border-radius: @msfd-radius;
-      color: @msfd-text;
+      width: 4ch;
+      padding: @space-2 0;
+      border: none;
+      background: none;
+      color: @msfd-heading;
       font-size: @msfd-font-data;
+      font-variant-numeric: tabular-nums;
+      font-weight: @font-weight-6;
+      outline: none;
+      text-align: right;
+      // The boxes are pills, not form fields with steppers.
+      -moz-appearance: textfield;
+      appearance: textfield;
 
-      &:focus-visible {
-        border-color: @msfd-accent;
-        outline: @border-size-2 solid @blue-2;
-        outline-offset: 0;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
+        appearance: none;
       }
     }
+  }
+
+  .msfd-range-value-label {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-range-sep {
+    color: @msfd-muted;
+  }
+
+  .msfd-range-unit {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
   }
 
   // "Keep rows without a value" toggle of a range facet.
   .msfd-range-null {
     display: flex;
-    align-items: center;
-    margin-top: @space-3;
+    align-items: flex-start;
+    // margin-top: @space-3;
     cursor: pointer;
-    font-size: @msfd-font-meta;
+    font-size: 10px;
     gap: @space-2;
+    align-items: center;
+    flex-basis: min-content;
+    margin-left: 24px;
 
     input[type='checkbox'] {
       width: 16px;
       height: 16px;
       flex: none;
-      margin: 0;
+      // sit on the first line of the label rather than beside a wrapped block
+      margin: @space-025 0 0;
       accent-color: @msfd-heading;
       cursor: pointer;
     }
@@ -795,13 +896,19 @@
     }
   }
 
+  .msfd-range-null-text {
+    display: inline;
+  }
+
   .msfd-range-null-label {
     color: @msfd-muted;
   }
 
   .msfd-range-null-count {
+    margin-left: @space-1;
     color: @msfd-muted;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   // -- results ---------------------------------------------------------
@@ -950,20 +1057,16 @@
       // header cell and published on the frame) so it reads as the pinned
       // column casting a shadow over the cells sliding underneath.
       left: var(--msfd-sticky-width, 0);
-      background: linear-gradient(
-        to right,
-        @msfd-scroll-cue,
-        fade(@msfd-scroll-cue, 0%)
-      );
+      background: linear-gradient(to right,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
     }
 
     &.is-right {
       right: 0;
-      background: linear-gradient(
-        to left,
-        @msfd-scroll-cue,
-        fade(@msfd-scroll-cue, 0%)
-      );
+      background: linear-gradient(to left,
+          @msfd-scroll-cue,
+          fade(@msfd-scroll-cue, 0%));
     }
   }
 
@@ -1055,6 +1158,7 @@
   // The seam between the pinned column and the scrolling ones only exists while
   // the table is scrolled (`is-scrolled` on the frame).
   .msfd-table-frame.is-scrolled table.msfd-table {
+
     th:first-child::after,
     td:first-child::after {
       display: block;
@@ -1077,7 +1181,7 @@
     border: @border-size-1 solid @msfd-border;
   }
 
-  .msfd-group + .msfd-group {
+  .msfd-group+.msfd-group {
     margin-top: @space-6;
   }
 
@@ -1218,7 +1322,7 @@
   // features as bullets underneath, plus a Show more/less control when the
   // cell holds more items than the column's maxItems.
   .msfd-cell-grouped {
-    .msfd-cell-group + .msfd-cell-group {
+    .msfd-cell-group+.msfd-cell-group {
       margin-top: @space-2;
     }
 

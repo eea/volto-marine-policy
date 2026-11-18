@@ -52,7 +52,15 @@ const FacetRange = ({ facet, value, onChange }) => {
     onChange(facet.name, values);
   };
 
+  // The unit is spelled out in the accessible name ("Min (year)") but is not
+  // repeated next to the boxes when the field label already carries it
+  // ("Area (km²)"), which would only say the same thing twice.
   const unit = facet.unit ? ` (${facet.unit})` : '';
+  const trailingUnit =
+    facet.unit && !String(facet.label).includes(facet.unit) ? facet.unit : null;
+  // Number inputs do not size to their content, so the pill grows with the
+  // value instead of leaving a wide box around four digits.
+  const widthOf = (number) => `${Math.max(2, String(number).length)}ch`;
 
   return (
     <div className="msfd-field msfd-field-range">
@@ -68,40 +76,61 @@ const FacetRange = ({ facet, value, onChange }) => {
 
       <div className="msfd-range-values">
         <label className="msfd-range-value">
-          <span>Min{unit}</span>
+          <span className="msfd-range-value-label" aria-hidden="true">
+            Min
+          </span>
           <input
             type="number"
+            aria-label={`Min${unit}`}
+            style={{ width: widthOf(low) }}
             min={min}
             max={max}
             value={low}
             onChange={(event) => commit([event.target.value, high])}
           />
         </label>
+        <span className="msfd-range-sep" aria-hidden="true">
+          –
+        </span>
         <label className="msfd-range-value">
-          <span>Max{unit}</span>
+          <span className="msfd-range-value-label" aria-hidden="true">
+            Max
+          </span>
           <input
             type="number"
+            aria-label={`Max${unit}`}
+            style={{ width: widthOf(high) }}
             min={min}
             max={max}
             value={high}
             onChange={(event) => commit([low, event.target.value])}
           />
         </label>
+        {trailingUnit ? (
+          <span className="msfd-range-unit" aria-hidden="true">
+            {trailingUnit}
+          </span>
+        ) : null}
+        {hasNullOption ? (
+          <label className="msfd-range-null">
+            <input
+              type="checkbox"
+              checked={includeNull}
+              onChange={(event) => commit([low, high], event.target.checked)}
+            />
+            {/* One text block, so the count stays with the sentence it counts when
+              the label wraps. */}
+            <span className="msfd-range-null-text">
+              <span className="msfd-range-null-label">{nullOption.label}</span>
+              {/* {typeof nullOption.count === 'number' ? (
+                <span className="msfd-range-null-count">
+                  ({nullOption.count})
+                </span>
+              ) : null} */}
+            </span>
+          </label>
+        ) : null}
       </div>
-
-      {hasNullOption ? (
-        <label className="msfd-range-null">
-          <input
-            type="checkbox"
-            checked={includeNull}
-            onChange={(event) => commit([low, high], event.target.checked)}
-          />
-          <span className="msfd-range-null-label">{nullOption.label}</span>
-          {typeof nullOption.count === 'number' ? (
-            <span className="msfd-range-null-count">({nullOption.count})</span>
-          ) : null}
-        </label>
-      ) : null}
     </div>
   );
 };

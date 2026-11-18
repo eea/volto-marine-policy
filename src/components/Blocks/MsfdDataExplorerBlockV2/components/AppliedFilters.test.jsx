@@ -31,7 +31,7 @@ const date = {
   min: 2008,
   max: 2025,
   nullOption: {
-    label: 'Include rows without a determination date',
+    label: 'Include empty values',
     value: 'null',
     count: 41,
     selected: true,
