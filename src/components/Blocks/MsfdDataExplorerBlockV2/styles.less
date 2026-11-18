@@ -47,7 +47,8 @@
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
 // unsupported value would silently drop the shadow instead of degrading.
-@msfd-shadow: 0 3px 5px -2px fade(@blue-grey-6, 4%),
+@msfd-shadow:
+  0 3px 5px -2px fade(@blue-grey-6, 4%),
   0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
 // Range slider geometry: the thumb is a circle whose centre is the value, so the
@@ -103,7 +104,6 @@
 // The pulse that points at the pin checkboxes while the hint is up. Declared at
 // the top level so it is emitted once, not per nesting level.
 @keyframes msfd-pin-pulse {
-
   0%,
   100% {
     box-shadow: 0 0 0 0 fade(@msfd-link, 0%);
@@ -430,7 +430,7 @@
     cursor: pointer;
     gap: @space-1;
 
-    >i.icon {
+    > i.icon {
       position: absolute;
       top: 50%;
       right: @space-3;
@@ -1034,10 +1034,10 @@
 
   .msfd-pin-clear {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 20px;
     height: 20px;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     border: @border-size-1 solid @msfd-border;
     border-radius: 50%;
@@ -1069,10 +1069,10 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: @space-3;
     padding: @space-2 @space-3;
     border: @border-size-1 solid @msfd-link;
     border-radius: @msfd-radius;
+    margin-bottom: @space-3;
     background: @msfd-surface-tint;
     color: @msfd-text;
     font-size: @msfd-font-prose;
@@ -1190,16 +1190,20 @@
       // as the pinned columns casting a shadow over the cells sliding
       // underneath. With nothing pinned it just shades the left edge.
       left: var(--msfd-sticky-width, 0);
-      background: linear-gradient(to right,
-          @msfd-scroll-cue,
-          fade(@msfd-scroll-cue, 0%));
+      background: linear-gradient(
+        to right,
+        @msfd-scroll-cue,
+        fade(@msfd-scroll-cue, 0%)
+      );
     }
 
     &.is-right {
       right: 0;
-      background: linear-gradient(to left,
-          @msfd-scroll-cue,
-          fade(@msfd-scroll-cue, 0%));
+      background: linear-gradient(
+        to left,
+        @msfd-scroll-cue,
+        fade(@msfd-scroll-cue, 0%)
+      );
     }
   }
 
@@ -1292,7 +1296,6 @@
   // That is the only feedback a table that fits the viewport can give, since
   // nothing moves when such a column is pinned.
   table.msfd-table {
-
     th.msfd-pinned.is-pinned-first::before,
     td.msfd-pinned.is-pinned-first::before,
     th.msfd-pinned.is-pinned-last::after,
@@ -1305,7 +1308,6 @@
   // pinned column would only double it. Once scrolled, the border has left with
   // the content and the edge above takes over.
   .msfd-table-frame:not(.is-scrolled) table.msfd-table {
-
     th.msfd-pinned.is-pinned-first::before,
     td.msfd-pinned.is-pinned-first::before {
       display: none;
@@ -1328,7 +1330,7 @@
     border: @border-size-1 solid @msfd-border;
   }
 
-  .msfd-group+.msfd-group {
+  .msfd-group + .msfd-group {
     margin-top: @space-6;
   }
 
@@ -1400,8 +1402,8 @@
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
-    margin: 0;
     padding: @space-05;
+    margin: 0;
     cursor: pointer;
   }
 
@@ -1504,7 +1506,7 @@
   // features as bullets underneath, plus a Show more/less control when the
   // cell holds more items than the column's maxItems.
   .msfd-cell-grouped {
-    .msfd-cell-group+.msfd-cell-group {
+    .msfd-cell-group + .msfd-cell-group {
       margin-top: @space-2;
     }
 
