@@ -49,7 +49,9 @@ const MsfdDataExplorerBlockV2View = (props) => {
   const Renderer = getRenderer(article);
   // The article also becomes a class on the block wrapper (e.g.
   // "msfd-explorer-v2 article-9"), so per-article tweaks can hook onto it.
-  const wrapperClass = `msfd-explorer-v2 ${getArticlePageClass(article)}`;
+  const wrapperClass = `msfd-explorer-v2 ${getArticlePageClass(
+    article,
+  )} cycle-${cycle}`;
 
   const sidebar = (
     <Sidebar
