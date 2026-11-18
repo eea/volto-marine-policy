@@ -255,14 +255,14 @@
   .msfd-filters-badge {
     display: inline-flex;
     align-items: center;
-    margin-left: @space-1;
     padding: @space-05 @space-2;
     border-radius: @msfd-radius;
+    margin-left: @space-1;
     background: @msfd-surface;
     color: @msfd-heading;
     font-size: @msfd-font-meta;
-    font-weight: @font-weight-6;
     font-variant-numeric: tabular-nums;
+    font-weight: @font-weight-6;
     line-height: @font-lineheight-0;
   }
 
@@ -304,8 +304,8 @@
   .msfd-filters-grid {
     display: grid;
     align-items: center;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: @space-4;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     // A group holding a single range facet (e.g. Determination Date) gives it
     // the whole row: a slider needs the width to be precise.
@@ -364,8 +364,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin: 0;
     padding: 0;
+    margin: 0;
     gap: @space-2;
     list-style: none;
   }
@@ -657,9 +657,9 @@
   // -- range facet -----------------------------------------------------
   .msfd-range {
     position: relative;
+    max-width: 335px;
     height: 24px;
     margin: @space-1 0 @space-3;
-    max-width: 335px;
   }
 
   .msfd-range-rail,
