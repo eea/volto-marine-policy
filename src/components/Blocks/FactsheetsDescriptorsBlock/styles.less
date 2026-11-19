@@ -95,6 +95,28 @@
     background-color: @factsheet-surface;
   }
 
+  // A card with a link is an <a>: the whole surface navigates, so it must not
+  // pick up the theme's link colours or underline, and hover/focus has to be
+  // visible on the border (the background is an inline style).
+  .factsheet-descriptor-card--link {
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+
+    &:hover {
+      border-color: @blue-5;
+      box-shadow: 0 1px 4px rgba(0, 75, 127, 0.15);
+    }
+
+    &:focus-visible {
+      border-color: @blue-5;
+      outline: @border-size-2 solid @blue-5;
+      outline-offset: 2px;
+    }
+  }
+
   // -- icons -----------------------------------------------------------
   .factsheet-descriptor-icon {
     display: block;

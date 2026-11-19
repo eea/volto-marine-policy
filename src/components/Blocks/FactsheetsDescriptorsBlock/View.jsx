@@ -5,6 +5,7 @@ import Image from '@plone/volto/components/theme/Image/Image';
 import {
   DEFAULT_CARD_BACKGROUND,
   DEFAULT_GROUP_BACKGROUND,
+  getCardLink,
   getIconAlt,
   getIconURL,
   getTextColor,
@@ -65,20 +66,26 @@ const GroupCard = ({ group }) => {
   );
 };
 
-const DescriptorCard = ({ card }) => {
+// A card with a `url` becomes one link: the whole surface is clickable and
+// focusable, so the target never depends on hitting the title. In edit mode the
+// navigation is swallowed, otherwise clicking the card would leave the editor
+// instead of selecting the block.
+const DescriptorCard = ({ card, mode }) => {
   const background = card.background_color || DEFAULT_CARD_BACKGROUND;
   const inverted = isDarkColor(background);
+  const link = getCardLink(card.url);
 
-  return (
-    <article
-      className={cx('factsheet-descriptor-card', {
-        'factsheet-card-dark': inverted,
-      })}
-      style={{
-        backgroundColor: background,
-        color: getTextColor(background),
-      }}
-    >
+  const className = cx('factsheet-descriptor-card', {
+    'factsheet-card-dark': inverted,
+    'factsheet-descriptor-card--link': !!link,
+  });
+  const style = {
+    backgroundColor: background,
+    color: getTextColor(background),
+  };
+
+  const content = (
+    <>
       <Icon
         icon={card.icon}
         inverted={inverted}
@@ -99,19 +106,47 @@ const DescriptorCard = ({ card }) => {
           {renderSlate(card.info)}
         </div>
       )}
-    </article>
+    </>
+  );
+
+  if (!link) {
+    return (
+      <article className={className} style={style}>
+        {content}
+      </article>
+    );
+  }
+
+  return (
+    <a
+      className={className}
+      style={style}
+      href={link.href}
+      {...(link.external
+        ? { target: '_blank', rel: 'noopener noreferrer' }
+        : {})}
+      {...(mode === 'edit'
+        ? {
+            onClick: (event) => event.preventDefault(),
+            'aria-disabled': true,
+          }
+        : {})}
+    >
+      {content}
+    </a>
   );
 };
 
 // One grid per group, so a group always starts on a new row and the main card
 // occupies its first cell (see styles.less for the responsive column count).
-const Group = ({ group, index }) => (
+const Group = ({ group, index, mode }) => (
   <div className="factsheet-descriptors-group" data-group-index={index}>
     <GroupCard group={group} />
     {(group.cards || []).map((card, cardIndex) => (
       <DescriptorCard
         key={card['@id'] || `card-${index}-${cardIndex}`}
         card={card}
+        mode={mode}
       />
     ))}
   </div>
@@ -138,6 +173,7 @@ const View = memo(({ data = {}, mode }) => {
           key={group['@id'] || `group-${index}`}
           group={group}
           index={index}
+          mode={mode}
         />
       ))}
     </div>

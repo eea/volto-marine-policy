@@ -132,6 +132,21 @@ export const getIconAlt = (icon, fallback = '') => {
   return icon.title || icon['@title'] || fallback;
 };
 
+// -- links ------------------------------------------------------------------
+// The `url` widget stores whatever the editor picked: an internal path (often
+// with the site root prepended) or an absolute external URL. Internal links are
+// flattened to the app URL so they keep working behind the Volto router;
+// external ones are marked so the view can open them in a new tab.
+export const getCardLink = (url) => {
+  if (!isString(url) || !url.trim()) return null;
+  const href = url.trim();
+  const internal = isInternalURL(href);
+  return {
+    href: internal ? flattenToAppURL(href) : href,
+    external: !internal,
+  };
+};
+
 // -- slate ------------------------------------------------------------------
 // Same contract as the statistic block: a slate field may hold a node list, a
 // plain string (the value the editor starts from) or nothing at all.

@@ -1,4 +1,5 @@
 import {
+  getCardLink,
   getIconAlt,
   getIconURL,
   getTextColor,
@@ -101,6 +102,28 @@ describe('getIconAlt', () => {
   it('falls back to an empty alt for decorative icons', () => {
     expect(getIconAlt('/a.svg')).toBe('');
     expect(getIconAlt(null)).toBe('');
+  });
+});
+
+describe('getCardLink', () => {
+  it('turns an internal path into an app URL', () => {
+    expect(getCardLink('/marine/state')).toEqual({
+      href: '/marine/state',
+      external: false,
+    });
+  });
+
+  it('keeps external URLs absolute and flags them', () => {
+    expect(getCardLink('https://www.eea.europa.eu')).toEqual({
+      href: 'https://www.eea.europa.eu',
+      external: true,
+    });
+  });
+
+  it('returns null for an unset or blank URL', () => {
+    expect(getCardLink(undefined)).toBeNull();
+    expect(getCardLink('')).toBeNull();
+    expect(getCardLink('   ')).toBeNull();
   });
 });
 

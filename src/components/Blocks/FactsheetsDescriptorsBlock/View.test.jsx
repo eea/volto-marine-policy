@@ -142,6 +142,77 @@ describe('FactsheetsDescriptorsBlockView', () => {
     ).toHaveLength(2);
   });
 
+  it('renders a card without a URL as plain, non-clickable content', () => {
+    const { container } = render(
+      <View
+        data={{ groups: [makeGroup({ cards: [makeCard()] })] }}
+        mode="view"
+      />,
+    );
+
+    expect(container.querySelector('a')).toBeNull();
+    expect(container.querySelector('.factsheet-descriptor-card').tagName).toBe(
+      'ARTICLE',
+    );
+  });
+
+  it('makes the whole card a link when a URL is set', () => {
+    render(
+      <View
+        data={{
+          groups: [
+            makeGroup({ cards: [makeCard({ url: '/marine/state/birds' })] }),
+          ],
+        }}
+        mode="view"
+      />,
+    );
+
+    const link = screen.getByRole('link');
+
+    expect(link).toHaveAttribute('href', '/marine/state/birds');
+    expect(link).toHaveTextContent('Birds');
+    expect(link).toHaveClass('factsheet-descriptor-card--link');
+    expect(link).not.toHaveAttribute('target');
+  });
+
+  it('opens external card links in a new tab', () => {
+    render(
+      <View
+        data={{
+          groups: [
+            makeGroup({
+              cards: [makeCard({ url: 'https://www.eea.europa.eu' })],
+            }),
+          ],
+        }}
+        mode="view"
+      />,
+    );
+
+    const link = screen.getByRole('link');
+
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('does not navigate while the block is being edited', () => {
+    render(
+      <View
+        data={{
+          groups: [makeGroup({ cards: [makeCard({ url: '/marine/state' })] })],
+        }}
+        mode="edit"
+      />,
+    );
+
+    const link = screen.getByRole('link');
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    link.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(true);
+  });
+
   it('uses the stored background colour and derives the text colour from it', () => {
     render(
       <View

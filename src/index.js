@@ -347,6 +347,19 @@ const applyConfig = (config) => {
         );
       },
     },
+    // Same content box as `content-box-primary`, on the light blue wash instead
+    // of the primary blue (see theme/globals/site.overrides).
+    {
+      id: 'content-box-light-blue',
+      title: 'Light blue',
+      viewComponent: (props) => {
+        return (
+          <div className="content-box light-blue">
+            <div className="content-box-inner">{props.children}</div>
+          </div>
+        );
+      },
+    },
   ];
 
   // restrict blocks

@@ -2,7 +2,8 @@
 
 A grid of factsheet descriptors. Each **group** opens with a coloured main card
 (icon, title, description) followed by any number of descriptor cards (icon,
-title, main text, sub text), all of them editable from the block sidebar.
+title, main text, sub text, optional link), all of them editable from the block
+sidebar.
 
 ```
 ┌──────────────┬────────┬────────┬────────┬────────┐
@@ -30,6 +31,7 @@ title, main text, sub text), all of them editable from the block sidebar.
           "title": [ ...slate nodes, e.g. "Fish"... ],
           "text": [ ...slate nodes, e.g. "9% GES achieved"... ],
           "info": [ ...slate nodes, e.g. "52% reported area assessed"... ],
+          "url": "/marine/state/birds",
           "background_color": "#FFFFFF"
         }
       ]
@@ -58,6 +60,34 @@ main card to fill in.
   plain strings before the field became rich text still render. The main text is styled as the statistic
   line (EEA green, large, bold); the muted suffix ("GES achieved") is applied
   with the inline style menu, which is why the whole line lives in one field.
+
+## Links
+
+A descriptor card with a `url` is rendered as a single link (`<a>`) wrapping
+the whole card, so the entire surface is clickable and reachable with Tab; the
+card keeps its structure and only gains the `factsheet-descriptor-card--link`
+modifier, which drops the theme's link colour/underline and adds hover and
+`:focus-visible` feedback on the border.
+
+The `url` field uses Volto's `url` widget, so it holds whatever the editor
+picked:
+
+- internal paths (`/marine/state/birds`) are flattened with `flattenToAppURL()`
+  and go through the client-side router;
+- absolute URLs (`https://…`) open in a new tab with
+  `rel="noopener noreferrer"`.
+
+`helpers.getCardLink()` does the classification; a blank value means "not a
+link" and the card stays an `<article>`.
+
+In edit mode the anchor keeps its `href` but swallows the click, otherwise
+clicking a card would navigate away from the editor instead of selecting the
+block.
+
+Keep the slate fields of a linked card free of inline links: the card itself is
+already an anchor, and an anchor nested inside another one is invalid HTML
+(browsers silently close the outer link, so part of the card would stop being
+clickable).
 
 ## Icons
 
@@ -114,6 +144,7 @@ its main card occupies the first cell. Columns: 5 (≥1200px), 4 (992–1199),
 
 ## Tests
 
-`helpers.test.js` covers the colour maths, icon URL resolution and slate
-detection; `View.test.jsx` covers the empty state, group/card rendering, inline
-colours and the dark-card icon inversion.
+`helpers.test.js` covers the colour maths, icon URL resolution, card link
+resolution and slate detection; `View.test.jsx` covers the empty state,
+group/card rendering, card links, inline colours and the dark-card icon
+inversion.

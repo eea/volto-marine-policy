@@ -26,7 +26,7 @@ export const cardSchema = () => ({
     {
       id: 'default',
       title: 'Default',
-      fields: ['icon', 'title', 'text', 'info', 'background_color'],
+      fields: ['icon', 'title', 'text', 'info', 'url', 'background_color'],
     },
   ],
   properties: {
@@ -45,6 +45,13 @@ export const cardSchema = () => ({
       widget: 'slate_richtext',
       description:
         'The line under the main text, e.g. "75% reported area assessed".',
+    },
+    url: {
+      title: 'Link',
+      widget: 'url',
+      description:
+        'Where the card links to. Internal and external URLs are both ' +
+        'accepted; leave it empty to render the card as plain text.',
     },
     background_color: {
       ...colorPalette,

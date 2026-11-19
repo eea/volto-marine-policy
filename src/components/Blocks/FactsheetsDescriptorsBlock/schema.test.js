@@ -40,8 +40,15 @@ describe('FactsheetsDescriptorsBlock schema', () => {
       'title',
       'text',
       'info',
+      'url',
       'background_color',
     ]);
+  });
+
+  it('lets the editor set a link for each card', () => {
+    const cardSchema = schema.properties.groups.schema.properties.cards.schema;
+
+    expect(cardSchema.properties.url.widget).toBe('url');
   });
 
   it('uses rich text for the titles and both card text slots', () => {
