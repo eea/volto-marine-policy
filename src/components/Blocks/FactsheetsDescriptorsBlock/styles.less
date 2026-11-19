@@ -77,11 +77,11 @@
     gap: @space-2;
     overflow-wrap: break-word;
 
-    .slate>*:first-child {
+    .slate > *:first-child {
       margin-top: 0;
     }
 
-    .slate>*:last-child {
+    .slate > *:last-child {
       margin-bottom: 0;
     }
 
@@ -149,11 +149,11 @@
 
   .factsheet-descriptor-title {
     margin: 0;
+    margin-bottom: 1rem;
     color: @blue-5;
     font-size: @font-size-3;
     font-weight: @font-weight-7;
     line-height: @font-lineheight-2;
-    margin-bottom: 1rem;
   }
 
   // The main text carries the statistic, so it is the one place allowed to be
@@ -167,7 +167,9 @@
     line-height: @font-lineheight-0;
   }
 
-  .factsheet-descriptor-card:not(.factsheet-card-dark) .factsheet-descriptor-text strong {
+  .factsheet-descriptor-card:not(.factsheet-card-dark)
+    .factsheet-descriptor-text
+    strong {
     color: @factsheet-stat;
     font-size: 2rem;
   }
