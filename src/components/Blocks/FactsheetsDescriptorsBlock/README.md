@@ -79,7 +79,7 @@ They are **not bundled by the block** — they are meant to be uploaded once as
 Volto's slate widget (`RichTextWidget.getValue`) treats an **empty array** as a
 valid value and hands it straight to Slate. Slate then normalizes `[]` into a
 paragraph on every render, which re-fires `onChange`, which re-renders the
-editor: the sidebar dies with *"Maximum update depth exceeded"* as soon as the
+editor: the sidebar dies with _"Maximum update depth exceeded"_ as soon as the
 field is clicked.
 
 An **unset field** (`undefined`) is safe. Therefore:

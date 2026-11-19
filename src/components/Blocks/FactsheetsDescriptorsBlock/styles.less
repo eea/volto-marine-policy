@@ -42,9 +42,9 @@
   // flow after it and wrap into the following rows.
   .factsheet-descriptors-group {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: @factsheet-gap;
     margin-bottom: @space-4;
+    gap: @factsheet-gap;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 
     @media (max-width: 1199px) {
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -69,19 +69,19 @@
   .factsheet-descriptor-main,
   .factsheet-descriptor-card {
     display: flex;
-    flex-direction: column;
-    gap: @space-2;
-    box-sizing: border-box;
     min-height: @factsheet-card-min-height;
+    box-sizing: border-box;
+    flex-direction: column;
     padding: @factsheet-padding;
     border-radius: @factsheet-radius;
+    gap: @space-2;
     overflow-wrap: break-word;
 
-    .slate>*:first-child {
+    .slate > *:first-child {
       margin-top: 0;
     }
 
-    .slate>*:last-child {
+    .slate > *:last-child {
       margin-bottom: 0;
     }
 
@@ -91,8 +91,8 @@
   }
 
   .factsheet-descriptor-card {
-    background-color: @factsheet-surface;
     border: @border-size-1 solid @factsheet-border;
+    background-color: @factsheet-surface;
   }
 
   // -- icons -----------------------------------------------------------
@@ -113,24 +113,24 @@
   // -- typography ------------------------------------------------------
   .factsheet-descriptor-main-title {
     margin: 0;
+    color: inherit;
     font-size: @font-size-3;
     font-weight: @font-weight-7;
     line-height: @font-lineheight-2;
-    color: inherit;
   }
 
   .factsheet-descriptor-main-description {
+    color: inherit;
     font-size: @font-size-0;
     line-height: @font-lineheight-3;
-    color: inherit;
   }
 
   .factsheet-descriptor-title {
     margin: 0;
+    color: @blue-5;
     font-size: @font-size-3;
     font-weight: @font-weight-7;
     line-height: @font-lineheight-2;
-    color: @blue-5;
   }
 
   // The main text carries the statistic, so it is the one place allowed to be
@@ -138,21 +138,23 @@
   // ratio the background was chosen for.
   .factsheet-descriptor-text {
     margin: 0;
+    margin-top: auto;
+    color: @factsheet-muted;
     // font-weight: @font-weight-7;
     line-height: @font-lineheight-0;
-    color: @factsheet-muted;
-    margin-top: auto;
   }
 
-  .factsheet-descriptor-card:not(.factsheet-card-dark) .factsheet-descriptor-text strong {
+  .factsheet-descriptor-card:not(.factsheet-card-dark)
+    .factsheet-descriptor-text
+    strong {
     color: @factsheet-stat;
     font-size: 2rem;
   }
 
   .factsheet-descriptor-info {
+    color: @factsheet-muted;
     font-size: @font-size-0;
     line-height: @font-lineheight-2;
-    color: @factsheet-muted;
   }
 
   .factsheet-descriptor-card.factsheet-card-dark .factsheet-descriptor-info,
