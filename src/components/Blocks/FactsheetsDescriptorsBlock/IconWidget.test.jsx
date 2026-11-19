@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { IntlProvider } from 'react-intl';
 
@@ -30,11 +29,11 @@ describe('FactsheetsDescriptorsBlock IconWidget', () => {
     expect(screen.getByText('"/marine/icons/fish.svg"')).toBeInTheDocument();
   });
 
-  it('clears the icon when the remove button is clicked', async () => {
+  it('clears the icon when the remove button is clicked', () => {
     const onChange = jest.fn();
     renderWidget({ value: '/marine/icons/fish.svg', onChange });
 
-    await userEvent.click(screen.getByRole('button', { name: 'Remove icon' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Remove icon' }));
 
     expect(onChange).toHaveBeenCalledWith('icon-0', null);
   });
