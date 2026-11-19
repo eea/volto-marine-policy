@@ -1,0 +1,169 @@
+// Styles for the factsheet descriptors block: a grid of cards, the first cell
+// of each group being the dark "main card" that names the group.
+//
+// Every colour comes from the EEA Design System tokens; the file is its own
+// LESS entry point so it imports the tokens directly instead of relying on the
+// semantic theme variables (same approach as MsfdDataExplorerBlockV2).
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/colors';
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/fonts';
+@import '@eeacms/volto-eea-design-system/../theme/themes/eea/tokens/borders';
+
+// -- spacing (mirrors tokens/sizes.less, 4px base) ---------------------------
+@spacer: 4px;
+@space-1: @spacer;
+@space-2: @spacer * 2;
+@space-3: @spacer * 3;
+@space-4: @spacer * 4;
+@space-5: @spacer * 5;
+
+// -- semantic aliases -------------------------------------------------------
+@factsheet-text: @blue-grey-5;
+@factsheet-muted: @blue-grey-4;
+@factsheet-stat: @green-5; // the big percentage, EEA green
+@factsheet-surface: #ffffff;
+@factsheet-border: @grey-2;
+// The project theme sets the global Semantic radius to 4px, so the block
+// mirrors it rather than inventing a second radius.
+@factsheet-radius: 4px;
+// Card geometry measured from the target design: 5 cards per row, cards of
+// equal height, hairline border on the light cards only.
+@factsheet-gap: @space-2 + @space-1; // 12px
+@factsheet-padding: @space-4; // 16px
+@factsheet-card-min-height: 196px;
+@factsheet-icon-size: 40px;
+
+.factsheet-descriptors-block {
+  color: @factsheet-text;
+  font-size: @font-size-1;
+  line-height: @font-lineheight-3;
+
+  // -- layout ----------------------------------------------------------
+  // One grid per group: the main card is the first cell, the descriptor cards
+  // flow after it and wrap into the following rows.
+  .factsheet-descriptors-group {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: @factsheet-gap;
+    margin-bottom: @space-4;
+
+    @media (max-width: 1199px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (max-width: 991px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 767px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 575px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  // -- cards -----------------------------------------------------------
+  // The background and text colour are inline styles: the editor picks the
+  // background and the text colour derives from its luminance.
+  .factsheet-descriptor-main,
+  .factsheet-descriptor-card {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    box-sizing: border-box;
+    min-height: @factsheet-card-min-height;
+    padding: @factsheet-padding;
+    border-radius: @factsheet-radius;
+    overflow-wrap: break-word;
+
+    .slate>*:first-child {
+      margin-top: 0;
+    }
+
+    .slate>*:last-child {
+      margin-bottom: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .factsheet-descriptor-card {
+    background-color: @factsheet-surface;
+    border: @border-size-1 solid @factsheet-border;
+  }
+
+  // -- icons -----------------------------------------------------------
+  .factsheet-descriptor-icon {
+    display: block;
+    width: @factsheet-icon-size;
+    height: @factsheet-icon-size;
+    margin-bottom: @space-1;
+    object-fit: contain;
+  }
+
+  // The bundled icons are monochrome SVGs with a navy stroke baked in; on a
+  // dark card that stroke would disappear, so the icon is flattened to white.
+  .factsheet-icon-inverted {
+    filter: brightness(0) invert(1);
+  }
+
+  // -- typography ------------------------------------------------------
+  .factsheet-descriptor-main-title {
+    margin: 0;
+    font-size: @font-size-3;
+    font-weight: @font-weight-7;
+    line-height: @font-lineheight-2;
+    color: inherit;
+  }
+
+  .factsheet-descriptor-main-description {
+    font-size: @font-size-0;
+    line-height: @font-lineheight-3;
+    color: inherit;
+  }
+
+  .factsheet-descriptor-title {
+    margin: 0;
+    font-size: @font-size-3;
+    font-weight: @font-weight-7;
+    line-height: @font-lineheight-2;
+    color: @blue-5;
+  }
+
+  // The main text carries the statistic, so it is the one place allowed to be
+  // loud. On a dark card it inherits the card colour and keeps the contrast
+  // ratio the background was chosen for.
+  .factsheet-descriptor-text {
+    margin: 0;
+    // font-weight: @font-weight-7;
+    line-height: @font-lineheight-0;
+    color: @factsheet-muted;
+    margin-top: auto;
+  }
+
+  .factsheet-descriptor-card:not(.factsheet-card-dark) .factsheet-descriptor-text strong {
+    color: @factsheet-stat;
+    font-size: 2rem;
+  }
+
+  .factsheet-descriptor-info {
+    font-size: @font-size-0;
+    line-height: @font-lineheight-2;
+    color: @factsheet-muted;
+  }
+
+  .factsheet-descriptor-card.factsheet-card-dark .factsheet-descriptor-info,
+  .factsheet-descriptor-main .factsheet-descriptor-main-description {
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  // -- edit mode -------------------------------------------------------
+  .factsheet-descriptors-empty {
+    margin: 0;
+    color: @factsheet-muted;
+  }
+}
