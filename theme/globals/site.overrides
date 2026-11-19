@@ -34,6 +34,14 @@ body {
     width: 110vw;
   }
 
+  // Content box light blue: the `content-box-primary` preset on a pale blue
+  // wash. No text colour is set on purpose: the box keeps the default content
+  // box `color: inherit`, so body text and links stay readable on the light
+  // background.
+  .content-box.light-blue {
+    background-color: #ebf7ff;
+  }
+
   .content-box.primary-table {
     background-color: @primaryColor;
 

@@ -15,6 +15,8 @@ import TitleDefaultTemplate from '@eeacms/volto-eea-website-theme/components/man
 // import HomePageInverseView from '@eeacms/volto-eea-website-theme/components/theme/Homepage/HomePageInverseView';
 import installMsfdDataExplorerBlock from './components/Blocks/MsfdDataExplorerBlock';
 import installMsfdDataExplorerBlockV2 from './components/Blocks/MsfdDataExplorerBlockV2';
+import installFactsheetsDescriptorsBlock from './components/Blocks/FactsheetsDescriptorsBlock';
+import FactsheetIconWidget from './components/Blocks/FactsheetsDescriptorsBlock/IconWidget';
 import { breadcrumb, localnavigation, workflowProgressPath } from './reducers';
 import customBlockTemplates from '@eeacms/volto-marine-policy/components/Blocks/CustomBlockTemplates/customBlockTemplates';
 import TextAlignWidget from './components/Widgets/TextAlign';
@@ -117,6 +119,7 @@ const applyConfig = (config) => {
   }
 
   config.widgets.widget.text_align = TextAlignWidget;
+  config.widgets.widget.factsheet_icon = FactsheetIconWidget;
   config.widgets.id.nis_status = NISStatusWidget;
   config.widgets.id.nis_scientificname_accepted = NISScientificNameWidget;
   // check if it breaks the 'theme' field in volto-tabs-block in the 'horizontal carousel' layout
@@ -346,6 +349,19 @@ const applyConfig = (config) => {
         );
       },
     },
+    // Same content box as `content-box-primary`, on the light blue wash instead
+    // of the primary blue (see theme/globals/site.overrides).
+    {
+      id: 'content-box-light-blue',
+      title: 'Light blue',
+      viewComponent: (props) => {
+        return (
+          <div className="content-box light-blue">
+            <div className="content-box-inner">{props.children}</div>
+          </div>
+        );
+      },
+    },
   ];
 
   // restrict blocks
@@ -570,6 +586,7 @@ const applyConfig = (config) => {
   const final = [
     installMsfdDataExplorerBlock,
     installMsfdDataExplorerBlockV2,
+    installFactsheetsDescriptorsBlock,
     installSearchEngine,
     installDemoSitesExplorer,
   ].reduce((acc, apply) => apply(acc), config);

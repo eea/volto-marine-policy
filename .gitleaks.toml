@@ -86,4 +86,6 @@ description = "Allow Jenkins SonarQube token environment variable reference"
 regexTarget = "match"
 regexes = [
   '''SONAR_AUTH_TOKEN''',
+  '''RANGE_NULL_TOKEN''',
+  '''NULL_TOKEN''',
 ]

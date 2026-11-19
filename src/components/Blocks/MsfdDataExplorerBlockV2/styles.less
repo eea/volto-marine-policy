@@ -41,7 +41,8 @@
 @msfd-surface-alt: @grey-1; // supplementary background
 @msfd-surface-sidebar: @blue-grey-0; // sidebar cards keep the blue wash
 @msfd-surface-tint: @blue-grey-0; // selected/grouped state
-@msfd-border: #bec7cf;
+// @msfd-border: #bec7cf;
+@msfd-border: #accae5;
 // Overlay elevation. These are the `@shadow-2` / `@shadow-1` tokens from the
 // design system, written out with literal alpha because the tokens express it as
 // `calc()` inside `hsla()`, which not every browser EEA targets accepts — an
@@ -50,6 +51,12 @@
   0 3px 5px -2px fade(@blue-grey-6, 4%),
   0 7px 14px -5px fade(@blue-grey-6, 6%);
 @msfd-shadow-thumb: 0 1px 2px -1px fade(@blue-grey-6, 10%);
+// Range slider geometry: the thumb is a circle whose centre is the value, so the
+// rail is inset by half of it (see .msfd-range-track).
+@msfd-range-thumb: 20px;
+@msfd-range-track-height: 6px;
+@msfd-range-hit: 32px; // the pointer target around the rail
+@msfd-range-duration: 120ms;
 // Edge cue of the horizontally scrolling results table: a hairline darkening
 // that reads as "there is more table under this edge".
 @msfd-scroll-cue: fade(@blue-grey-6, 18%);
@@ -80,7 +87,30 @@
 
 .msfd-explorer-v2.article-9 {
   .msfd-summary-cards {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.msfd-explorer-v2.datasets-used {
+  &.cycle-2012 .msfd-summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &.cycle-2020 .msfd-summary-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// The pulse that points at the pin checkboxes while the hint is up. Declared at
+// the top level so it is emitted once, not per nesting level.
+@keyframes msfd-pin-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 fade(@msfd-link, 0%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px fade(@msfd-link, 35%);
   }
 }
 
@@ -234,51 +264,85 @@
   .msfd-filters {
     display: grid;
     align-items: start;
-    border: 1px solid #bec7cf;
+    // border: 1px solid @msfd-border;
     background: #dae8f4;
     grid-auto-flow: row;
   }
 
+  // Active selection count in the panel header ("3 active"); the same number
+  // of chips is listed in the Applied filters row at the bottom.
+  .msfd-filters-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: @space-05 @space-2;
+    border-radius: @msfd-radius;
+    margin-left: @space-1;
+    background: @msfd-surface;
+    color: @msfd-heading;
+    font-size: @msfd-font-meta;
+    font-variant-numeric: tabular-nums;
+    font-weight: @font-weight-6;
+    line-height: @font-lineheight-0;
+  }
+
+  // The bands the facets are grouped in. A hairline rule between them, not a
+  // box around each one: the grouping should read at a glance without adding
+  // a second layer of chrome.
+  .msfd-filters-body {
+    display: grid;
+    grid-auto-flow: row;
+  }
+
+  .msfd-filter-group {
+    padding: @space-4;
+    border-bottom: @border-size-1 solid @msfd-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .msfd-filter-group-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 @space-3;
+    color: @msfd-heading;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+    letter-spacing: @font-letterspacing-00;
+    line-height: @font-lineheight-0;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-accent;
+      font-size: @font-size-00;
+    }
+  }
+
   .msfd-filters-grid {
     display: grid;
-    align-items: stretch;
-    padding: 0 @space-4 @space-4;
-    // Column gap is 0: the space between columns comes from the fields'
-    // horizontal padding, so a full-height divider can sit at each field edge.
+    align-items: center;
+    gap: @space-6;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 
-    .msfd-field {
-      display: grid;
-      align-content: center;
-      padding: @space-3 @space-4 @space-4;
-      border-right: @border-size-1 solid #bec7cf;
-
-      // No divider and no outer padding on the first column...
-      &:nth-child(3n + 1) {
-        padding-left: 0;
-      }
-
-      // ...and on the right edge of the last column.
-      &:nth-child(3n),
-      &:last-child {
-        padding-right: 0;
-        border-right: none;
-      }
+    // A group holding a single range facet (e.g. Determination Date) gives it
+    // the whole row: a slider needs the width to be precise.
+    &.is-wide {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     @media (max-width: 767px) {
       grid-template-columns: minmax(0, 1fr);
-
-      .msfd-field {
-        padding-right: 0;
-        padding-left: 0;
-        border-right: none;
-      }
     }
   }
 
   .msfd-field {
     min-width: 0;
+
+    &.msfd-field-range {
+      grid-row: span 2;
+    }
   }
 
   .msfd-field-label {
@@ -287,6 +351,66 @@
     color: @msfd-text;
     font-size: @msfd-font-data;
     font-weight: @font-weight-7;
+  }
+
+  // -- applied filters --------------------------------------------------
+  // The selection summary at the bottom of the panel: one chip per active
+  // value, each removable, plus a single Clear all.
+  .msfd-applied {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: @space-3 @space-4;
+    border-top: @border-size-1 solid @msfd-border;
+    gap: @space-2 @space-3;
+  }
+
+  .msfd-applied-label {
+    display: inline-flex;
+    align-items: center;
+    color: @msfd-text;
+    font-size: @msfd-font-data;
+    font-weight: @font-weight-7;
+    gap: @space-2;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-heading;
+    }
+  }
+
+  .msfd-applied-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    gap: @space-2;
+    list-style: none;
+  }
+
+  .msfd-applied-chip {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    padding: @space-05 @space-1 @space-05 @space-3;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    color: @msfd-heading;
+    font-size: @msfd-font-meta;
+    gap: @space-1;
+  }
+
+  .msfd-applied-chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Clear all sits at the far end of the row, away from the chips it undoes.
+  .msfd-applied-clear {
+    margin-left: auto;
   }
 
   // -- multi-select facet ----------------------------------------------
@@ -321,6 +445,13 @@
       border-color: @msfd-accent;
     }
 
+    // A facet with a selection keeps a visible "this narrows the results"
+    // state, so a user scanning the panel can tell which widgets are set.
+    &.is-active {
+      border-color: @msfd-heading;
+      // background: @msfd-surface-tint;
+    }
+
     // 2.4.7 Focus Visible: a border colour change alone is not enough.
     &:focus-visible {
       border-color: @msfd-accent;
@@ -353,13 +484,15 @@
     gap: @space-1;
   }
 
-  .msfd-chip-text {
+  .msfd-chip-text,
+  .msfd-applied-chip-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .msfd-chip-remove {
+  .msfd-chip-remove,
+  .msfd-applied-chip-remove {
     display: inline-flex;
     width: 20px;
     height: 20px;
@@ -374,6 +507,7 @@
 
     i.icon {
       margin: 0;
+      color: inherit;
       font-size: @font-size-00;
     }
 
@@ -540,28 +674,39 @@
   }
 
   // -- range facet -----------------------------------------------------
+  // A dual thumb slider over two stacked native range inputs. The decorative
+  // rail lives in its own, inset box (`.msfd-range-track`) because a native
+  // input keeps its thumb half a thumb away from either end: the fill then lands
+  // exactly under the thumb centres instead of drifting half a thumb at both
+  // bounds. Sizes are local variables so the track, the thumbs and the bounds
+  // row cannot fall out of step.
   .msfd-range {
-    position: relative;
-    height: 24px;
-    margin: @space-1 0 @space-3;
+    max-width: 420px;
+    margin: @space-2 0 @space-3;
   }
 
-  .msfd-range-rail,
-  .msfd-range-fill {
+  .msfd-range-slider {
+    position: relative;
+    height: @msfd-range-hit;
+  }
+
+  .msfd-range-track {
     position: absolute;
     top: 50%;
-    height: 4px;
+    right: @msfd-range-thumb * 0.5;
+    left: @msfd-range-thumb * 0.5;
+    height: @msfd-range-track-height;
+    border-radius: @msfd-range-track-height * 0.5;
+    background: @msfd-border;
     transform: translateY(-50%);
   }
 
-  .msfd-range-rail {
-    right: 0;
-    left: 0;
-    background: @msfd-border;
-  }
-
   .msfd-range-fill {
-    background: @msfd-accent;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: @msfd-heading;
   }
 
   .msfd-range-input {
@@ -569,16 +714,29 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 24px;
+    height: @msfd-range-hit;
     margin: 0;
     -webkit-appearance: none;
     appearance: none;
     background: none;
+    // The inputs only carry the thumbs; everything else is the rail above.
     pointer-events: none;
 
+    // The focus ring belongs on the thumb, not on a box around the whole rail.
     &:focus-visible {
-      outline: @border-size-2 solid @blue-2;
-      outline-offset: @space-05;
+      outline: none;
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+      box-shadow:
+        0 0 0 @border-size-1 @grey-0,
+        0 0 0 3px @blue-2;
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      box-shadow:
+        0 0 0 @border-size-1 @grey-0,
+        0 0 0 3px @blue-2;
     }
   }
 
@@ -593,79 +751,155 @@
   // Circular thumbs are the documented exception to the sharp-corner rule
   // (@thumbBorderRadius in the theme).
   .msfd-range-input::-webkit-slider-thumb {
-    width: 16px;
-    height: 16px;
-    border: @border-size-2 solid @msfd-accent;
+    width: @msfd-range-thumb;
+    height: @msfd-range-thumb;
+    box-sizing: border-box;
+    border: @border-size-2 solid @msfd-heading;
     border-radius: 50%;
     -webkit-appearance: none;
     appearance: none;
     background: @grey-0;
     box-shadow: @msfd-shadow-thumb;
-    cursor: pointer;
+    cursor: grab;
     pointer-events: auto;
+    // A transform keeps the thumb centred while it grows: changing its width
+    // would also change the inset a native range input reserves for it, and the
+    // thumb would jump by a pixel under the pointer.
+    transition: transform @msfd-range-duration ease-out;
   }
 
   .msfd-range-input::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border: @border-size-2 solid @msfd-accent;
+    width: @msfd-range-thumb;
+    height: @msfd-range-thumb;
+    box-sizing: border-box;
+    border: @border-size-2 solid @msfd-heading;
     border-radius: 50%;
     background: @grey-0;
     box-shadow: @msfd-shadow-thumb;
-    cursor: pointer;
+    cursor: grab;
     pointer-events: auto;
+    transition: transform @msfd-range-duration ease-out;
+  }
+
+  .msfd-range-input:hover::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+
+  .msfd-range-input:hover::-moz-range-thumb {
+    transform: scale(1.15);
+  }
+
+  .msfd-range-input:active::-webkit-slider-thumb {
+    cursor: grabbing;
+    transform: scale(1.25);
+  }
+
+  .msfd-range-input:active::-moz-range-thumb {
+    cursor: grabbing;
+    transform: scale(1.25);
   }
 
   .msfd-range-input::-moz-range-track {
     background: none;
   }
 
+  // The scale of the control, aligned with the ends of the rail.
+  .msfd-range-bounds {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 @msfd-range-thumb * 0.5;
+    margin-top: @space-1;
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  // The editable bounds: one compact row (min – max unit) instead of two
+  // labelled boxes, so four digits do not get a box meant for a long number.
   .msfd-range-values {
-    display: grid;
-    gap: @space-3;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-2;
   }
 
   .msfd-range-value {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 @space-2;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: @msfd-radius;
+    background: @msfd-surface;
+    cursor: text;
+    gap: @space-2;
 
-    span {
-      display: block;
-      margin-bottom: @space-1;
-      color: @msfd-muted;
-      font-size: @msfd-font-meta;
+    &:hover {
+      border-color: @msfd-accent;
+    }
+
+    &:focus-within {
+      border-color: @msfd-heading;
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: 0;
     }
 
     input {
-      width: 100%;
-      padding: @space-2;
-      border: @border-size-1 solid @msfd-border;
-      border-radius: @msfd-radius;
-      color: @msfd-text;
+      width: 4ch;
+      padding: @space-2 0;
+      border: none;
+      // The boxes are pills, not form fields with steppers.
+      -moz-appearance: textfield;
+      appearance: textfield;
+      background: none;
+      color: @msfd-heading;
       font-size: @msfd-font-data;
+      font-variant-numeric: tabular-nums;
+      font-weight: @font-weight-6;
+      outline: none;
+      text-align: right;
 
-      &:focus-visible {
-        border-color: @msfd-accent;
-        outline: @border-size-2 solid @blue-2;
-        outline-offset: 0;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
+        appearance: none;
       }
     }
+  }
+
+  .msfd-range-value-label {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-range-sep {
+    color: @msfd-muted;
+  }
+
+  .msfd-range-unit {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
   }
 
   // "Keep rows without a value" toggle of a range facet.
   .msfd-range-null {
     display: flex;
+    flex-basis: min-content;
+    align-items: flex-start;
     align-items: center;
-    margin-top: @space-3;
+    margin-left: 24px;
+    // margin-top: @space-3;
     cursor: pointer;
-    font-size: @msfd-font-meta;
+    font-size: 10px;
     gap: @space-2;
 
     input[type='checkbox'] {
       width: 16px;
       height: 16px;
       flex: none;
-      margin: 0;
+      // sit on the first line of the label rather than beside a wrapped block
+      margin: @space-025 0 0;
       accent-color: @msfd-heading;
       cursor: pointer;
     }
@@ -676,13 +910,19 @@
     }
   }
 
+  .msfd-range-null-text {
+    display: inline;
+  }
+
   .msfd-range-null-label {
     color: @msfd-muted;
   }
 
   .msfd-range-null-count {
+    margin-left: @space-1;
     color: @msfd-muted;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   // -- results ---------------------------------------------------------
@@ -770,10 +1010,128 @@
   // -- horizontally scrolling results table -----------------------------
   // Wide tables overflow sideways instead of squeezing their columns, so the
   // scroll box has to announce itself: a visible scrollbar, a fade on the edge
-  // that still has content behind it, and a pinned first column (the country)
-  // that keeps the row context on screen once the rest has scrolled away.
+  // that still has content behind it, and (once the user pins one) a sticky
+  // column that keeps the row context on screen after the rest scrolled away.
   .msfd-table-frame {
     position: relative;
+  }
+
+  // Actions for the pinned strip, shown only while something is pinned: a count
+  // and a compact X that unpins every column and puts the table back in its
+  // original order. It sits above the scroll box, like the hint.
+  .msfd-pin-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: @space-2;
+    gap: @space-2;
+  }
+
+  .msfd-pin-bar-count {
+    color: @msfd-muted;
+    font-size: @msfd-font-meta;
+  }
+
+  .msfd-pin-clear {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: @border-size-1 solid @msfd-border;
+    border-radius: 50%;
+    background: @msfd-surface;
+    color: @msfd-muted;
+    cursor: pointer;
+
+    i.icon {
+      margin: 0;
+      font-size: @font-size-00;
+    }
+
+    &:hover {
+      border-color: @msfd-heading;
+      background: @msfd-surface-alt;
+      color: @msfd-heading;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // Coach mark pointing at the pin checkboxes, shown until the first column is
+  // pinned or it is dismissed. It sits above the scroll box (which would clip
+  // it otherwise) with a caret aimed at the header row.
+  .msfd-pin-hint {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: @space-2 @space-3;
+    border: @border-size-1 solid @msfd-link;
+    border-radius: @msfd-radius;
+    margin-bottom: @space-3;
+    background: @msfd-surface-tint;
+    color: @msfd-text;
+    font-size: @msfd-font-prose;
+    gap: @space-2;
+
+    i.icon {
+      margin: 0;
+      color: @msfd-link;
+    }
+
+    // Caret aimed down at the first header cells, which carry the checkboxes.
+    &::after {
+      position: absolute;
+      top: 100%;
+      left: @space-6;
+      width: 0;
+      height: 0;
+      border: 6px solid transparent;
+      border-top-color: @msfd-link;
+      content: '';
+    }
+  }
+
+  .msfd-pin-hint-text {
+    flex: 1 1 auto;
+    margin: 0;
+  }
+
+  .msfd-pin-hint-close {
+    flex: 0 0 auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @msfd-muted;
+    cursor: pointer;
+
+    i.icon {
+      margin: 0;
+      color: inherit;
+    }
+
+    &:hover {
+      color: @msfd-heading;
+    }
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
+    }
+  }
+
+  // While the hint is up, breathe on the pin checkboxes so it is obvious what
+  // "here" refers to. The pulse lives on the label, not on the input: native
+  // checkboxes ignore `box-shadow`. It keeps looping for as long as the hint is
+  // shown, i.e. until the reader dismisses it or pins a column (`is-hinting` is
+  // dropped by ExplorerTable at that point).
+  .msfd-table-frame.is-hinting .msfd-table-pin {
+    border-radius: @msfd-radius;
+    animation: msfd-pin-pulse 1.6s ease-in-out infinite;
   }
 
   .msfd-table-scroll {
@@ -826,10 +1184,11 @@
     }
 
     &.is-left {
-      // The left shadow belongs to the pinned column, not to the edge of the
-      // table: it starts where that column ends (the width is measured from the
-      // header cell and published on the frame) so it reads as the pinned
-      // column casting a shadow over the cells sliding underneath.
+      // The left shadow belongs to the pinned columns, not to the edge of the
+      // table: it starts where the last pinned column ends (the width is
+      // measured from the sticky headers and published on the frame) so it reads
+      // as the pinned columns casting a shadow over the cells sliding
+      // underneath. With nothing pinned it just shades the left edge.
       left: var(--msfd-sticky-width, 0);
       background: linear-gradient(
         to right,
@@ -854,9 +1213,6 @@
   table.msfd-table {
     width: 100%;
     border: @border-size-1 solid @msfd-border;
-    // The left edge belongs to the pinned first column (see below) so that it
-    // stays put when the table scrolls and does not double when it does not.
-    border-left: 0;
     border-collapse: collapse;
 
     th,
@@ -866,42 +1222,46 @@
       text-align: left;
     }
 
-    // Pin the first column (the country) to the left edge of the scroll box: it
-    // is the key of the row, and it must stay readable while the rest of the
-    // row scrolls under it.
-    th:first-child,
-    td:first-child {
+    // Pinned columns are moved out of their place and stuck to the left edge of
+    // the scroll box (they lead every row, see ExplorerTable). Any column can be
+    // pinned, and several at once, so the horizontal position is not in the
+    // stylesheet: each pinned cell is offset by the measured widths of the
+    // pinned cells before it (`--msfd-pin-offset-<n>`, published on the frame).
+    th.msfd-pinned,
+    td.msfd-pinned {
       position: sticky;
       z-index: @z-index-1;
-      left: 0;
       background: @msfd-surface;
 
       // Drawn rather than declared as borders: with `border-collapse: collapse`
       // Chromium leaves a cell's own borders at the cell's static position, so a
-      // pinned cell slides away from them and the column loses its edges.
-      // Pseudo-elements are part of the cell and travel with it.
+      // sticky cell slides away from them and the column loses its edges.
+      // Pseudo-elements are part of the cell and travel with it. They are off by
+      // default because a middle pinned column has no edges of its own: only the
+      // first and the last column of the pinned strip draw one (see below).
       &::before,
       &::after {
         position: absolute;
         top: 0;
         bottom: 0;
+        display: none;
         width: @border-size-1;
         background: @msfd-border;
         content: '';
       }
 
-      // Left edge: always on, because the table's own left border scrolls out of
-      // view with the content and must not come back a pixel late.
       &::before {
         left: 0;
       }
 
-      // Right edge: only once the table is actually scrolled, where it is what
-      // separates the pinned column from the cells sliding underneath. At the
-      // origin the column is just the first column and needs no seam.
       &::after {
         right: -1px;
-        display: none;
+      }
+
+      // The pinned strip reads as lifted off the table, so it is obvious which
+      // columns are pinned even before the table is scrolled.
+      &.is-pinned-last {
+        box-shadow: 2px 0 4px -2px fade(@blue-grey-6, 24%);
       }
     }
 
@@ -911,17 +1271,14 @@
       font-size: @msfd-font-data;
       font-weight: @font-weight-7;
 
-      &:first-child {
+      &.msfd-pinned {
         z-index: @z-index-2;
+        background: @msfd-surface-alt;
       }
     }
 
     td {
       font-size: @msfd-font-data;
-    }
-
-    thead th:first-child {
-      background: @msfd-surface-alt;
     }
 
     tbody tr:hover td {
@@ -933,12 +1290,27 @@
     }
   }
 
-  // The seam between the pinned column and the scrolling ones only exists while
-  // the table is scrolled (`is-scrolled` on the frame).
-  .msfd-table-frame.is-scrolled table.msfd-table {
-    th:first-child::after,
-    td:first-child::after {
+  // A pinned column is marked the moment it is pinned, not only once the table
+  // is scrolled: the first column of the pinned run draws its left edge and the
+  // last one the seam that separates the run from the cells that slide under it.
+  // That is the only feedback a table that fits the viewport can give, since
+  // nothing moves when such a column is pinned.
+  table.msfd-table {
+    th.msfd-pinned.is-pinned-first::before,
+    td.msfd-pinned.is-pinned-first::before,
+    th.msfd-pinned.is-pinned-last::after,
+    td.msfd-pinned.is-pinned-last::after {
       display: block;
+    }
+  }
+
+  // At the origin the table's own left border is still on screen, so the first
+  // pinned column would only double it. Once scrolled, the border has left with
+  // the content and the edge above takes over.
+  .msfd-table-frame:not(.is-scrolled) table.msfd-table {
+    th.msfd-pinned.is-pinned-first::before,
+    td.msfd-pinned.is-pinned-first::before {
+      display: none;
     }
   }
 
@@ -947,8 +1319,8 @@
 
     // The group itself is a bordered box that does not scroll with the table, so
     // its left edge is already on screen: a second one here would double it.
-    th:first-child::before,
-    td:first-child::before {
+    th.msfd-pinned.is-pinned-first::before,
+    td.msfd-pinned.is-pinned-first::before {
       display: none;
     }
   }
@@ -1010,6 +1382,41 @@
 
     @media (max-width: 767px) {
       grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  // Header composition: the sort control (or the plain label) and the pin
+  // checkbox share one row, with the checkbox trailing the label.
+  .msfd-table-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+  }
+
+  .msfd-table-head-label {
+    font-weight: @font-weight-7;
+  }
+
+  .msfd-table-pin {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    padding: @space-05;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .msfd-table-pin-input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: @msfd-link;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: @border-size-2 solid @blue-2;
+      outline-offset: @space-1;
     }
   }
 
@@ -1282,7 +1689,7 @@
 
   // -- summary & insights ----------------------------------------------
   .msfd-summary {
-    border: 1px solid #bec7cf;
+    // border: 1px solid @msfd-border;
     background: #dae8f4;
   }
 
@@ -1318,7 +1725,7 @@
     min-width: 0;
     align-items: flex-start;
     padding: @space-4;
-    border: @border-size-1 solid @msfd-border;
+    // border: @border-size-1 solid @msfd-border;
     background: @msfd-surface;
     gap: @space-3;
   }
@@ -1407,7 +1814,7 @@
     min-width: 0;
     flex-direction: column;
     padding: @space-3 @space-4;
-    border: @border-size-1 solid @msfd-border;
+    // border: @border-size-1 solid @msfd-border;
     background: @msfd-surface;
   }
 
@@ -1443,7 +1850,7 @@
 
   .msfd-sidebar-block {
     padding: @space-4;
-    border: @border-size-1 solid @msfd-border;
+    // border: @border-size-1 solid @msfd-border;
     background: @msfd-surface-sidebar;
   }
 

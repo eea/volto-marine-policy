@@ -39,9 +39,9 @@ export const ARTICLE9_PERIODS = [
 // reporting cycle: each type is served by its own backend provider (the API
 // reuses the `cycle` query parameter for it).
 export const ARTICLE19_INFORMATION_TYPES = [
-  { value: '2024', text: '2024 Article 8 & 10' },
+  { value: '2024', text: '2024 Article 8' },
   { value: '2020', text: '2020 Article 11 Monitoring programmes' },
-  { value: '2018', text: '2018 Article 8 & 10' },
+  { value: '2018', text: '2018 Article 8' },
   { value: '2012', text: '2012 Article 19.3' },
 ];
 
@@ -160,6 +160,12 @@ export const articlePageHref = (pathname, page) => {
 
 export const DEFAULT_PAGE_SIZE = 10;
 
+// Token the backend appends to a range selection while the rows without a
+// value (e.g. no determination date) are part of the result: `2019,2024,null`.
+// It is not a value the user picked, so the Applied filters row leaves it out
+// of the chip label (see FacetRange and AppliedFilters).
+export const RANGE_NULL_TOKEN = 'null';
+
 // (article, cycle) combinations that have a backend Summary & insights
 // payload: every Article 4 cycle exposes one (2012 reports counts only, while
 // 2018/2024 also report area), Article 7 exposes a count-based one, and
@@ -170,4 +176,5 @@ export const SUMMARY_CYCLES = {
   4: ['2024', '2018', '2012'],
   7: ['2012'],
   9: ['2024', '2018', '2012'],
+  19.3: ['2024', '2020', '2018', '2012'],
 };
