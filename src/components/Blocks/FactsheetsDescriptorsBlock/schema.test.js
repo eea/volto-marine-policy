@@ -19,7 +19,7 @@ describe('FactsheetsDescriptorsBlock schema', () => {
       'background_color',
       'cards',
     ]);
-    expect(groupSchema.properties.icon.widget).toBe('image');
+    expect(groupSchema.properties.icon.widget).toBe('factsheet_icon');
     expect(groupSchema.properties.title.widget).toBe('slate_richtext');
     expect(groupSchema.properties.description.widget).toBe('slate_richtext');
     expect(groupSchema.properties.background_color.widget).toBe(
@@ -49,6 +49,14 @@ describe('FactsheetsDescriptorsBlock schema', () => {
     const cardSchema = schema.properties.groups.schema.properties.cards.schema;
 
     expect(cardSchema.properties.url.widget).toBe('url');
+  });
+
+  it('uses the icon widget that can clear a picked icon', () => {
+    const groupSchema = schema.properties.groups.schema;
+    const cardSchema = groupSchema.properties.cards.schema;
+
+    expect(groupSchema.properties.icon.widget).toBe('factsheet_icon');
+    expect(cardSchema.properties.icon.widget).toBe('factsheet_icon');
   });
 
   it('uses rich text for the titles and both card text slots', () => {

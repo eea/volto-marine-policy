@@ -191,3 +191,17 @@
     color: @factsheet-muted;
   }
 }
+
+// -- sidebar icon widget -----------------------------------------------
+// The remove button sits below the image widget's own preview; the toolbar it
+// renders on top of that preview is kept above the image so it stays clickable.
+.factsheet-icon-widget {
+  .image-upload-widget-toolbar {
+    z-index: 2;
+    pointer-events: auto;
+  }
+
+  .factsheet-icon-widget-remove.ui.basic.button {
+    margin-top: @space-2;
+  }
+}

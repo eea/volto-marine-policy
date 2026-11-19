@@ -12,9 +12,12 @@ const colorPalette = {
   available_colors: EEA_COLORS,
 };
 
+// `factsheet_icon` wraps Volto's `image` widget and adds an explicit remove
+// button: the widget's own clear control is not clickable once it is nested in
+// the block's object lists (see IconWidget.jsx).
 const iconField = {
   title: 'Icon',
-  widget: 'image',
+  widget: 'factsheet_icon',
   description:
     'Image used as the card icon. Upload an SVG or pick an existing Image; ' +
     'the image title becomes the alt text.',

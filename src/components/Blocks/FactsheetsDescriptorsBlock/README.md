@@ -104,6 +104,12 @@ They are **not bundled by the block** — they are meant to be uploaded once as
    `filter: brightness(0) invert(1)` (`.factsheet-icon-inverted`) so the stroke
    reads white; multi-colour artwork would lose its colours there.
 
+The field uses the `factsheet_icon` widget (`IconWidget.jsx`, registered in the
+addon `src/index.js`): Volto's `image` widget plus an explicit **Remove icon**
+button. The image widget's own clear control sits in an absolutely positioned
+toolbar over the preview and is not reliably clickable once the field is nested
+in the block's object lists, which left editors unable to unset a picked icon.
+
 ## The empty-array trap (why `initialValue` omits `description`)
 
 Volto's slate widget (`RichTextWidget.getValue`) treats an **empty array** as a
@@ -147,4 +153,6 @@ its main card occupies the first cell. Columns: 5 (≥1200px), 4 (992–1199),
 `helpers.test.js` covers the colour maths, icon URL resolution, card link
 resolution and slate detection; `View.test.jsx` covers the empty state,
 group/card rendering, card links, inline colours and the dark-card icon
-inversion.
+inversion; `IconWidget.test.jsx` covers clearing an icon and hiding the remove
+button when there is none; `schema.test.js` asserts the block uses the icon
+widget.
