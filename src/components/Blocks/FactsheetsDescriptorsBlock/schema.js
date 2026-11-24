@@ -1,8 +1,4 @@
-import {
-  DEFAULT_CARD_BACKGROUND,
-  DEFAULT_GROUP_BACKGROUND,
-  EEA_COLORS,
-} from './helpers';
+import { DEFAULT_CARD_BACKGROUND, EEA_COLORS } from './helpers';
 
 // Palette offered by the `style_simple_color` widgets. It is passed per field
 // instead of through `config.settings.available_colors` so the block's palette
@@ -71,28 +67,14 @@ export const groupSchema = () => ({
     {
       id: 'default',
       title: 'Default',
-      fields: ['icon', 'title', 'description', 'background_color', 'cards'],
+      fields: ['cards'],
     },
   ],
   properties: {
-    icon: iconField,
-    title: {
-      title: 'Title',
-      widget: 'slate_richtext',
-    },
-    description: {
-      title: 'Description',
-      widget: 'slate_richtext',
-    },
-    background_color: {
-      ...colorPalette,
-      title: 'Background colour',
-      default: DEFAULT_GROUP_BACKGROUND,
-    },
     cards: {
       title: 'Descriptor cards',
       widget: 'object_list',
-      description: 'Cards shown after the main card, in this order.',
+      description: 'Cards shown in this group, in this order.',
       schema: cardSchema(),
     },
   },
@@ -112,8 +94,7 @@ const schema = {
     groups: {
       title: 'Descriptor groups',
       widget: 'object_list',
-      description:
-        'Each group renders a main card followed by its descriptor cards.',
+      description: 'Each group renders its own grid of descriptor cards.',
       schema: groupSchema(),
     },
   },

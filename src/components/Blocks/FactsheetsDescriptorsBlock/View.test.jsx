@@ -21,12 +21,6 @@ const paragraph = (text) => [{ type: 'p', children: [{ text }] }];
 
 const makeGroup = (overrides = {}) => ({
   '@id': 'group-1',
-  icon: null,
-  title: 'State descriptors',
-  description: paragraph(
-    'The condition of marine species, habitats and food webs.',
-  ),
-  background_color: '#004B7F',
   cards: [],
   ...overrides,
 });
@@ -54,17 +48,6 @@ describe('FactsheetsDescriptorsBlockView', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders the main card of every group', () => {
-    render(<View data={{ groups: [makeGroup()] }} mode="view" />);
-
-    expect(screen.getByText('State descriptors')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'The condition of marine species, habitats and food webs.',
-      ),
-    ).toBeInTheDocument();
-  });
-
   it('renders the descriptor cards of a group', () => {
     render(
       <View
@@ -78,13 +61,36 @@ describe('FactsheetsDescriptorsBlockView', () => {
     expect(screen.getByText('75% reported area assessed')).toBeInTheDocument();
   });
 
+  it('does not render a group-level card from legacy data', () => {
+    const { container } = render(
+      <View
+        data={{
+          groups: [
+            makeGroup({
+              icon: { '@id': '/marine/icons/state.svg', title: 'State icon' },
+              title: paragraph('State descriptors'),
+              description: paragraph('The condition of marine habitats.'),
+              background_color: '#004B7F',
+            }),
+          ],
+        }}
+        mode="view"
+      />,
+    );
+
+    expect(container.querySelector('.factsheet-descriptor-main')).toBeNull();
+    expect(
+      container.querySelector('.factsheet-descriptors-group').children,
+    ).toHaveLength(0);
+    expect(screen.queryByText('State descriptors')).toBeNull();
+  });
+
   it('renders a slate title without nesting a paragraph in the heading', () => {
     render(
       <View
         data={{
           groups: [
             makeGroup({
-              title: paragraph('State descriptors'),
               cards: [makeCard({ title: paragraph('Birds') })],
             }),
           ],
@@ -93,35 +99,10 @@ describe('FactsheetsDescriptorsBlockView', () => {
       />,
     );
 
-    const mainTitle = screen.getByRole('heading', { level: 3 });
     const cardTitle = screen.getByRole('heading', { level: 4 });
 
-    expect(mainTitle).toHaveTextContent('State descriptors');
     expect(cardTitle).toHaveTextContent('Birds');
-    expect(mainTitle.querySelector('p')).toBeNull();
     expect(cardTitle.querySelector('p')).toBeNull();
-  });
-
-  it('still renders titles saved as plain strings', () => {
-    render(
-      <View
-        data={{ groups: [makeGroup({ title: 'State descriptors' })] }}
-        mode="view"
-      />,
-    );
-
-    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(
-      'State descriptors',
-    );
-  });
-
-  it('skips an empty title but keeps the card', () => {
-    render(<View data={{ groups: [makeGroup({ title: '' })] }} mode="view" />);
-
-    expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
-    expect(
-      document.querySelector('.factsheet-descriptor-main'),
-    ).toBeInTheDocument();
   });
 
   it('gives each group its own grid', () => {
@@ -129,8 +110,11 @@ describe('FactsheetsDescriptorsBlockView', () => {
       <View
         data={{
           groups: [
-            makeGroup(),
-            makeGroup({ '@id': 'group-2', title: 'Pressure descriptors' }),
+            makeGroup({ cards: [makeCard()] }),
+            makeGroup({
+              '@id': 'group-2',
+              cards: [makeCard({ '@id': 'card-2', title: 'Mammals' })],
+            }),
           ],
         }}
         mode="view"
@@ -221,17 +205,10 @@ describe('FactsheetsDescriptorsBlockView', () => {
       />,
     );
 
-    const mainCard = screen
-      .getByText('State descriptors')
-      .closest('.factsheet-descriptor-main');
     const card = screen
       .getByText('Birds')
       .closest('.factsheet-descriptor-card');
 
-    expect(mainCard).toHaveStyle({
-      backgroundColor: '#004B7F',
-      color: '#FFFFFF',
-    });
     expect(card).toHaveStyle({ backgroundColor: '#FFFFFF', color: '#3D5265' });
   });
 
@@ -241,11 +218,15 @@ describe('FactsheetsDescriptorsBlockView', () => {
         data={{
           groups: [
             makeGroup({
-              icon: {
-                '@id': '/marine/icons/fish.svg',
-                title: 'State descriptors icon',
-              },
-              cards: [makeCard()],
+              cards: [
+                makeCard({
+                  icon: {
+                    '@id': '/marine/icons/fish.svg',
+                    title: 'Fish icon',
+                  },
+                  background_color: '#004B7F',
+                }),
+              ],
             }),
           ],
         }}
@@ -253,37 +234,27 @@ describe('FactsheetsDescriptorsBlockView', () => {
       />,
     );
 
-    const mainCard = container.querySelector('.factsheet-descriptor-main');
     const card = container.querySelector('.factsheet-descriptor-card');
     const icons = container.querySelectorAll('img');
 
-    expect(mainCard).toHaveClass('factsheet-card-dark');
-    expect(mainCard.querySelector('img')).toHaveClass(
-      'factsheet-icon-inverted',
-    );
-    expect(card).not.toHaveClass('factsheet-card-dark');
+    expect(card).toHaveClass('factsheet-card-dark');
+    expect(card.querySelector('img')).toHaveClass('factsheet-icon-inverted');
     expect(icons).toHaveLength(1);
-    expect(icons[0]).toHaveAttribute('alt', 'State descriptors icon');
+    expect(icons[0]).toHaveAttribute('alt', 'Fish icon');
   });
 
-  it('falls back to the default backgrounds when none is stored', () => {
+  it('falls back to the default background when none is stored', () => {
     const { container } = render(
       <View
         data={{
           groups: [
-            makeGroup({
-              background_color: undefined,
-              cards: [makeCard({ background_color: undefined })],
-            }),
+            makeGroup({ cards: [makeCard({ background_color: undefined })] }),
           ],
         }}
         mode="view"
       />,
     );
 
-    expect(container.querySelector('.factsheet-descriptor-main')).toHaveStyle({
-      backgroundColor: '#004B7F',
-    });
     expect(container.querySelector('.factsheet-descriptor-card')).toHaveStyle({
       backgroundColor: '#FFFFFF',
     });

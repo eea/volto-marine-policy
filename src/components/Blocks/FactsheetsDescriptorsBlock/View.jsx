@@ -4,7 +4,6 @@ import Image from '@plone/volto/components/theme/Image/Image';
 
 import {
   DEFAULT_CARD_BACKGROUND,
-  DEFAULT_GROUP_BACKGROUND,
   getCardLink,
   getIconAlt,
   getIconURL,
@@ -30,39 +29,6 @@ const Icon = ({ icon, inverted, className }) => {
       src={url}
       alt={getIconAlt(icon)}
     />
-  );
-};
-
-const GroupCard = ({ group }) => {
-  const background = group.background_color || DEFAULT_GROUP_BACKGROUND;
-  const inverted = isDarkColor(background);
-
-  return (
-    <article
-      className={cx('factsheet-descriptor-main', {
-        'factsheet-card-dark': inverted,
-      })}
-      style={{
-        backgroundColor: background,
-        color: getTextColor(background),
-      }}
-    >
-      <Icon
-        icon={group.icon}
-        inverted={inverted}
-        className="factsheet-descriptor-icon"
-      />
-      {hasSlateContent(group.title) && (
-        <h3 className="factsheet-descriptor-main-title">
-          {renderSlateInline(group.title)}
-        </h3>
-      )}
-      {hasSlateContent(group.description) && (
-        <div className="factsheet-descriptor-main-description slate">
-          {renderSlate(group.description)}
-        </div>
-      )}
-    </article>
   );
 };
 
@@ -137,11 +103,10 @@ const DescriptorCard = ({ card, mode }) => {
   );
 };
 
-// One grid per group, so a group always starts on a new row and the main card
-// occupies its first cell (see styles.less for the responsive column count).
+// One grid per group, so a group always starts on a new row (see styles.less
+// for the responsive column count).
 const Group = ({ group, index, mode }) => (
   <div className="factsheet-descriptors-group" data-group-index={index}>
-    <GroupCard group={group} />
     {(group.cards || []).map((card, cardIndex) => (
       <DescriptorCard
         key={card['@id'] || `card-${index}-${cardIndex}`}

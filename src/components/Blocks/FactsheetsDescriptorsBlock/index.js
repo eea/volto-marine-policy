@@ -3,20 +3,17 @@ import cardsSVG from '@plone/volto/icons/cards.svg';
 
 import View from './View';
 import Edit from './Edit';
-import { DEFAULT_GROUP_BACKGROUND } from './helpers';
 
 export const BLOCK_TYPE = 'factsheetsDescriptorsBlock';
 
 // An empty block would leave the editor with nothing to fill in the sidebar, so
-// the block is inserted with a single main card; its descriptor cards are added
+// the block is inserted with a single (empty) group whose cards are added
 // through the object list widget.
 const initialValue = ({ value }) => ({
   ...value,
   groups: [
     {
       '@id': uuid(),
-      icon: null,
-      background_color: DEFAULT_GROUP_BACKGROUND,
       cards: [],
     },
   ],
@@ -48,8 +45,6 @@ const installFactsheetsDescriptorsBlock = (config) => {
   config.settings.blocksWithFootnotesSupport = {
     ...(config.settings.blocksWithFootnotesSupport || {}),
     [BLOCK_TYPE]: [
-      { groups: 'title' },
-      { groups: 'description' },
       { groups: { cards: 'title' } },
       { groups: { cards: 'text' } },
       { groups: { cards: 'info' } },

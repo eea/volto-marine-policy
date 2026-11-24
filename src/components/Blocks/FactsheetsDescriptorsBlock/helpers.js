@@ -32,7 +32,6 @@ export const EEA_COLORS = [
   COLOR_WHITE,
 ];
 
-export const DEFAULT_GROUP_BACKGROUND = COLOR_BLUE_5;
 export const DEFAULT_CARD_BACKGROUND = COLOR_WHITE;
 
 export const TEXT_ON_DARK = COLOR_WHITE;
@@ -207,7 +206,7 @@ export const renderSlateInline = (value) => {
 // That round trip never settles, so the sidebar dies with "Maximum update depth
 // exceeded" (React). An unset field (undefined) is fine, so empty node lists are
 // dropped instead of being written to the block data.
-const SLATE_FIELDS = ['title', 'description', 'text', 'info'];
+const SLATE_FIELDS = ['title', 'text', 'info'];
 
 const hasEmptySlateValue = (item) =>
   SLATE_FIELDS.some((field) => isArray(item[field]) && !item[field].length);
@@ -232,13 +231,10 @@ export const normalizeGroups = (groups) => {
   let changed = false;
   const normalized = groups.map((group) => {
     const cards = isArray(group.cards) ? group.cards : [];
-    const cardsChanged = cards.some(hasEmptySlateValue);
-    if (!hasEmptySlateValue(group) && !cardsChanged) return group;
+    if (!cards.some(hasEmptySlateValue)) return group;
 
     changed = true;
-    const cleaned = stripEmptySlateValues(group);
-    if (cardsChanged) cleaned.cards = cards.map(stripEmptySlateValues);
-    return cleaned;
+    return { ...group, cards: cards.map(stripEmptySlateValues) };
   });
 
   return changed ? normalized : groups;

@@ -1,18 +1,17 @@
 # FactsheetsDescriptorsBlock
 
-A grid of factsheet descriptors. Each **group** opens with a coloured main card
-(icon, title, description) followed by any number of descriptor cards (icon,
-title, main text, sub text, optional link), all of them editable from the block
-sidebar.
+A grid of factsheet descriptors. Each **group** is one grid of descriptor
+cards (icon, title, main text, sub text, optional link), all of them editable
+from the block sidebar.
 
 ```
-┌──────────────┬────────┬────────┬────────┬────────┐
-│ State        │ Birds  │ Mammals│Reptiles│  Fish  │
-│ descriptors  │ 0% ... │ 8% ... │22% ... │ 9% ... │   ← one grid per group
-├──────────────┼────────┼────────┼────────┼────────┤
-│ Cephalopods  │ Pelagic│ Seabed │ Food   │        │   ← cards wrap, the main
-│              │ ...    │ ...    │ webs   │        │     card is only in row 1
-└──────────────┴────────┴────────┴────────┴────────┘
+┌────────┬────────┬────────┬────────┬────────┐
+│ Birds  │ Mammals│Reptiles│  Fish  │ Cephalo│
+│ 0% ... │ 8% ... │22% ... │ 9% ... │ 4% ... │   ← one grid per group
+├────────┼────────┼────────┼────────┼────────┤
+│ Pelagic│ Seabed │ Food   │        │        │   ← cards wrap into more rows
+│ ...    │ ...    │ webs   │        │        │
+└────────┴────────┴────────┴────────┴────────┘
 ```
 
 ## Data model
@@ -21,10 +20,6 @@ sidebar.
 {
   "groups": [
     {
-      "icon": "/marine/icons/state.svg",
-      "title": [ ...slate nodes, e.g. "State descriptors"... ],
-      "description": [ ...slate nodes... ],
-      "background_color": "#004B7F",
       "cards": [
         {
           "icon": "/marine/icons/fish.svg",
@@ -40,8 +35,13 @@ sidebar.
 }
 ```
 
-A newly inserted block already contains one (empty) group, so the editor has a
-main card to fill in.
+A group is only a grid container: it holds nothing but its `cards` list. Older
+block data may still carry the group-level `icon` / `title` / `description` /
+`background_color` of the removed main card; those keys are ignored by the view
+and no longer offered in the sidebar.
+
+A newly inserted block already contains one (empty) group, so the editor can
+start adding cards right away.
 
 ## Editing
 
@@ -55,9 +55,9 @@ main card to fill in.
   luminance test drives the icon inversion below.
 - **Titles, main text and sub text are slate fields**, so they accept inline
   styling, footnotes and inline data entities. A title is rendered inside its
-  `<h3>` / `<h4>` with the slate paragraph unwrapped, since a heading may only
-  hold phrasing content (`renderSlateInline` in `helpers.js`). Titles saved as
-  plain strings before the field became rich text still render. The main text is styled as the statistic
+  `<h4>` with the slate paragraph unwrapped, since a heading may only hold
+  phrasing content (`renderSlateInline` in `helpers.js`). Titles saved as plain
+  strings before the field became rich text still render. The main text is styled as the statistic
   line (EEA green, large, bold); the muted suffix ("GES achieved") is applied
   with the inline style menu, which is why the whole line lives in one field.
 
@@ -110,7 +110,7 @@ button. The image widget's own clear control sits in an absolutely positioned
 toolbar over the preview and is not reliably clickable once the field is nested
 in the block's object lists, which left editors unable to unset a picked icon.
 
-## The empty-array trap (why `initialValue` omits `description`)
+## The empty-array trap (why `initialValue` omits the slate fields)
 
 Volto's slate widget (`RichTextWidget.getValue`) treats an **empty array** as a
 valid value and hands it straight to Slate. Slate then normalizes `[]` into a
@@ -120,10 +120,10 @@ field is clicked.
 
 An **unset field** (`undefined`) is safe. Therefore:
 
-- `initialValue` never seeds `description` with `[]` — it leaves it out.
-- `helpers.normalizeGroups()` drops empty `description` / `text` / `info`
-  arrays, and `Edit` runs it once on mount so blocks saved while the trap
-  existed heal themselves instead of looping.
+- `initialValue` never seeds a slate field with `[]` — it leaves it out.
+- `helpers.normalizeGroups()` drops empty `title` / `text` / `info` arrays from
+  the descriptor cards, and `Edit` runs it once on mount so blocks saved while
+  the trap existed heal themselves instead of looping.
 
 Do not "tidy up" the schema by adding `default: []` to a slate field.
 
@@ -134,8 +134,6 @@ with the nested paths the footnote collector walks:
 
 ```js
 [BLOCK_TYPE]: [
-  { groups: 'title' },
-  { groups: 'description' },
   { groups: { cards: 'title' } },
   { groups: { cards: 'text' } },
   { groups: { cards: 'info' } },
@@ -144,15 +142,13 @@ with the nested paths the footnote collector walks:
 
 ## Layout
 
-One CSS grid per group (`styles.less`), so a group always starts a new row and
-its main card occupies the first cell. Columns: 5 (≥1200px), 4 (992–1199),
-3 (768–991), 2 (576–767), 1 (<576).
+One CSS grid per group (`styles.less`), so a group always starts a new row.
+Columns: 5 (≥1200px), 4 (992–1199), 3 (768–991), 2 (576–767), 1 (<576).
 
 ## Tests
 
 `helpers.test.js` covers the colour maths, icon URL resolution, card link
 resolution and slate detection; `View.test.jsx` covers the empty state,
-group/card rendering, card links, inline colours and the dark-card icon
-inversion; `IconWidget.test.jsx` covers clearing an icon and hiding the remove
-button when there is none; `schema.test.js` asserts the block uses the icon
-widget.
+card rendering, card links, inline colours and the dark-card icon inversion;
+`IconWidget.test.jsx` covers clearing an icon and hiding the remove button when
+there is none; `schema.test.js` asserts the block's fields and widgets.

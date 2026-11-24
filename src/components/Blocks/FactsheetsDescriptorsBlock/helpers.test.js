@@ -146,7 +146,7 @@ describe('hasSlateContent', () => {
 
 describe('normalizeGroups', () => {
   it('returns the original array when there is nothing to heal', () => {
-    const groups = [{ title: 'State descriptors', cards: [] }];
+    const groups = [{ cards: [] }];
 
     expect(normalizeGroups(groups)).toBe(groups);
   });
@@ -155,35 +155,21 @@ describe('normalizeGroups', () => {
     expect(normalizeGroups(undefined)).toBeUndefined();
   });
 
-  it('drops empty slate fields, which are what make the sidebar loop', () => {
-    const groups = [{ title: 'State descriptors', description: [], cards: [] }];
-
-    expect(normalizeGroups(groups)).toEqual([
-      { title: 'State descriptors', cards: [] },
-    ]);
-  });
-
-  it('heals descriptor cards as well', () => {
+  it('drops empty slate fields on cards, which are what make the sidebar loop', () => {
     const groups = [
       {
-        title: 'State descriptors',
-        cards: [
-          { title: 'Birds', text: [], info: '75% reported area assessed' },
-        ],
+        cards: [{ title: 'Birds', description: [], text: [], info: '75%' }],
       },
     ];
 
     expect(normalizeGroups(groups)).toEqual([
-      {
-        title: 'State descriptors',
-        cards: [{ title: 'Birds', info: '75% reported area assessed' }],
-      },
+      { cards: [{ title: 'Birds', info: '75%' }] },
     ]);
   });
 
   it('keeps slate fields that hold content', () => {
     const text = [{ type: 'p', children: [{ text: '0% GES achieved' }] }];
-    const groups = [{ title: 'State', cards: [{ title: 'Birds', text }] }];
+    const groups = [{ cards: [{ title: 'Birds', text }] }];
 
     expect(normalizeGroups(groups)).toBe(groups);
     expect(normalizeGroups(groups)[0].cards[0].text).toBe(text);

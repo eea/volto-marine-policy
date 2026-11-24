@@ -1,5 +1,5 @@
-// Styles for the factsheet descriptors block: a grid of cards, the first cell
-// of each group being the dark "main card" that names the group.
+// Styles for the factsheet descriptors block: a grid of descriptor cards, one
+// grid per group.
 //
 // Every colour comes from the EEA Design System tokens; the file is its own
 // LESS entry point so it imports the tokens directly instead of relying on the
@@ -38,8 +38,7 @@
   line-height: @font-lineheight-3;
 
   // -- layout ----------------------------------------------------------
-  // One grid per group: the main card is the first cell, the descriptor cards
-  // flow after it and wrap into the following rows.
+  // One grid per group: the descriptor cards flow into rows.
   .factsheet-descriptors-group {
     display: grid;
     margin-bottom: @space-4;
@@ -66,7 +65,6 @@
   // -- cards -----------------------------------------------------------
   // The background and text colour are inline styles: the editor picks the
   // background and the text colour derives from its luminance.
-  .factsheet-descriptor-main,
   .factsheet-descriptor-card {
     display: flex;
     min-height: @factsheet-card-min-height;
@@ -133,20 +131,6 @@
   }
 
   // -- typography ------------------------------------------------------
-  .factsheet-descriptor-main-title {
-    margin: 0;
-    color: inherit;
-    font-size: @font-size-3;
-    font-weight: @font-weight-7;
-    line-height: @font-lineheight-2;
-  }
-
-  .factsheet-descriptor-main-description {
-    color: inherit;
-    font-size: @font-size-0;
-    line-height: @font-lineheight-3;
-  }
-
   .factsheet-descriptor-title {
     margin: 0;
     margin-bottom: 1rem;
@@ -180,8 +164,7 @@
     line-height: @font-lineheight-2;
   }
 
-  .factsheet-descriptor-card.factsheet-card-dark .factsheet-descriptor-info,
-  .factsheet-descriptor-main .factsheet-descriptor-main-description {
+  .factsheet-descriptor-card.factsheet-card-dark .factsheet-descriptor-info {
     color: inherit;
     opacity: 0.85;
   }

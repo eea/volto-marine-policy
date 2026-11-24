@@ -9,8 +9,8 @@ import { normalizeGroups } from './helpers';
 const FactsheetsDescriptorsBlockEdit = (props) => {
   const { selected, onChangeBlock, data = {}, block } = props;
 
-  // Blocks saved while the empty-array slate trap existed still carry
-  // `description: []` and would loop in the sidebar. Heal them on open, once.
+  // Blocks saved while the empty-array slate trap existed still carry empty
+  // slate arrays on their cards and would loop in the sidebar. Heal them once.
   React.useEffect(() => {
     const groups = normalizeGroups(data.groups);
     if (groups === data.groups) return;
