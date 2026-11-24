@@ -411,3 +411,74 @@ body.custom-page-header .breadcrumbs {
     opacity: 0.7;
   }
 }
+
+// Key messages chevron list.
+// Add the `key-messages-chevron-list` class to a block (or straight to its
+// `ul`) to turn a bulleted list into hairline-separated rows, each led by a
+// downward chevron. Placeholder items may hold plain text or a link.
+//
+// Slate renders list items as `ul.ui.bulleted.list` (see
+// volto-eea-website-theme/src/slate.js), whose Semantic UI rules bring their
+// own bullet, padding and margins. The `#page-document` prefix gives these
+// rules enough specificity to win without `!important`.
+#page-document {
+
+  .key-messages-chevron-list ul,
+  ul.key-messages-chevron-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    list-style-type: none;
+  }
+
+  .key-messages-chevron-list ul>li,
+  ul.key-messages-chevron-list>li {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0.6em 0 0.6em 2em;
+    // color: @primaryColor;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.4;
+    list-style: none;
+    list-style-type: none;
+    border-bottom: 1px solid @lightGrey;
+
+    // Semantic draws the bullet with a `::before`, so kill both the marker
+    // and the pseudo-element content before drawing our own chevron.
+    &::marker {
+      content: '';
+      display: none;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 1em; // padding-top + half of the first line box
+      left: 0.5em;
+      margin: 0; // Semantic offsets its own bullet with a negative margin
+      width: 0.6em;
+      height: 0.6em;
+      border-right: 2px solid @primaryColor;
+      border-bottom: 2px solid @primaryColor;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    // Slate wraps list item content in paragraphs; keep the row tight
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      // color: inherit;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        text-decoration: underline;
+      }
+    }
+  }
+}
