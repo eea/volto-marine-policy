@@ -482,3 +482,46 @@ body.custom-page-header .breadcrumbs {
     }
   }
 }
+
+// "Borderless" call to action: the CTA is rendered with the inverted primary
+// button theme (white fill + primary inset border). Here it loses the button
+// chrome and behaves like a plain link instead: no fill, no border, no
+// hover/focus/active re-styling, only an underline as the link affordance.
+.borderless-call-to-action {
+  .call-to-action a.ui.button.inverted.primary {
+    padding: 11px 28px 11px 24px !important;
+    text-align: left;
+    text-decoration: none;
+
+    // Identical rendering in every state: this drops the inset border and the
+    // EEA theme fills coming from `:hover`, `:focus`, `:focus-visible`,
+    // `:active` and `.active`. The global `:focus-visible` outline is kept.
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active,
+    &.active {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      color: @primaryColor !important;
+    }
+
+    // Link affordance, mirroring the site links.
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+      text-decoration: underline;
+    }
+
+    i {
+      left: 0;
+    }
+
+    i::before {
+      top: 50%;
+      width: 0;
+    }
+  }
+}
