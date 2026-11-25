@@ -488,6 +488,8 @@ body.custom-page-header .breadcrumbs {
 // chrome and behaves like a plain link instead: no fill, no border, no
 // hover/focus/active re-styling, only an underline as the link affordance.
 .borderless-call-to-action {
+
+  .call-to-action a.ui.button.inverted.secondary,
   .call-to-action a.ui.button.inverted.primary {
     padding: 11px 28px 11px 24px !important;
     text-align: left;
@@ -504,7 +506,7 @@ body.custom-page-header .breadcrumbs {
     &.active {
       background-color: transparent !important;
       box-shadow: none !important;
-      color: @primaryColor !important;
+      // color: @primaryColor !important;
     }
 
     // Link affordance, mirroring the site links.
@@ -522,6 +524,34 @@ body.custom-page-header .breadcrumbs {
     i::before {
       top: 50%;
       width: 0;
+    }
+  }
+
+  .call-to-action a.ui.button.inverted.secondary {
+
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active,
+    &.active {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      color: @secondaryColor !important;
+    }
+  }
+
+  .call-to-action a.ui.button.inverted.primary {
+
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active,
+    &.active {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      color: @primaryColor !important;
     }
   }
 }
